@@ -88,6 +88,14 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Unnötigen Dependabot-Automerge-Workflow entfernt
+
+- Der Workflow `.github/workflows/automerge-dependabot.yml` wurde aus dem Fork entfernt. Er reagierte auf `pull_request_target`-Ereignisse bei jedem PR-Update, wurde bei eigenen Commits aber wegen der Bedingung `github.actor == 'dependabot[bot]'` nur als „skipped“ angezeigt.
+- Der Workflow `Test and Release` bleibt unverändert und ist weiterhin die maßgebliche CI für Pushes auf `main` und `dev/**`.
+- CI-Lauf für Commit `4eca406` vollständig erfolgreich: Lint sowie Linux/Windows mit Node 22.x und 24.x. macOS bleibt vorübergehend ausgesetzt.
+- Keine Änderung an Adapter-Laufzeitcode oder Release-/Deploy-Konfiguration.
+
+
 ### 2026-11-11 – ioBroker-Schreibzustände nur nach bestätigtem Gerätebefehl aktualisieren
 
 - `sendDataToDevice()` fing Fehler bisher intern ab und gab keinen Erfolgsstatus zurück. `setStateVal()` rief danach trotzdem `setIOBStates()` auf und bestätigte damit den gewünschten Wert in ioBroker, obwohl das Gerät den Schreibbefehl abgelehnt haben konnte.
