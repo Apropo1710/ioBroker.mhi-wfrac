@@ -180,8 +180,10 @@ class MHIWFRac extends utils.Adapter {
                         break;
                 }
                 if (valchange > 0) {
-                    await this.sendDataToDevice(device);
-                    await this.setIOBStates(device);
+                    const sent = await this.sendDataToDevice(device);
+                    if (sent) {
+                        await this.setIOBStates(device);
+                    }
                 }
             });
         this.deviceCommandQueues.set(airconId, operation);
@@ -924,8 +926,10 @@ class MHIWFRac extends utils.Adapter {
                 throw new Error("setAirconStat returned no airconStat");
             }
             device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+            return true;
         } catch (error) {
             this.errorHandler(device, `Could not send Data: ${error}`);
+            return false;
         }
     }
 
