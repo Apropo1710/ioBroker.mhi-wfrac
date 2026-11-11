@@ -31,6 +31,73 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("reports disconnected when no devices are enabled", () => {
+        let connectionState;
+        adapter.config = { devices: [{ enabled: false }, { enabled: false }] };
+        adapter.devices = {};
+        adapter.setState = (id, value, ack) => {
+            expect(id).to.equal("info.connection");
+            expect(ack).to.equal(true);
+            connectionState = value;
+        };
+
+        adapter.updateConnectionInfo();
+
+        expect(connectionState).to.equal(false);
+    });
+
+    it("reports disconnected when only some enabled devices are online", () => {
+        let connectionState;
+        adapter.config = { devices: [{ enabled: true }, { enabled: true }] };
+        adapter.devices = {
+            first: { online: true },
+            second: { online: false },
+        };
+        adapter.setState = (_id, value) => {
+            connectionState = value;
+        };
+
+        adapter.updateConnectionInfo();
+
+        expect(connectionState).to.equal(false);
+    });
+
+    it("reports connected only when every enabled device is online", () => {
+        let connectionState;
+        adapter.config = { devices: [{ enabled: true }, { enabled: true }] };
+        adapter.devices = {
+            first: { online: true },
+            second: { online: true },
+        };
+        adapter.setState = (_id, value) => {
+            connectionState = value;
+        };
+
+        adapter.updateConnectionInfo();
+
+        expect(connectionState).to.equal(true);
+    });
+
+    it("keeps adapter connection online when one of multiple devices fails", () => {
+        let connectionState;
+        const first = { name: "first", airconId: "id-1", online: true };
+        const second = { name: "second", airconId: "id-2", online: true };
+        adapter.config = { devices: [{ enabled: true }, { enabled: true }] };
+        adapter.devices = { first, second };
+        adapter.setState = (id, value) => {
+            if (id === "info.connection") {
+                connectionState = value;
+            }
+        };
+        adapter.log.error = () => {};
+
+        adapter.errorHandler(first, "simulated connection failure");
+
+        expect(first.online).to.equal(false);
+        expect(second.online).to.equal(true);
+        expect(connectionState).to.equal(false);
+    });
+
     it("retries transient failures only for read-only device commands", () => {
         const readRequest = {
             config: {
