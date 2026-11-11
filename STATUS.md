@@ -20,8 +20,8 @@ Stand: 2026-11-11
 - Ausgangscommit: `4480e4e42b73b134eaa9ce552501c7cdeffcfe1e`
 - Adapterversion: `2.3.0`
 - Am 2026-11-11 verglichene Fork- und Original-`main`-Branches: identischer Commit und identischer Git-Baum (70 Einträge).
-- Entwicklungsbranch angelegt: `dev/stability-error-handling`, aus Fork-`main`.
-- Diese Statusdatei wird als erster Commit des Entwicklungsbranches angelegt.
+- Entwicklungsbranch: `dev/stability-error-handling`, aus Fork-`main`.
+- `STATUS.md` wurde als erster Commit dieses Entwicklungsbranches angelegt.
 
 ## Projektstruktur (erfasst)
 
@@ -81,7 +81,7 @@ Noch zu untersuchen und mit Tests abzusichern:
 - `test/integration.js` startet die ioBroker-Integrationstests separat.
 - Der Decoder greift auf positionsbasierte Bytewerte zu; Eingabelängen und Antwortstruktur sind als Schutz-/Testbereich zu prüfen. Decoderänderungen bleiben bis zu echten Referenzdaten zurückgestellt.
 
-Diese Punkte sind Prüfhypothesen, keine bereits bestätigten Fehler.
+Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
@@ -91,15 +91,15 @@ Diese Punkte sind Prüfhypothesen, keine bereits bestätigten Fehler.
 - Vollständigen Git-Baum mit 70 Einträgen erfasst.
 - Entwicklungsbranch `dev/stability-error-handling` aus `main` erstellt.
 - Projektstruktur, npm-Skripte, Test-Einstiegspunkte und CI-Workflow gesichtet.
+- `STATUS.md` als erster Commit angelegt.
 - Noch keine Änderungen am Laufzeitcode und keine Protokolländerungen vorgenommen.
 
 ## Nächste Schritte
 
-1. Diese Datei auf `dev/stability-error-handling` committen.
-2. Testumgebung installieren/ausführen und Baseline-Ergebnisse festhalten.
-3. Polling und Fehlerpfade in `main.js` detailliert prüfen.
-4. Kleine, isolierte Tests für Fehlerfälle ergänzen.
-5. Erst nach grüner Baseline die erste eng begrenzte Stabilitätskorrektur umsetzen und dokumentieren.
+1. Testumgebung installieren/ausführen und Baseline-Ergebnisse festhalten.
+2. Polling und Fehlerpfade in `main.js` detailliert prüfen.
+3. Kleine, isolierte Tests für Fehlerfälle ergänzen.
+4. Erst nach grüner Baseline die erste eng begrenzte Stabilitätskorrektur umsetzen und dokumentieren.
 
 ## Pull-Request- und Release-Regeln
 
