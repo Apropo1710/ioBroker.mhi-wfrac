@@ -31,6 +31,52 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("retries registration for a configured device that is still unavailable", async () => {
+        const calls = [];
+        adapter.config = { devices: [{ enabled: true, ip: "192.0.2.10", name: "living-room" }] };
+        adapter.devices = {};
+        adapter.register = async (address, name) => {
+            calls.push({ address, name });
+            adapter.registrationRetryAt.set(address, Date.now() + 5 * 60 * 1000);
+        };
+
+        await adapter.retryMissingDevices();
+
+        expect(calls).to.deep.equal([{ address: "192.0.2.10", name: "living-room" }]);
+        expect(adapter.registrationRetryAt.has("192.0.2.10")).to.equal(true);
+    });
+
+    it("does not retry registration before the five-minute retry time", async () => {
+        let calls = 0;
+        adapter.config = { devices: [{ enabled: true, ip: "192.0.2.11", name: "bedroom" }] };
+        adapter.devices = {};
+        adapter.registrationRetryAt.set("192.0.2.11", Date.now() + 5 * 60 * 1000);
+        adapter.register = async () => {
+            calls++;
+        };
+
+        await adapter.retryMissingDevices();
+
+        expect(calls).to.equal(0);
+    });
+
+    it("initializes ioBroker states when a missing device is registered again", async () => {
+        const device = { name: "office", airconId: "aircon-3", airconAddress: "192.0.2.12" };
+        let initialized = null;
+        adapter.config = { devices: [{ enabled: true, ip: "192.0.2.12", name: "office" }] };
+        adapter.devices = {};
+        adapter.register = async () => {
+            adapter.devices[device.airconId] = device;
+        };
+        adapter.initIOBStates = async registeredDevice => {
+            initialized = registeredDevice;
+        };
+
+        await adapter.retryMissingDevices();
+
+        expect(initialized).to.equal(device);
+    });
+
     it("reports disconnected when no devices are enabled", () => {
         let connectionState;
         adapter.config = { devices: [{ enabled: false }, { enabled: false }] };
