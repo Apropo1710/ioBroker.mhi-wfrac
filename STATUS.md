@@ -88,6 +88,14 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Wiederanmeldung nicht erreichbarer Geräte
+
+- Geräte, deren Registrierung beim Adapterstart fehlschlägt, werden nicht in `this.devices` aufgenommen und wurden bisher deshalb nie erneut erkannt.
+- Neue Methode `retryMissingDevices()`: prüft aktivierte Konfigurationseinträge, die noch keinem registrierten Gerät zugeordnet sind, und versucht die Registrierung erneut.
+- Wiederholungsabstand nach fehlgeschlagener Registrierung: fünf Minuten, damit bei ausgeschalteten Geräten nicht bei jedem Polling-Durchlauf Fehler protokolliert werden.
+- Bei erfolgreicher späterer Registrierung werden die ioBroker-Datenpunkte initialisiert; der normale Polling-Durchlauf kann das Gerät anschließend abfragen.
+- Drei Tests decken erneuten Registrierungsversuch, Einhaltung des Fünf-Minuten-Abstands und Initialisierung nach erfolgreicher Wiederanmeldung ab.
+- Code-Commit `275241a`, Test-Commit `b83cec1`; CI-Ergebnis steht noch aus.
 ### 2026-11-11 – Verbindungsstatus ohne aktivierte Geräte korrigiert
 
 - `updateConnectionInfo()` meldete bisher `info.connection = true`, wenn kein Gerät aktiviert war: 0 aktivierte Geräte entsprach 0 Online-Geräten.
