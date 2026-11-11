@@ -85,6 +85,14 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Erste Stabilitätskorrektur
+
+- `setStateVal()` prüft jetzt, ob die zugehörige Geräteinstanz noch registriert ist. Veraltete oder nicht mehr zuordenbare State-Änderungen werden mit einer Warnung ignoriert, statt beim Zugriff auf das Gerätemodell einen TypeError auszulösen.
+- `onStateChange()` fängt Fehler aus der asynchronen Verarbeitung ab und protokolliert sie mit der betroffenen Datenpunkt-ID.
+- Dummy-Test in `main.test.js` durch gezielte Tests für beide Fehlerpfade ersetzt.
+- CI-Workflow so erweitert, dass Pushes auf `dev/**` ebenfalls die vorhandenen Prüfungen auslösen.
+- Tests wurden im GitHub-Repository angelegt, aber noch nicht ausgeführt. CI-Ergebnis nach dem Push prüfen.
+
 ### 2026-11-11 – Bestandsaufnahme
 
 - Fork und Original geprüft; beide `main`-Branches waren identisch.
@@ -96,10 +104,10 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Nächste Schritte
 
-1. Testumgebung installieren/ausführen und Baseline-Ergebnisse festhalten.
+1. CI-Lauf für den Entwicklungsbranch abwarten und mögliche Test-/Lintfehler beheben.
 2. Polling und Fehlerpfade in `main.js` detailliert prüfen.
-3. Kleine, isolierte Tests für Fehlerfälle ergänzen.
-4. Erst nach grüner Baseline die erste eng begrenzte Stabilitätskorrektur umsetzen und dokumentieren.
+3. Weitere kleine, isolierte Tests für Fehlerfälle ergänzen.
+4. Erst nach grüner CI die nächste eng begrenzte Stabilitätskorrektur umsetzen und dokumentieren.
 
 ## Pull-Request- und Release-Regeln
 
