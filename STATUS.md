@@ -88,6 +88,13 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – ioBroker-Schreibzustände nur nach bestätigtem Gerätebefehl aktualisieren
+
+- `sendDataToDevice()` fing Fehler bisher intern ab und gab keinen Erfolgsstatus zurück. `setStateVal()` rief danach trotzdem `setIOBStates()` auf und bestätigte damit den gewünschten Wert in ioBroker, obwohl das Gerät den Schreibbefehl abgelehnt haben konnte.
+- `sendDataToDevice()` liefert jetzt `true` nur nach erfolgreicher Geräteantwort und Dekodierung zurück, andernfalls `false`.
+- `setStateVal()` aktualisiert die bestätigten ioBroker-States nur noch bei erfolgreicher Übertragung. Bei Fehlern bleiben die bisherigen bestätigten Werte erhalten; `errorHandler()` markiert das Gerät weiterhin offline.
+- Zwei Tests decken erfolgreiche und abgelehnte Schreibantworten ab.
+- Code-Commit `34b46ca`, Test-Commit `7c977bf`; CI-Ergebnis steht noch aus. Für diese Änderung wurde auf ausdrücklichen Wunsch der macOS-Test vorerst ausgesetzt; Linux und Windows bleiben die Pflichtprüfungen.
 ### 2026-11-11 – CI-Fehler bei Command-Queue formatiert
 
 - CI-Lauf für Commit `b97279c` schlug in ESLint/Prettier fehl: 43 Formatierungsfehler im neu ergänzten `setStateVal()`-Queue-Block. Die Adaptertests wurden deshalb übersprungen.
