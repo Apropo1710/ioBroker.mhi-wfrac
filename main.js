@@ -139,49 +139,51 @@ class MHIWFRac extends utils.Adapter {
         // Serialize writes per device so overlapping state changes cannot race
         // while encoding, sending, or applying the returned device status.
         const previous = this.deviceCommandQueues.get(airconId) || Promise.resolve();
-        const operation = previous.catch(() => {}).then(async () => {
-            const val = state.val;
-            let valchange = 0;
-            let idS = "";
-            const h = id.split(".");
-            if (h.length == 4) {
-                idS = h[3];
-            }
-            switch (idS) {
-                case "power":
-                    device.airconStat.operation = val;
-                    valchange++;
-                    break;
-                case "mode":
-                    device.airconStat.operationMode = val;
-                    valchange++;
-                    break;
-                case "fanSpeed":
-                    device.airconStat.airFlow = val;
-                    valchange++;
-                    break;
-                case "targetTemperature":
-                    device.airconStat.presetTemp = val;
-                    valchange++;
-                    break;
-                case "swingLeftRight":
-                    device.airconStat.windDirectionLR = val;
-                    valchange++;
-                    break;
-                case "swingUpDown":
-                    device.airconStat.windDirectionUD = val;
-                    valchange++;
-                    break;
-                case "3dAuto":
-                    device.airconStat.entrust = val;
-                    valchange++;
-                    break;
-            }
-            if (valchange > 0) {
-                await this.sendDataToDevice(device);
-                await this.setIOBStates(device);
-            }
-        });
+        const operation = previous
+            .catch(() => {})
+            .then(async () => {
+                const val = state.val;
+                let valchange = 0;
+                let idS = "";
+                const h = id.split(".");
+                if (h.length == 4) {
+                    idS = h[3];
+                }
+                switch (idS) {
+                    case "power":
+                        device.airconStat.operation = val;
+                        valchange++;
+                        break;
+                    case "mode":
+                        device.airconStat.operationMode = val;
+                        valchange++;
+                        break;
+                    case "fanSpeed":
+                        device.airconStat.airFlow = val;
+                        valchange++;
+                        break;
+                    case "targetTemperature":
+                        device.airconStat.presetTemp = val;
+                        valchange++;
+                        break;
+                    case "swingLeftRight":
+                        device.airconStat.windDirectionLR = val;
+                        valchange++;
+                        break;
+                    case "swingUpDown":
+                        device.airconStat.windDirectionUD = val;
+                        valchange++;
+                        break;
+                    case "3dAuto":
+                        device.airconStat.entrust = val;
+                        valchange++;
+                        break;
+                }
+                if (valchange > 0) {
+                    await this.sendDataToDevice(device);
+                    await this.setIOBStates(device);
+                }
+            });
         this.deviceCommandQueues.set(airconId, operation);
         try {
             await operation;
