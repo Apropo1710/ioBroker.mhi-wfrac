@@ -31,7 +31,7 @@ Stand: 2026-11-11
 - `lib/AirconStatCoder.js`: Statusdekodierung und Befehls-/Base64-Kodierung
 - `admin/`: Konfiguration, Übersetzungen und Grafik
 - `test/`: Integrationstest-Einstieg, Paketprüfung und Mocha-Setup
-- `main.test.js`: derzeit nur Dummy-Test, keine echte Adapter-Funktionsprüfung
+- `main.test.js`: gezielte Mocha-Tests für State-Handling, Polling, Shutdown und abgelehnte Geräteantworten
 - `.github/workflows/test-and-release.yml`: CI-Prüfungen und tagbasierter Release-/Deploy-Ablauf
 - `.devcontainer/`: Entwicklungscontainer
 - Weitere Konfigurations-/Qualitätsdateien: ESLint, Prettier, TypeScript-Konfiguration, Dependabot
@@ -45,7 +45,7 @@ Stand: 2026-11-11
 - `npm run check`: TypeScript-Prüfung der JavaScript-Dateien
 - `npm run lint`: ESLint
 
-Die Skripte und Testdateien wurden im Repository eingesehen. Ein lokaler Testlauf wurde in dieser Bestandsaufnahme nicht durchgeführt. Im Fork waren zum Prüfzeitpunkt keine GitHub-Actions-Runs gelistet.
+Die Skripte und Testdateien wurden im Repository eingesehen. Die Tests laufen über GitHub Actions; der erste CI-Lauf ist im Draft-PR #1 aktiv. Ein lokaler Testlauf wurde nicht durchgeführt.
 
 ## Untersuchungs- und Verbesserungsbereiche
 
@@ -54,7 +54,7 @@ Die Skripte und Testdateien wurden im Repository eingesehen. Ein lokaler Testlau
 Noch zu untersuchen und mit Tests abzusichern:
 
 1. Polling-Schleife: Verhalten bei unerwarteten Fehlern; sicherstellen, dass ein Fehler nicht dauerhaft weitere Aktualisierungen verhindert.
-2. HTTP-/Axios-Fehler: Fehlerklassen, Timeouts, Verbindungsabbrüche, HTTP-Status und ungültige Antworten differenziert behandeln.
+2. HTTP-/Axios-Fehler: Fehlerklassen, Timeouts, Verbindungsabbrüche, HTTP-Status und ungültige Antworten differenziert behandeln. Geräte-Antworten müssen zusätzlich auf den fachlichen `result`-Code geprüft werden.
 3. Retry-Verhalten: globale Retry-Konfiguration wiederholt derzeit grundsätzlich Fehler, auch bei POST. Idempotenz und Auswirkungen vor jeder Änderung prüfen.
 4. Geräte-Onlinezustand und `info.connection`: konsistente Zustandsübergänge bei mehreren Geräten und fehlgeschlagenen Abfragen prüfen.
 5. Asynchrone State-Änderungen und Shutdown: unbehandelte Promise-Rejections und sauberes Beenden untersuchen.
@@ -77,6 +77,7 @@ Noch zu untersuchen und mit Tests abzusichern:
 
 - Der Polling-Ablauf in `main.js` ruft Geräte nacheinander ab und plant den nächsten Lauf erst nach Abschluss der Runde. Eine ungefangene Ausnahme könnte daher den nächsten Lauf verhindern.
 - `axios-retry` wird global mit einer sehr breiten Retry-Bedingung konfiguriert; die Folgen für POST-Kommandos müssen gezielt geprüft werden.
+- `detectDeviceConnection()` prüft `response.result === 0`; die regulären Lese-/Schreibpfade prüften bislang dagegen nur `ret.error === ""`. Dieser Wert wird in `_postConnection()` nicht verändert, sodass fachliche Gerätefehler unbemerkt bleiben konnten.
 - `main.test.js` ist ein Dummy-Test und testet keine Adapterfunktion.
 - `test/integration.js` startet die ioBroker-Integrationstests separat.
 - Der Decoder greift auf positionsbasierte Bytewerte zu; Eingabelängen und Antwortstruktur sind als Schutz-/Testbereich zu prüfen. Decoderänderungen bleiben bis zu echten Referenzdaten zurückgestellt.
@@ -84,6 +85,16 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-11 – Geräteantworten fachlich validieren
+
+- Neue zentrale Prüfung `assertSuccessfulResponse()` ergänzt: Eine Geräteantwort gilt nur bei vorhandenem Response-Objekt und `result === 0` als erfolgreich.
+- Registrierung, Account-Aktualisierung sowie Lese- und Schreibbefehle prüfen jetzt den fachlichen Result-Code.
+- `getAirconStat` und `setAirconStat` prüfen zusätzlich, ob eine nichtleere `contents.airconStat` vorhanden ist, bevor der Decoder aufgerufen wird.
+- Optionale Firmware-/Statusmetadaten werden mit sicheren Standardwerten übernommen, damit fehlende optionale Felder nicht die gesamte Statusaktualisierung abbrechen.
+- Drei Tests ergänzen die Abweisung von fehlerhaften Result-Codes und stellen sicher, dass bei abgelehnten Lese-/Schreibbefehlen keine Statusdekodierung erfolgt.
+- Die globale Retry-Strategie wurde bewusst noch nicht verändert: Alle Befehle verwenden POST; Wiederholungen könnten Gerätebefehle doppelt ausführen. Idempotenz und API-Verhalten müssen vor einer Änderung geklärt werden.
+- CI läuft über den internen Draft-PR #1. Lint und fünf der sechs Plattform-/Node-Kombinationen waren beim letzten Abruf erfolgreich; `adapter-tests (22.x, macos-latest)` stand noch in der Warteschlange. Der Lauf ist noch nicht vollständig abgeschlossen.
 
 ### 2026-11-11 – Polling und Shutdown abgesichert
 
@@ -113,10 +124,10 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Nächste Schritte
 
-1. Testausführung ermöglichen und `npm test`, `npm run check` sowie `npm run lint` ausführen; Ergebnisse dokumentieren.
-2. HTTP-/Axios-Fehler und Antwortvalidierung einschließlich Retry-Verhalten untersuchen.
+1. Den aktuellen GitHub-Actions-Lauf vollständig abschließen lassen und Ergebnisse dokumentieren.
+2. HTTP-/Axios-Transportfehler, Timeout- und Retry-Verhalten getrennt untersuchen; POST-Wiederholungen nur mit belastbarer Idempotenzbewertung ändern.
 3. Online-Zustände und `info.connection` bei mehreren Geräten gezielt testen.
-4. Erst nach grünen Prüfungen die nächste eng begrenzte Stabilitätskorrektur umsetzen.
+4. `npm test`, `npm run check` und `npm run lint` in CI auswerten; erst danach die nächste eng begrenzte Stabilitätskorrektur umsetzen.
 
 ## Pull-Request- und Release-Regeln
 
