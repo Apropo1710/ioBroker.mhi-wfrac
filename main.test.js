@@ -31,6 +31,48 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("retries transient failures only for read-only device commands", () => {
+        const readRequest = {
+            config: {
+                data: JSON.stringify({ command: "getAirconStat" }),
+            },
+        };
+        const writeRequest = {
+            config: {
+                data: JSON.stringify({ command: "setAirconStat" }),
+            },
+        };
+
+        expect(adapter.shouldRetryRequest(readRequest)).to.equal(true);
+        expect(
+            adapter.shouldRetryRequest({
+                ...readRequest,
+                response: { status: 503 },
+            }),
+        ).to.equal(true);
+        expect(
+            adapter.shouldRetryRequest({
+                ...readRequest,
+                response: { status: 501 },
+            }),
+        ).to.equal(false);
+        expect(
+            adapter.shouldRetryRequest({
+                ...readRequest,
+                response: { status: 400 },
+            }),
+        ).to.equal(false);
+        expect(adapter.shouldRetryRequest(writeRequest)).to.equal(false);
+    });
+
+    it("does not retry requests with an unknown or malformed command", () => {
+        expect(adapter.shouldRetryRequest({ config: { data: "{invalid-json" } })).to.equal(false);
+        expect(adapter.shouldRetryRequest({ config: { data: JSON.stringify({ command: "unknown" }) } })).to.equal(
+            false,
+        );
+        expect(adapter.shouldRetryRequest({})).to.equal(false);
+    });
+
     it("rejects device responses with a non-zero or missing result code", () => {
         expect(() => adapter.assertSuccessfulResponse({ result: 0 }, "testCommand")).not.to.throw();
         expect(() => adapter.assertSuccessfulResponse({ result: 5 }, "testCommand")).to.throw(
