@@ -654,6 +654,16 @@ class MHIWFRac extends utils.Adapter {
         return `${baseUrl}${BEAVER_COMMAND_PATH}/${cmd}`;
     }
 
+    assertSuccessfulResponse(response, command) {
+        if (!response || typeof response !== "object") {
+            throw new Error(command + " returned an invalid response");
+        }
+        if (response.result !== 0) {
+            throw new Error(command + " was rejected by the device (result: " + String(response.result) + ")");
+        }
+        return response;
+    }
+
     async _postConnection(connection, cmd, contents, options = {}) {
         const url = this.buildDeviceUrl(connection, cmd);
 
@@ -721,16 +731,19 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async update_account_info(device) {
-        //Update the account info on the airco (sets to operator id of the device)
+        // Update the account info on the airco (sets to operator id of the device)
         const contents = {
             accountId: OPERATORID,
             [KEY_AIRCON_ID]: device.airconId,
             remote: 0,
             timezone: TIMEZONE,
         };
-        await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents).catch(error =>
-            this.errorHandler(device, `Failed to update account info on device! | ${error}`),
-        );
+        try {
+            const ret = await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents);
+            this.assertSuccessfulResponse(ret.response, COMMAND_UPDATE_ACCOUNT_INFO);
+        } catch (error) {
+            this.errorHandler(device, "Failed to update account info on device! | " + error);
+        }
     }
 
     async register(address, name) {
@@ -741,24 +754,23 @@ class MHIWFRac extends utils.Adapter {
         try {
             Object.assign(device, await this.detectDeviceConnection(address));
 
-            await this._postConnection(device, COMMAND_GET_DEVICE_INFO)
-                .then(async ret => {
-                    if (ret.error === "") {
-                        this.log.debug(`Register(${address}) | return: ${JSON.stringify(ret)}`);
-                        device.airconId = ret.response.contents.airconId;
-                        device.airconApMode = ret.response.contents.apMode;
-                        device.airconMac = ret.response.contents.macAddress;
-                        device.online = true;
-                        this.devices[device.airconId] = device;
+            const ret = await this._postConnection(device, COMMAND_GET_DEVICE_INFO);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_GET_DEVICE_INFO);
+            const deviceInfo = response.contents;
+            if (!deviceInfo?.airconId) {
+                throw new Error("getDeviceInfo returned no airconId");
+            }
 
-                        await this.update_account_info(device);
-                    } else {
-                        this.errorHandler(device, `Failed to register device! | ${JSON.stringify(ret)}`);
-                    }
-                })
-                .catch(error => this.errorHandler(device, `Failed to register device! | ${error}`));
+            this.log.debug("Register(" + address + ") | return: " + JSON.stringify(ret));
+            device.airconId = deviceInfo.airconId;
+            device.airconApMode = deviceInfo.apMode ?? 0;
+            device.airconMac = deviceInfo.macAddress ?? "";
+            device.online = true;
+            this.devices[device.airconId] = device;
+
+            await this.update_account_info(device);
         } catch (error) {
-            this.errorHandler(device, `Failed to detect local API mode during registration! | ${error}`);
+            this.errorHandler(device, "Failed to register device! | " + error);
         }
     }
 
@@ -789,21 +801,26 @@ class MHIWFRac extends utils.Adapter {
         const contents = {
             [KEY_AIRCON_ID]: device.airconId,
         };
-        await this._postConnection(device, COMMAND_GET_AIRCON_STAT, contents)
-            .then(ret => {
-                if (ret.error === "") {
-                    device.acCoder.fromBase64(device.airconStat, ret.response.contents.airconStat);
-                    this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
-                    device.firmwareVersion_wireless = ret.response.contents.wireless.firmVer;
-                    device.firmwareVersion_mcu = ret.response.contents.mcu.firmVer;
-                    device.firmwareType = ret.response.contents.firmType;
-                    device.connected_accounts = ret.response.contents.numOfAccount;
-                    device.ledStat = ret.response.contents.ledStat;
-                    device.autoHeating = ret.response.contents.autoHeating;
-                    device.online = true;
-                }
-            })
-            .catch(error => this.errorHandler(device, `Could not get Data: ${error}`));
+        try {
+            const ret = await this._postConnection(device, COMMAND_GET_AIRCON_STAT, contents);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_GET_AIRCON_STAT);
+            const stat = response.contents;
+            if (!stat || typeof stat.airconStat !== "string" || stat.airconStat.length === 0) {
+                throw new Error("getAirconStat returned no airconStat");
+            }
+
+            device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+            this.log.debug("getDataFromDevice | AirconStat::" + JSON.stringify(device.airconStat));
+            device.firmwareVersion_wireless = stat.wireless?.firmVer ?? "";
+            device.firmwareVersion_mcu = stat.mcu?.firmVer ?? "";
+            device.firmwareType = stat.firmType ?? "";
+            device.connected_accounts = stat.numOfAccount ?? 0;
+            device.ledStat = stat.ledStat ?? 0;
+            device.autoHeating = stat.autoHeating ?? 0;
+            device.online = true;
+        } catch (error) {
+            this.errorHandler(device, "Could not get Data: " + error);
+        }
     }
 
     async sendDataToDevice(device) {
@@ -812,13 +829,17 @@ class MHIWFRac extends utils.Adapter {
             [KEY_AIRCON_STAT]: device.acCoder.toBase64(device.airconStat),
         };
 
-        await this._postConnection(device, COMMAND_SET_AIRCON_STAT, contents)
-            .then(ret => {
-                if (ret.error === "") {
-                    device.acCoder.fromBase64(device.airconStat, ret.response.contents.airconStat);
-                }
-            })
-            .catch(error => this.errorHandler(device, `Could not send Data: ${error}`));
+        try {
+            const ret = await this._postConnection(device, COMMAND_SET_AIRCON_STAT, contents);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_SET_AIRCON_STAT);
+            const stat = response.contents;
+            if (!stat || typeof stat.airconStat !== "string" || stat.airconStat.length === 0) {
+                throw new Error("setAirconStat returned no airconStat");
+            }
+            device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+        } catch (error) {
+            this.errorHandler(device, "Could not send Data: " + error);
+        }
     }
 
     name2id(pName) {
