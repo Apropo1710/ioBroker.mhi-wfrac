@@ -9,13 +9,42 @@ const Device = require("./lib/Device.js");
 const axios = require("axios");
 const https = require("node:https");
 const axiosRetry = require("axios-retry").default;
+
+const RETRYABLE_READ_COMMANDS = new Set(["getDeviceInfo", "getAirconStat"]);
+const RETRYABLE_HTTP_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
+
+function shouldRetryRequest(error) {
+    if (!error?.config) {
+        return false;
+    }
+
+    let requestData = error.config.data;
+    if (typeof requestData === "string") {
+        try {
+            requestData = JSON.parse(requestData);
+        } catch {
+            return false;
+        }
+    }
+
+    if (!RETRYABLE_READ_COMMANDS.has(requestData?.command)) {
+        return false;
+    }
+
+    // No HTTP response usually means a transient network error or timeout.
+    if (!error.response) {
+        return true;
+    }
+
+    // Do not retry permanent client errors (including HTTP 501).
+    return RETRYABLE_HTTP_STATUS_CODES.has(error.response.status);
+}
+
 axiosRetry(axios, {
     retries: 4,
-    retryDelay: retryCount => {
-        return retryCount * 2000;
-    },
+    retryDelay: retryCount => retryCount * 2000,
     shouldResetTimeout: true,
-    retryCondition: _error => true, // retry no matter what (also on POST)
+    retryCondition: shouldRetryRequest,
 });
 
 const KEY_AIRCON_ID = "airconId";
@@ -652,6 +681,10 @@ class MHIWFRac extends utils.Adapter {
         const protocol = connection.useHttps ? "https" : "http";
         const baseUrl = `${protocol}://${address}:${AIRCON_PORT}`;
         return `${baseUrl}${BEAVER_COMMAND_PATH}/${cmd}`;
+    }
+
+    shouldRetryRequest(error) {
+        return shouldRetryRequest(error);
     }
 
     assertSuccessfulResponse(response, command) {
