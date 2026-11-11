@@ -45,7 +45,7 @@ Stand: 2026-11-11
 - `npm run check`: TypeScript-Prüfung der JavaScript-Dateien
 - `npm run lint`: ESLint
 
-Die Skripte und Testdateien wurden im Repository eingesehen. Die Tests laufen über GitHub Actions; der erste CI-Lauf ist im Draft-PR #1 aktiv. Ein lokaler Testlauf wurde nicht durchgeführt.
+Die Skripte und Testdateien wurden im Repository eingesehen. Die Tests laufen über GitHub Actions im internen Draft-PR #1. Ein lokaler Testlauf wurde nicht durchgeführt.
 
 ## Untersuchungs- und Verbesserungsbereiche
 
@@ -76,15 +76,24 @@ Noch zu untersuchen und mit Tests abzusichern:
 ## Erste statische Beobachtungen (noch keine bestätigten Bugs)
 
 - Der Polling-Ablauf in `main.js` ruft Geräte nacheinander ab und plant den nächsten Lauf erst nach Abschluss der Runde. Eine ungefangene Ausnahme könnte daher den nächsten Lauf verhindern.
-- `axios-retry` wird global mit einer sehr breiten Retry-Bedingung konfiguriert; die Folgen für POST-Kommandos müssen gezielt geprüft werden.
+- `axios-retry` 4.5.0 ist global mit `retries: 4`, linearer Verzögerung (2/4/6/8 Sekunden), `shouldResetTimeout: true` und `retryCondition: _error => true` konfiguriert. Damit werden alle von Axios als Fehler behandelten Antworten wiederholt – auch HTTP-4xx und POST-Anfragen. Die Bibliothek würde standardmäßig nur Netzwerkfehler oder 5xx bei idempotenten HTTP-Methoden wiederholen; die benutzerdefinierte Bedingung hebt diese Einschränkung auf.
 - `detectDeviceConnection()` prüft `response.result === 0`; die regulären Lese-/Schreibpfade prüften bislang dagegen nur `ret.error === ""`. Dieser Wert wird in `_postConnection()` nicht verändert, sodass fachliche Gerätefehler unbemerkt bleiben konnten.
-- `main.test.js` ist ein Dummy-Test und testet keine Adapterfunktion.
+- Die vier aufgerufenen API-Kommandos sind `getDeviceInfo`, `getAirconStat`, `updateAccountInfo` und `setAirconStat`. Die ersten beiden lesen Daten; `updateAccountInfo` schreibt feste Kontodaten; `setAirconStat` überträgt den vollständigen Klimaanlagenstatus. Ob eine Wiederholung von `setAirconStat` auf Geräteebene garantiert nebenwirkungsfrei ist, ist ohne Protokolldokumentation oder reales Gerät nicht belegt.
+- Wegen `shouldResetTimeout: true` gilt das 5-Sekunden-Timeout pro Versuch. Bei vier Wiederholungen und den aktuellen Wartezeiten kann ein einzelner HTTP-Aufruf im Fehlerfall deutlich länger als fünf Sekunden blockieren. Die Retry-Konfiguration wird deshalb nicht ohne gezielte Tests und Bewertung der Schreibbefehle geändert.
+- `main.test.js` enthält gezielte Mocha-Tests für State-Handling, Polling, Shutdown und abgelehnte Geräteantworten.
 - `test/integration.js` startet die ioBroker-Integrationstests separat.
 - Der Decoder greift auf positionsbasierte Bytewerte zu; Eingabelängen und Antwortstruktur sind als Schutz-/Testbereich zu prüfen. Decoderänderungen bleiben bis zu echten Referenzdaten zurückgestellt.
 
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-11 – Retry-Verhalten analysiert
+
+- Die globale `axios-retry`-Konfiguration wiederholt aktuell pauschal alle Axios-Fehler bis zu viermal. Dadurch werden auch permanente HTTP-4xx-Fehler und POST-Kommandos wiederholt.
+- Die vier verwendeten Befehle wurden nach Funktion eingeordnet: `getDeviceInfo` und `getAirconStat` lesen; `updateAccountInfo` schreibt Kontoeinstellungen; `setAirconStat` überträgt den gewünschten Gesamtstatus.
+- Die Wiederholung von `setAirconStat` könnte nach einem Timeout einen bereits ausgeführten Schreibvorgang erneut senden. Ob das Gerät diesen Befehl garantiert idempotent verarbeitet, ist derzeit nicht belegt.
+- Noch keine Änderung an der Retry-Konfiguration. Vorher sollen Retry-Regeln mit Mock-Axios-Tests abgesichert und die Semantik des Gerätebefehls anhand belastbarer Dokumentation oder realer Gerätebeobachtung geklärt werden.
 
 ### 2026-11-11 – Geräteantworten fachlich validieren
 
@@ -94,7 +103,8 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - Optionale Firmware-/Statusmetadaten werden mit sicheren Standardwerten übernommen, damit fehlende optionale Felder nicht die gesamte Statusaktualisierung abbrechen.
 - Drei Tests ergänzen die Abweisung von fehlerhaften Result-Codes und stellen sicher, dass bei abgelehnten Lese-/Schreibbefehlen keine Statusdekodierung erfolgt.
 - Die globale Retry-Strategie wurde bewusst noch nicht verändert: Alle Befehle verwenden POST; Wiederholungen könnten Gerätebefehle doppelt ausführen. Idempotenz und API-Verhalten müssen vor einer Änderung geklärt werden.
-- Der erste CI-Lauf für diese Änderung ist fehlgeschlagen, bevor die Adaptertests starten konnten: ESLint meldete acht `prefer-template`-Fehler in neu ergänzten Log-/Fehlertexten. Diese acht Stellen wurden auf Template-Strings umgestellt (Commit `8c3de84`). Der neue Push-Lauf muss Lint und anschließend die Tests erneut bestätigen.
+- Der erste CI-Lauf für diese Änderung scheiterte an acht ESLint-Fehlern (`prefer-template`). Die Stellen wurden auf Template-Strings umgestellt (Commit `8c3de84`).
+- Im nachfolgenden CI-Lauf #11 sind `check-and-lint` sowie fünf der sechs Plattform-/Node-Testjobs erfolgreich. Nur `adapter-tests (24.x, macos-latest)` steht beim letzten Abruf noch in der Warteschlange; der Workflow ist daher noch nicht vollständig abgeschlossen.
 
 ### 2026-11-11 – Polling und Shutdown abgesichert
 
@@ -111,7 +121,7 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - `onStateChange()` fängt Fehler aus der asynchronen Verarbeitung ab und protokolliert sie mit der betroffenen Datenpunkt-ID.
 - Dummy-Test in `main.test.js` durch gezielte Tests für beide Fehlerpfade ersetzt.
 - CI-Workflow so erweitert, dass Pushes auf `dev/**` ebenfalls die vorhandenen Prüfungen auslösen.
-- Tests wurden im GitHub-Repository angelegt, aber noch nicht ausgeführt. Es existiert noch kein CI-Lauf für diesen Branch: Die Trigger-Regeln auf `main` kennen `dev/**` noch nicht. Die Änderung an der Workflow-Datei wird wirksam, sobald sie in den Default-Branch übernommen wurde; ein Pull Request löst aufgrund des bestehenden `pull_request`-Triggers unabhängig davon CI aus.
+- Die CI ist über GitHub Actions aktiv. Pushes auf `dev/**` und Pull-Request-Ereignisse starten die Prüfungen.
 
 ### 2026-11-11 – Bestandsaufnahme
 
