@@ -88,14 +88,22 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Retry-Regeln für HTTP-Kommandos eingeschränkt
+
+- Die bisherige globale Retry-Bedingung wiederholte jeden Axios-Fehler, auch permanente HTTP-4xx-/501-Fehler und schreibende POST-Kommandos.
+- Neue Retry-Prüfung: Wiederholungen sind ausschließlich für `getDeviceInfo` und `getAirconStat` erlaubt, also für lesende Gerätekommandos.
+- Bei diesen Lese-Kommandos werden Netzwerkfehler/Timeouts ohne HTTP-Antwort sowie HTTP 408, 425, 429, 500, 502, 503 und 504 wiederholt. Permanente Fehler wie HTTP 400 und 501 werden nicht wiederholt.
+- `updateAccountInfo` und `setAirconStat` werden bewusst nicht automatisch wiederholt, weil es Schreibbefehle sind und eine erneute Übertragung nach Timeout sonst einen möglicherweise bereits ausgeführten Vorgang duplizieren könnte.
+- Zwei Tests ergänzen die Retry-Prüfung: transiente Lese-Fehler werden zugelassen; Schreibbefehle, unbekannte Kommandos, fehlerhafte Requestdaten und permanente HTTP-Fehler werden abgewiesen.
+- Änderungen in `main.js` und `main.test.js`; CI-Ergebnis steht noch aus.
 ### 2026-11-11 – Retry-Verhalten analysiert
 
-- Die globale `axios-retry`-Konfiguration wiederholt aktuell pauschal alle Axios-Fehler bis zu viermal. Dadurch werden auch permanente HTTP-4xx-Fehler und POST-Kommandos wiederholt.
+- Die vorherige globale `axios-retry`-Konfiguration wiederholte pauschal alle Axios-Fehler bis zu viermal; die konkrete Einschränkung ist im Änderungsprotokoll dokumentiert.
 - Die vier verwendeten Befehle wurden nach Funktion eingeordnet: `getDeviceInfo` und `getAirconStat` lesen; `updateAccountInfo` schreibt Kontoeinstellungen; `setAirconStat` überträgt den gewünschten Gesamtstatus.
 - Die Wiederholung von `setAirconStat` könnte nach einem Timeout einen bereits ausgeführten Schreibvorgang erneut senden. Ob das Gerät diesen Befehl garantiert idempotent verarbeitet, ist derzeit nicht belegt.
 - Ergänzende externe WF-RAC-Referenz (Reverse Engineering mit getrennt ausgewiesenen Evidenzstufen `[FW]`/`[HW]`) beschreibt die lokalen Endpunkte: `getDeviceInfo`, `getAirconStat`, `setAirconStat` und `updateAccountInfo`. Sie bestätigt, dass Antworten `result` und `contents` enthalten und dass `setAirconStat` den neuen Statusblob zurückliefert. Das stützt die Antwortvalidierung; es belegt aber nicht, dass ein wiederholtes `setAirconStat` in jedem möglichen Befehlsfall nebenwirkungsfrei ist.
 - Ein dokumentierter Fremdprojekt-Fall zeigt außerdem HTTP 501 (`Not supported this command`) bei `setAirconStat`; ein solcher permanenter Fehler wird von der aktuellen pauschalen Retry-Bedingung ebenfalls erneut gesendet. Das ist ein klarer Grund, permanente Client-/Featurefehler künftig von transienten Transportfehlern zu unterscheiden.
-- Noch keine Änderung an der Retry-Konfiguration. Vorher sollen Retry-Regeln mit Mock-Axios-Tests abgesichert und die Semantik des Gerätebefehls anhand belastbarer Dokumentation oder realer Gerätebeobachtung geklärt werden.
+- Die Retry-Regeln sind inzwischen auf lesende Kommandos beschränkt und durch Unit-Tests abgedeckt. Die reale Gerätekommunikation und die Auswirkungen auf Hardware müssen nach Installation weiterhin beobachtet werden.
 
 ### 2026-11-11 – Geräteantworten fachlich validieren
 
