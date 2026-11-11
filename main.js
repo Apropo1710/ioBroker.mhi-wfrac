@@ -76,6 +76,7 @@ class MHIWFRac extends utils.Adapter {
         this.on("unload", this.onUnload.bind(this));
         this.devices = {};
         this.unloading = false;
+        this.registrationRetryAt = new Map();
     }
 
     /**
@@ -593,6 +594,12 @@ class MHIWFRac extends utils.Adapter {
 
     async update() {
         try {
+            try {
+                await this.retryMissingDevices();
+            } catch (error) {
+                this.log.error(`Failed to retry unavailable device registration: ${error}`);
+            }
+
             for (const device of Object.values(this.devices)) {
                 try {
                     await this.getDataFromDevice(device);
@@ -803,7 +810,37 @@ class MHIWFRac extends utils.Adapter {
 
             await this.update_account_info(device);
         } catch (error) {
+            this.registrationRetryAt.set(address, Date.now() + 5 * 60 * 1000);
             this.errorHandler(device, `Failed to register device! | ${error}`);
+        }
+    }
+
+    async retryMissingDevices() {
+        const now = Date.now();
+        for (const configuredDevice of this.config.devices.filter(device => device.enabled)) {
+            const address = configuredDevice.ip;
+            const alreadyRegistered = Object.values(this.devices).some(device => device.airconAddress === address);
+            if (alreadyRegistered) {
+                this.registrationRetryAt.delete(address);
+                continue;
+            }
+
+            const nextAttempt = this.registrationRetryAt.get(address) ?? 0;
+            if (now < nextAttempt) {
+                continue;
+            }
+
+            this.log.info(`Retrying registration for unavailable device ${configuredDevice.name} (${address})`);
+            await this.register(address, configuredDevice.name);
+
+            const registeredDevice = Object.values(this.devices).find(device => device.airconAddress === address);
+            if (registeredDevice) {
+                try {
+                    await this.initIOBStates(registeredDevice);
+                } catch (error) {
+                    this.errorHandler(registeredDevice, `Failed to initialize states after registration: ${error}`);
+                }
+            }
         }
     }
 
