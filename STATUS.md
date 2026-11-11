@@ -88,6 +88,13 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Schreibbefehle pro Gerät serialisiert
+
+- Mehrere ioBroker-State-Änderungen konnten bisher parallel `setStateVal()` ausführen. Dadurch konnten mehrere `setAirconStat`-POSTs gleichzeitig laufen und ihre Antworten in nicht garantierter Reihenfolge den lokalen Gerätestatus überschreiben.
+- Neue `deviceCommandQueues` serialisiert Änderungen je `airconId`: Ein Schreibvorgang einschließlich Antwortverarbeitung und Aktualisierung der ioBroker-States wird abgeschlossen, bevor der nächste Schreibvorgang desselben Geräts startet.
+- Unterschiedliche Geräte bleiben voneinander unabhängig und können weiterhin parallel bzw. nacheinander im normalen Polling verarbeitet werden.
+- Ein zusätzlicher Test simuliert zwei überlappende Änderungen desselben Geräts und prüft die Reihenfolge der übertragenen Zustände sowie die Bereinigung der Queue.
+- Code-Commit `8b46092`, Test-Commit `08cf387`; CI-Ergebnis steht noch aus.
 ### 2026-11-11 – Wiederanmeldung nicht erreichbarer Geräte
 
 - Geräte, deren Registrierung beim Adapterstart fehlschlägt, werden nicht in `this.devices` aufgenommen und wurden bisher deshalb nie erneut erkannt.
