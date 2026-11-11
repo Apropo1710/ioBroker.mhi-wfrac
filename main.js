@@ -827,7 +827,8 @@ class MHIWFRac extends utils.Adapter {
         const enabledDevices = this.config.devices.filter(d => d["enabled"]).length;
         const onlineDevices = Object.values(this.devices).filter(d => d.online).length;
 
-        this.setState("info.connection", enabledDevices == onlineDevices, true);
+        // No configured devices must not be reported as a successful connection.
+        this.setState("info.connection", enabledDevices > 0 && enabledDevices === onlineDevices, true);
     }
 
     async getDataFromDevice(device) {
