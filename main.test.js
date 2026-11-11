@@ -31,6 +31,62 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("rejects device responses with a non-zero or missing result code", () => {
+        expect(() => adapter.assertSuccessfulResponse({ result: 0 }, "testCommand")).not.to.throw();
+        expect(() => adapter.assertSuccessfulResponse({ result: 5 }, "testCommand")).to.throw(
+            "testCommand was rejected by the device (result: 5)",
+        );
+        expect(() => adapter.assertSuccessfulResponse({}, "testCommand")).to.throw(
+            "testCommand was rejected by the device (result: undefined)",
+        );
+    });
+
+    it("does not decode aircon status when the device rejects a read command", async () => {
+        const errors = [];
+        let decodeCalled = false;
+        const device = {
+            name: "room",
+            airconId: "id-1",
+            acCoder: {
+                fromBase64: () => {
+                    decodeCalled = true;
+                },
+            },
+        };
+        adapter._postConnection = async () => ({ response: { result: 7 } });
+        adapter.errorHandler = (_device, error) => errors.push(error);
+
+        await adapter.getDataFromDevice(device);
+
+        expect(decodeCalled).to.equal(false);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("result: 7");
+    });
+
+    it("does not decode aircon status when the device rejects a write command", async () => {
+        const errors = [];
+        let decodeCalled = false;
+        const device = {
+            name: "room",
+            airconId: "id-1",
+            airconStat: {},
+            acCoder: {
+                toBase64: () => "encoded-status",
+                fromBase64: () => {
+                    decodeCalled = true;
+                },
+            },
+        };
+        adapter._postConnection = async () => ({ response: { result: 9 } });
+        adapter.errorHandler = (_device, error) => errors.push(error);
+
+        await adapter.sendDataToDevice(device);
+
+        expect(decodeCalled).to.equal(false);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("result: 9");
+    });
+
     it("ignores a state change when its device is no longer registered", async () => {
         adapter.devices = {};
         adapter.getObjectAsync = async () => ({
