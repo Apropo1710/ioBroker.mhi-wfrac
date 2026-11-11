@@ -46,6 +46,7 @@ class MHIWFRac extends utils.Adapter {
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.devices = {};
+        this.unloading = false;
     }
 
     /**
@@ -562,12 +563,32 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async update() {
-        for (const device of Object.values(this.devices)) {
-            await this.getDataFromDevice(device);
-            await this.setIOBStates(device);
+        try {
+            for (const device of Object.values(this.devices)) {
+                try {
+                    await this.getDataFromDevice(device);
+                    await this.setIOBStates(device);
+                } catch (error) {
+                    try {
+                        this.errorHandler(device, `Unexpected update error: ${error}`);
+                    } catch (handlerError) {
+                        this.log.error(
+                            `Failed to handle update error for ${device.name || device.airconId}: ${handlerError}`,
+                        );
+                    }
+                }
+            }
+
+            try {
+                this.updateConnectionInfo();
+            } catch (error) {
+                this.log.error(`Failed to update adapter connection state: ${error}`);
+            }
+        } finally {
+            if (!this.unloading) {
+                this.timeout = this.setTimeout(() => this.update(), this.config.interval * 1000);
+            }
         }
-        this.updateConnectionInfo();
-        this.timeout = this.setTimeout(() => this.update(), this.config.interval * 1000);
     }
 
     /**
@@ -576,6 +597,7 @@ class MHIWFRac extends utils.Adapter {
      * @param {() => void} callback
      */
     onUnload(callback) {
+        this.unloading = true;
         try {
             // Here you must clear all timeouts or intervals that may still be active
             if (this.timeout) {
