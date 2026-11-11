@@ -656,10 +656,10 @@ class MHIWFRac extends utils.Adapter {
 
     assertSuccessfulResponse(response, command) {
         if (!response || typeof response !== "object") {
-            throw new Error(command + " returned an invalid response");
+            throw new Error(`${command} returned an invalid response`);
         }
         if (response.result !== 0) {
-            throw new Error(command + " was rejected by the device (result: " + String(response.result) + ")");
+            throw new Error(`${command} was rejected by the device (result: ${String(response.result)})`);
         }
         return response;
     }
@@ -742,7 +742,7 @@ class MHIWFRac extends utils.Adapter {
             const ret = await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents);
             this.assertSuccessfulResponse(ret.response, COMMAND_UPDATE_ACCOUNT_INFO);
         } catch (error) {
-            this.errorHandler(device, "Failed to update account info on device! | " + error);
+            this.errorHandler(device, `Failed to update account info on device! | ${error}`);
         }
     }
 
@@ -761,7 +761,7 @@ class MHIWFRac extends utils.Adapter {
                 throw new Error("getDeviceInfo returned no airconId");
             }
 
-            this.log.debug("Register(" + address + ") | return: " + JSON.stringify(ret));
+            this.log.debug(`Register(${address}) | return: ${JSON.stringify(ret)}`);
             device.airconId = deviceInfo.airconId;
             device.airconApMode = deviceInfo.apMode ?? 0;
             device.airconMac = deviceInfo.macAddress ?? "";
@@ -770,7 +770,7 @@ class MHIWFRac extends utils.Adapter {
 
             await this.update_account_info(device);
         } catch (error) {
-            this.errorHandler(device, "Failed to register device! | " + error);
+            this.errorHandler(device, `Failed to register device! | ${error}`);
         }
     }
 
@@ -810,7 +810,7 @@ class MHIWFRac extends utils.Adapter {
             }
 
             device.acCoder.fromBase64(device.airconStat, stat.airconStat);
-            this.log.debug("getDataFromDevice | AirconStat::" + JSON.stringify(device.airconStat));
+            this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
             device.firmwareVersion_wireless = stat.wireless?.firmVer ?? "";
             device.firmwareVersion_mcu = stat.mcu?.firmVer ?? "";
             device.firmwareType = stat.firmType ?? "";
@@ -819,7 +819,7 @@ class MHIWFRac extends utils.Adapter {
             device.autoHeating = stat.autoHeating ?? 0;
             device.online = true;
         } catch (error) {
-            this.errorHandler(device, "Could not get Data: " + error);
+            this.errorHandler(device, `Could not get Data: ${error}`);
         }
     }
 
@@ -838,7 +838,7 @@ class MHIWFRac extends utils.Adapter {
             }
             device.acCoder.fromBase64(device.airconStat, stat.airconStat);
         } catch (error) {
-            this.errorHandler(device, "Could not send Data: " + error);
+            this.errorHandler(device, `Could not send Data: ${error}`);
         }
     }
 
