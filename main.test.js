@@ -31,6 +31,54 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("serializes concurrent state writes for the same device", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-queue",
+            airconStat: { operation: false, operationMode: 0 },
+        };
+        const sentValues = [];
+        let releaseFirst;
+        let firstStarted;
+        const firstStartedPromise = new Promise(resolve => {
+            firstStarted = resolve;
+        });
+        const firstSendPromise = new Promise(resolve => {
+            releaseFirst = resolve;
+        });
+
+        adapter.devices = { [device.airconId]: device };
+        adapter.getObjectAsync = async id => ({
+            native: { airconId: device.airconId },
+        });
+        adapter.sendDataToDevice = async currentDevice => {
+            sentValues.push({
+                operation: currentDevice.airconStat.operation,
+                operationMode: currentDevice.airconStat.operationMode,
+            });
+            if (sentValues.length === 1) {
+                firstStarted();
+                await firstSendPromise;
+            }
+        };
+        adapter.setIOBStates = async () => {};
+
+        const firstWrite = adapter.setStateVal("mhi-wfrac.0.room.power", { val: true });
+        await firstStartedPromise;
+        const secondWrite = adapter.setStateVal("mhi-wfrac.0.room.mode", { val: 2 });
+
+        await Promise.resolve();
+        expect(sentValues).to.have.lengthOf(1);
+        expect(sentValues[0]).to.deep.equal({ operation: true, operationMode: 0 });
+
+        releaseFirst();
+        await Promise.all([firstWrite, secondWrite]);
+
+        expect(sentValues).to.have.lengthOf(2);
+        expect(sentValues[1]).to.deep.equal({ operation: true, operationMode: 2 });
+        expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
+    });
+
     it("retries registration for a configured device that is still unavailable", async () => {
         const calls = [];
         adapter.config = { devices: [{ enabled: true, ip: "192.0.2.10", name: "living-room" }] };
