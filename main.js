@@ -149,6 +149,16 @@ class MHIWFRac extends utils.Adapter {
                 if (h.length == 4) {
                     idS = h[3];
                 }
+                const changedProperty = {
+                    power: "operation",
+                    mode: "operationMode",
+                    fanSpeed: "airFlow",
+                    targetTemperature: "presetTemp",
+                    swingLeftRight: "windDirectionLR",
+                    swingUpDown: "windDirectionUD",
+                    "3dAuto": "entrust",
+                }[idS];
+                const previousValue = changedProperty ? device.airconStat[changedProperty] : undefined;
                 switch (idS) {
                     case "power":
                         device.airconStat.operation = val;
@@ -180,16 +190,6 @@ class MHIWFRac extends utils.Adapter {
                         break;
                 }
                 if (valchange > 0) {
-                    const changedProperty = {
-                        power: "operation",
-                        mode: "operationMode",
-                        fanSpeed: "airFlow",
-                        targetTemperature: "presetTemp",
-                        swingLeftRight: "windDirectionLR",
-                        swingUpDown: "windDirectionUD",
-                        "3dAuto": "entrust",
-                    }[idS];
-                    const previousValue = device.airconStat[changedProperty];
                     const sent = await this.sendDataToDevice(device);
                     if (sent) {
                         await this.setIOBStates(device);

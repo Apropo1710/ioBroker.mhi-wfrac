@@ -88,6 +88,13 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Vorherigen Gerätestatus vor Schreibänderung sichern
+
+- Bei der Prüfung des Schreibfehlerpfads ist aufgefallen, dass der bisherige Wert erst nach der Mutation gespeichert wurde. Dadurch konnte ein abgelehnter Schreibbefehl den nicht bestätigten neuen Wert im internen Modell belassen.
+- Die Sicherung des bisherigen Feldwerts erfolgt jetzt vor der Änderung. Bei negativer Geräteantwort wird genau dieser bestätigte Wert wiederhergestellt.
+- Der vorhandene Regressionstest „restores the last confirmed value when a device rejects a state write“ deckt diesen Fehlerpfad ab.
+- Keine Änderung an Geräteprotokoll, Kodierung, CRC oder HTTP-Verhalten.
+
 ### 2026-11-11 – Polling und Schreibbefehle je Gerät serialisiert
 
 - Der Polling-Zyklus und manuelle State-Schreibvorgänge verwendeten bislang getrennte Abläufe. Dadurch konnte eine Statusabfrage parallel zu einem Schreibbefehl laufen und dessen lokales Gerätemodell mit einem älteren Gerätestatus überschreiben.
