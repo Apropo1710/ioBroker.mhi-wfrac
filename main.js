@@ -632,16 +632,31 @@ class MHIWFRac extends utils.Adapter {
             }
 
             for (const device of Object.values(this.devices)) {
+                const airconId = device.airconId;
+                // Polling and user-initiated writes must share the same per-device queue.
+                const previous = this.deviceCommandQueues.get(airconId) || Promise.resolve();
+                const operation = previous
+                    .catch(() => {})
+                    .then(async () => {
+                        try {
+                            await this.getDataFromDevice(device);
+                            await this.setIOBStates(device);
+                        } catch (error) {
+                            try {
+                                this.errorHandler(device, `Unexpected update error: ${error}`);
+                            } catch (handlerError) {
+                                this.log.error(
+                                    `Failed to handle update error for ${device.name || device.airconId}: ${handlerError}`,
+                                );
+                            }
+                        }
+                    });
+                this.deviceCommandQueues.set(airconId, operation);
                 try {
-                    await this.getDataFromDevice(device);
-                    await this.setIOBStates(device);
-                } catch (error) {
-                    try {
-                        this.errorHandler(device, `Unexpected update error: ${error}`);
-                    } catch (handlerError) {
-                        this.log.error(
-                            `Failed to handle update error for ${device.name || device.airconId}: ${handlerError}`,
-                        );
+                    await operation;
+                } finally {
+                    if (this.deviceCommandQueues.get(airconId) === operation) {
+                        this.deviceCommandQueues.delete(airconId);
                     }
                 }
             }

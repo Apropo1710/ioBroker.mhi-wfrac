@@ -79,6 +79,55 @@ describe("MHIWFRac state handling", () => {
         expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
     });
 
+    it("does not poll a device while a state write is in progress", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-poll-queue",
+            airconStat: { operation: false },
+        };
+        let releaseWrite;
+        let writeStarted;
+        const writeStartedPromise = new Promise(resolve => {
+            writeStarted = resolve;
+        });
+        const writePromiseGate = new Promise(resolve => {
+            releaseWrite = resolve;
+        });
+        let pollStarted = false;
+
+        adapter.devices = { [device.airconId]: device };
+        adapter.getObjectAsync = async () => ({
+            native: { airconId: device.airconId },
+        });
+        adapter.sendDataToDevice = async () => {
+            writeStarted();
+            await writePromiseGate;
+            return true;
+        };
+        adapter.setIOBStates = async () => {};
+        adapter.getDataFromDevice = async () => {
+            pollStarted = true;
+        };
+        adapter.updateConnectionInfo = () => {};
+        adapter.config = { interval: 20 };
+        adapter.setTimeout = () => 1;
+
+        const write = adapter.setStateVal("mhi-wfrac.0.room.power", { val: true });
+        await writeStartedPromise;
+        const polling = adapter.update();
+
+        await Promise.resolve();
+        await Promise.resolve();
+        expect(pollStarted).to.equal(false);
+
+        releaseWrite();
+        await Promise.all([write, polling]);
+
+        expect(pollStarted).to.equal(true);
+        expect(device.airconStat.operation).to.equal(true);
+        expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
+    });
+
     it("retries registration for a configured device that is still unavailable", async () => {
         const calls = [];
         adapter.config = { devices: [{ enabled: true, ip: "192.0.2.10", name: "living-room" }] };

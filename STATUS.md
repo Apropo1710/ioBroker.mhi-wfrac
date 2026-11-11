@@ -88,6 +88,15 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Polling und Schreibbefehle je Gerät serialisiert
+
+- Der Polling-Zyklus und manuelle State-Schreibvorgänge verwendeten bislang getrennte Abläufe. Dadurch konnte eine Statusabfrage parallel zu einem Schreibbefehl laufen und dessen lokales Gerätemodell mit einem älteren Gerätestatus überschreiben.
+- Polling-Abfrage und anschließende ioBroker-State-Aktualisierung laufen jetzt ebenfalls in derselben per `airconId` geführten Queue wie Schreibbefehle.
+- Ein Test hält einen Schreibbefehl gezielt offen und prüft, dass das Polling desselben Geräts erst danach beginnt.
+- Geräte bleiben untereinander unabhängig. Keine Änderung an Geräteprotokoll, Kodierung, CRC oder HTTP-Retry-Verhalten.
+- CI-Prüfung für diesen Commit steht noch aus.
+
+
 ### 2026-11-11 – Unnötigen Dependabot-Automerge-Workflow entfernt
 
 - Der Workflow `.github/workflows/automerge-dependabot.yml` wurde aus dem Fork entfernt. Er reagierte auf `pull_request_target`-Ereignisse bei jedem PR-Update, wurde bei eigenen Commits aber wegen der Bedingung `github.actor == 'dependabot[bot]'` nur als „skipped“ angezeigt.
