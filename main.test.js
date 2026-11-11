@@ -1,30 +1,65 @@
 "use strict";
 
-/**
- * This is a dummy TypeScript test file using chai and mocha
- *
- * It's automatically excluded from npm and its build output is excluded from both git and npm.
- * It is advised to test all your modules with accompanying *.test.js-files
- */
-
-// tslint:disable:no-unused-expression
-
 const { expect } = require("chai");
-// import { functionToTest } from "./moduleToTest";
+const EventEmitter = require("node:events");
+const proxyquire = require("proxyquire").noCallThru();
 
-describe("module to test => function to test", () => {
-    // initializing logic
-    const expected = 5;
+class FakeAdapter extends EventEmitter {
+    constructor(options) {
+        super();
+        this.name = options.name;
+        this.FORBIDDEN_CHARS = /[^\w-]/g;
+        this.log = {
+            debug: () => {},
+            info: () => {},
+            warn: () => {},
+            error: () => {},
+        };
+    }
+}
 
-    it(`should return ${expected}`, () => {
-        const result = 5;
-        // assign result a value from functionToTest
-        expect(result).to.equal(expected);
-        // or using the should() syntax
-        result.should.equal(expected);
-    });
-    // ... more tests => it
-
+const createAdapter = proxyquire("./main.js", {
+    "@iobroker/adapter-core": {
+        Adapter: FakeAdapter,
+    },
 });
 
-// ... more test suites => describe
+describe("MHIWFRac state handling", () => {
+    let adapter;
+
+    beforeEach(() => {
+        adapter = createAdapter({});
+    });
+
+    it("ignores a state change when its device is no longer registered", async () => {
+        adapter.devices = {};
+        adapter.getObjectAsync = async () => ({
+            native: {
+                airconId: "missing-device",
+            },
+        });
+
+        await expect(
+            adapter.setStateVal("mhi-wfrac.0.room.power", {
+                val: true,
+            }),
+        ).to.be.fulfilled;
+    });
+
+    it("catches errors raised while processing a subscribed state change", async () => {
+        const loggedErrors = [];
+        adapter.log.error = message => loggedErrors.push(message);
+        adapter.setStateVal = async () => {
+            throw new Error("simulated state write failure");
+        };
+
+        await adapter.onStateChange("mhi-wfrac.0.room.power", {
+            val: true,
+            ack: false,
+        });
+
+        expect(loggedErrors).to.have.lengthOf(1);
+        expect(loggedErrors[0]).to.contain("mhi-wfrac.0.room.power");
+        expect(loggedErrors[0]).to.contain("simulated state write failure");
+    });
+});
