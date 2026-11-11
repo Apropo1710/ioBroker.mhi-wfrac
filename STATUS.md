@@ -182,6 +182,14 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - `STATUS.md` als erster Commit angelegt.
 - Noch keine Änderungen am Laufzeitcode und keine Protokolländerungen vorgenommen.
 
+### 2026-11-11 – Gerätemodell nach abgelehntem Schreibbefehl zurücksetzen
+
+- Bei einem fehlgeschlagenen Schreibbefehl wird das zuvor bestätigte Feld in `device.airconStat` wiederhergestellt. Damit bleibt nicht nur der ioBroker-State, sondern auch das interne Gerätemodell auf dem letzten bestätigten Stand.
+- Erfolgreiche Schreibvorgänge behalten das vom Gerät zurückgelieferte Statusmodell.
+- Ein gezielter Test prüft die Wiederherstellung und dass bei abgelehntem Schreibbefehl keine States bestätigt publiziert werden.
+- Keine Änderung an Protokollformat, Kodierung, CRC oder HTTP-Retry-Verhalten.
+- CI-Prüfung für diesen Commit steht noch aus.
+
 ## Nächste Schritte
 
 1. Den aktuellen GitHub-Actions-Lauf vollständig abschließen lassen und Ergebnisse dokumentieren.

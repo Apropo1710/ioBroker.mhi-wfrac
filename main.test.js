@@ -257,6 +257,29 @@ describe("MHIWFRac state handling", () => {
         expect(errors[0]).to.contain("result: 9");
     });
 
+    it("restores the last confirmed value when a device rejects a state write", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-1",
+            airconStat: { operation: false },
+        };
+        let published = false;
+        adapter.devices = { [device.airconId]: device };
+        adapter.getObjectAsync = async () => ({
+            native: { airconId: device.airconId },
+        });
+        adapter.sendDataToDevice = async () => false;
+        adapter.setIOBStates = async () => {
+            published = true;
+        };
+
+        await adapter.setStateVal("mhi-wfrac.0.room.power", { val: true });
+
+        expect(device.airconStat.operation).to.equal(false);
+        expect(published).to.equal(false);
+        expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
+    });
+
     it("returns true when a device accepts a write command", async () => {
         let decoded = false;
         const device = {

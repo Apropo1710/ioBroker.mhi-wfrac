@@ -180,9 +180,22 @@ class MHIWFRac extends utils.Adapter {
                         break;
                 }
                 if (valchange > 0) {
+                    const changedProperty = {
+                        power: "operation",
+                        mode: "operationMode",
+                        fanSpeed: "airFlow",
+                        targetTemperature: "presetTemp",
+                        swingLeftRight: "windDirectionLR",
+                        swingUpDown: "windDirectionUD",
+                        "3dAuto": "entrust",
+                    }[idS];
+                    const previousValue = device.airconStat[changedProperty];
                     const sent = await this.sendDataToDevice(device);
                     if (sent) {
                         await this.setIOBStates(device);
+                    } else {
+                        // Keep the in-memory model aligned with the last confirmed device state.
+                        device.airconStat[changedProperty] = previousValue;
                     }
                 }
             });
