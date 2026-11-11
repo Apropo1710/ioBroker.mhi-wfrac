@@ -96,9 +96,15 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async setStateVal(id, state) {
-        const airconId = await this.getObjectAsync(id).then(obj => obj?.native.airconId);
-        const val = state.val;
+        const object = await this.getObjectAsync(id);
+        const airconId = object?.native?.airconId;
         const device = this.devices[airconId];
+        if (!device) {
+            this.log.warn(`Ignoring state change for ${id}: device ${airconId || "unknown"} is not registered`);
+            return;
+        }
+
+        const val = state.val;
         let valchange = 0;
         let idS = "";
         const h = id.split(".");
@@ -598,7 +604,9 @@ class MHIWFRac extends utils.Adapter {
             // The state was changed
             if (state.ack === false) {
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-                this.setStateVal(id, state);
+                return this.setStateVal(id, state).catch(error => {
+                    this.log.error(`Failed to process state change for ${id}: ${error}`);
+                });
             }
         } else {
             // The state was deleted
