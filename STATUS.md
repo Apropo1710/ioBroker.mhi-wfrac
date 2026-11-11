@@ -88,6 +88,12 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Doppelte CI-Läufe reduziert
+
+- Der Workflow startete für jeden Commit auf `dev/**` sowohl einen Push-Lauf als auch einen Pull-Request-Lauf. Beide führten dieselbe Lint-Prüfung und sechs Plattform-/Node-Testjobs aus und konkurrierten um Runner.
+- Den `pull_request`-Trigger entfernt. Pushes auf `main` und `dev/**` bleiben die maßgebliche CI-Ausführung; dadurch wird pro Commit im Entwicklungsbranch nur ein vollständiger Lauf gestartet.
+- Der interne Draft-PR bleibt als Review-/Vergleichsansicht bestehen. Es wird kein PR an das Originalprojekt erstellt.
+- Workflow-Commit `14fc7c7`; CI-Ergebnis für die Workflow-Änderung steht noch aus.
 ### 2026-11-11 – Schreibbefehle pro Gerät serialisiert
 
 - Mehrere ioBroker-State-Änderungen konnten bisher parallel `setStateVal()` ausführen. Dadurch konnten mehrere `setAirconStat`-POSTs gleichzeitig laufen und ihre Antworten in nicht garantierter Reihenfolge den lokalen Gerätestatus überschreiben.
