@@ -234,6 +234,52 @@ describe("MHIWFRac state handling", () => {
         expect(adapter.shouldRetryRequest({})).to.equal(false);
     });
 
+    it("returns false when a device rejects a write command", async () => {
+        const errors = [];
+        const device = {
+            name: "room",
+            airconId: "id-1",
+            airconStat: {},
+            acCoder: {
+                toBase64: () => "encoded-status",
+                fromBase64: () => {
+                    throw new Error("must not decode rejected response");
+                },
+            },
+        };
+        adapter._postConnection = async () => ({ response: { result: 9 } });
+        adapter.errorHandler = (_device, error) => errors.push(error);
+
+        const sent = await adapter.sendDataToDevice(device);
+
+        expect(sent).to.equal(false);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("result: 9");
+    });
+
+    it("returns true when a device accepts a write command", async () => {
+        let decoded = false;
+        const device = {
+            name: "room",
+            airconId: "id-1",
+            airconStat: {},
+            acCoder: {
+                toBase64: () => "encoded-status",
+                fromBase64: () => {
+                    decoded = true;
+                },
+            },
+        };
+        adapter._postConnection = async () => ({
+            response: { result: 0, contents: { airconStat: "returned-status" } },
+        });
+
+        const sent = await adapter.sendDataToDevice(device);
+
+        expect(sent).to.equal(true);
+        expect(decoded).to.equal(true);
+    });
+
     it("rejects device responses with a non-zero or missing result code", () => {
         expect(() => adapter.assertSuccessfulResponse({ result: 0 }, "testCommand")).not.to.throw();
         expect(() => adapter.assertSuccessfulResponse({ result: 5 }, "testCommand")).to.throw(
