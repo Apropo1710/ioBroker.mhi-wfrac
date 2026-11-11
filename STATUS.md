@@ -88,6 +88,12 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – CI-Fehler bei Command-Queue formatiert
+
+- CI-Lauf für Commit `b97279c` schlug in ESLint/Prettier fehl: 43 Formatierungsfehler im neu ergänzten `setStateVal()`-Queue-Block. Die Adaptertests wurden deshalb übersprungen.
+- Den Queue-Block an die Prettier-Formatierung des Projekts angepasst (Commit `57da42b`). Funktionale Logik dabei nicht verändert.
+- Zusätzlich den doppelten Push-/Pull-Request-CI-Trigger entfernt (Commit `14fc7c7`), da beide Events dieselbe komplette Matrix starteten. Pushes auf `main` und `dev/**` bleiben aktiv.
+- `STATUS.md` selbst wurde nach dieser Korrektur bereits mit Commit `30f15f3` aktualisiert. Der neue CI-Lauf für `57da42b` steht noch aus.
 ### 2026-11-11 – Doppelte CI-Läufe reduziert
 
 - Der Workflow startete für jeden Commit auf `dev/**` sowohl einen Push-Lauf als auch einen Pull-Request-Lauf. Beide führten dieselbe Lint-Prüfung und sechs Plattform-/Node-Testjobs aus und konkurrierten um Runner.
