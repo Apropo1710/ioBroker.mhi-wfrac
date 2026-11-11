@@ -88,6 +88,12 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Verbindungsstatus ohne aktivierte Geräte korrigiert
+
+- `updateConnectionInfo()` meldete bisher `info.connection = true`, wenn kein Gerät aktiviert war: 0 aktivierte Geräte entsprach 0 Online-Geräten.
+- Die Bedingung verlangt jetzt mindestens ein aktiviertes Gerät und eine exakte Übereinstimmung zwischen aktivierten und online registrierten Geräten.
+- Vier Tests ergänzen die Fälle: kein Gerät aktiviert, nur ein Teil online, alle online sowie Ausfall eines einzelnen Geräts bei mehreren Geräten.
+- Code-Commit `ced7817`, Test-Commit `61998d2`; GitHub-Actions-Prüfung steht noch aus.
 ### 2026-11-11 – Retry-Regeln für HTTP-Kommandos eingeschränkt
 
 - Die bisherige globale Retry-Bedingung wiederholte jeden Axios-Fehler, auch permanente HTTP-4xx-/501-Fehler und schreibende POST-Kommandos.
