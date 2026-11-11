@@ -91,7 +91,7 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - `onStateChange()` fängt Fehler aus der asynchronen Verarbeitung ab und protokolliert sie mit der betroffenen Datenpunkt-ID.
 - Dummy-Test in `main.test.js` durch gezielte Tests für beide Fehlerpfade ersetzt.
 - CI-Workflow so erweitert, dass Pushes auf `dev/**` ebenfalls die vorhandenen Prüfungen auslösen.
-- Tests wurden im GitHub-Repository angelegt, aber noch nicht ausgeführt. CI-Ergebnis nach dem Push prüfen.
+- Tests wurden im GitHub-Repository angelegt, aber noch nicht ausgeführt. Es existiert noch kein CI-Lauf für diesen Branch: Die Trigger-Regeln auf `main` kennen `dev/**` noch nicht. Die Änderung an der Workflow-Datei wird wirksam, sobald sie in den Default-Branch übernommen wurde; ein Pull Request löst aufgrund des bestehenden `pull_request`-Triggers unabhängig davon CI aus.
 
 ### 2026-11-11 – Bestandsaufnahme
 
