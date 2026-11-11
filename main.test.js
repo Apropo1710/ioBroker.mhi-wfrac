@@ -31,6 +31,37 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("continues initializing other devices when one device state initialization fails", async () => {
+        const firstDevice = { name: "room-1", airconId: "id-1" };
+        const secondDevice = { name: "room-2", airconId: "id-2" };
+        const initialized = [];
+        const errors = [];
+        let updateCalled = false;
+
+        adapter.config = { interval: 20, devices: [] };
+        adapter.devices = { [firstDevice.airconId]: firstDevice, [secondDevice.airconId]: secondDevice };
+        adapter.resetConnectionState = () => {};
+        adapter.setState = () => {};
+        adapter.initIOBStates = async device => {
+            initialized.push(device.airconId);
+            if (device === firstDevice) {
+                throw new Error("database unavailable");
+            }
+        };
+        adapter.errorHandler = (device, error) => errors.push({ device, error });
+        adapter.update = () => {
+            updateCalled = true;
+        };
+
+        await adapter.onReady();
+
+        expect(initialized).to.deep.equal(["id-1", "id-2"]);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0].device).to.equal(firstDevice);
+        expect(errors[0].error).to.contain("database unavailable");
+        expect(updateCalled).to.equal(true);
+    });
+
     it("serializes concurrent state writes for the same device", async () => {
         const device = {
             name: "room",

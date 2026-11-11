@@ -88,6 +88,13 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Geräteinitialisierung bei Fehlern voneinander entkoppelt
+
+- Bei der Adapterinitialisierung konnte ein Fehler beim Anlegen der ioBroker-Datenpunkte eines Geräts die Initialisierung aller nachfolgenden Geräte abbrechen und verhindern, dass der normale Polling-Zyklus gestartet wird.
+- Fehler werden jetzt pro Gerät behandelt. Weitere Geräte werden weiterhin initialisiert und der Polling-Zyklus wird anschließend gestartet.
+- Regressionstest ergänzt: Das erste Gerät schlägt bei der State-Initialisierung fehl; das zweite wird trotzdem initialisiert und Polling startet.
+- Keine Änderung an Gerätekommunikation oder Protokoll.
+
 ### 2026-11-11 – Vorherigen Gerätestatus vor Schreibänderung sichern
 
 - Bei der Prüfung des Schreibfehlerpfads ist aufgefallen, dass der bisherige Wert erst nach der Mutation gespeichert wurde. Dadurch konnte ein abgelehnter Schreibbefehl den nicht bestätigten neuen Wert im internen Modell belassen.

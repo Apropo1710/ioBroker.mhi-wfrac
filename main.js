@@ -109,7 +109,11 @@ class MHIWFRac extends utils.Adapter {
 
         for (const device of Object.values(this.devices)) {
             this.log.debug("onReady::initIOBStates");
-            await this.initIOBStates(device);
+            try {
+                await this.initIOBStates(device);
+            } catch (error) {
+                this.errorHandler(device, `Failed to initialize ioBroker states: ${error}`);
+            }
         }
 
         this.update();
