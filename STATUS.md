@@ -94,7 +94,7 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - Optionale Firmware-/Statusmetadaten werden mit sicheren Standardwerten übernommen, damit fehlende optionale Felder nicht die gesamte Statusaktualisierung abbrechen.
 - Drei Tests ergänzen die Abweisung von fehlerhaften Result-Codes und stellen sicher, dass bei abgelehnten Lese-/Schreibbefehlen keine Statusdekodierung erfolgt.
 - Die globale Retry-Strategie wurde bewusst noch nicht verändert: Alle Befehle verwenden POST; Wiederholungen könnten Gerätebefehle doppelt ausführen. Idempotenz und API-Verhalten müssen vor einer Änderung geklärt werden.
-- CI läuft über den internen Draft-PR #1. Lint und fünf der sechs Plattform-/Node-Kombinationen waren beim letzten Abruf erfolgreich; `adapter-tests (22.x, macos-latest)` stand noch in der Warteschlange. Der Lauf ist noch nicht vollständig abgeschlossen.
+- Der erste CI-Lauf für diese Änderung ist fehlgeschlagen, bevor die Adaptertests starten konnten: ESLint meldete acht `prefer-template`-Fehler in neu ergänzten Log-/Fehlertexten. Diese acht Stellen wurden auf Template-Strings umgestellt (Commit `8c3de84`). Der neue Push-Lauf muss Lint und anschließend die Tests erneut bestätigen.
 
 ### 2026-11-11 – Polling und Shutdown abgesichert
 
