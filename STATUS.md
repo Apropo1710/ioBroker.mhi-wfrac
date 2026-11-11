@@ -23,6 +23,10 @@ Stand: 2026-11-11
 - Entwicklungsbranch: `dev/stability-error-handling`, aus Fork-`main`.
 - `STATUS.md` wurde als erster Commit dieses Entwicklungsbranches angelegt.
 
+## Arbeitsplanung
+
+- Hardwareabhängige Prüfungen und offene Gerätefragen stehen gesammelt in [TODO.md](./TODO.md). Diese Liste wird ergänzt, sobald bei der statischen Analyse neue Punkte auffallen, die erst mit installierter Anlage verifiziert werden können.
+
 ## Projektstruktur (erfasst)
 
 - `main.js`: Adapter-Lifecycle, Geräteverwaltung, Polling, Datenpunkte, HTTP-Kommunikation
@@ -87,6 +91,13 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-11 – Hardwareabhängige TODO-Liste angelegt
+
+- Neue `TODO.md` trennt Aufgaben ohne Hardware von Prüfungen, die erst mit einer installierten Mitsubishi-Heavy-Anlage möglich sind.
+- Aufgenommen: API-Referenzantworten, Decoder-/Paketlängenvalidierung, Modell-/Firmwarevarianten, Schreib-/Rücklesetests, Timeout-Verhalten, Langzeit-/Mehrgerätebetrieb sowie Timer und Wochenpläne.
+- Die positionsbasierten Bytezugriffe im Decoder sind ausdrücklich als Prüfpunkt und nicht als bestätigter Bug markiert.
+- `STATUS.md` verweist auf die neue TODO-Liste.
 
 ### 2026-11-11 – Geräteinitialisierung bei Fehlern voneinander entkoppelt
 
