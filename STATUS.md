@@ -85,6 +85,15 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-11 – Polling und Shutdown abgesichert
+
+- `update()` fängt unerwartete Fehler je Gerät ab. Ein Fehler bei einem Gerät verhindert damit nicht mehr die Aktualisierung weiterer registrierter Geräte.
+- Fehler bei der Aktualisierung von `info.connection` werden separat protokolliert, damit sie den Polling-Zyklus nicht abbrechen.
+- Der Adapter setzt beim Shutdown `unloading`; ein noch laufender Polling-Durchlauf plant danach keinen neuen Timer mehr.
+- Zwei Tests ergänzen `main.test.js`: Fortsetzung bei Fehler eines Geräts und kein erneutes Scheduling nach `onUnload()`.
+- Keine Änderung an HTTP-Aufrufen, Retry-Konfiguration, Datenformaten oder Gerätebefehlen.
+- Tests sind noch nicht ausgeführt. GitHub Actions meldet für den Fork weiterhin null Workflow-Runs; die Ursache ist über den verfügbaren Lesezugriff nicht geklärt.
+
 ### 2026-11-11 – Erste Stabilitätskorrektur
 
 - `setStateVal()` prüft jetzt, ob die zugehörige Geräteinstanz noch registriert ist. Veraltete oder nicht mehr zuordenbare State-Änderungen werden mit einer Warnung ignoriert, statt beim Zugriff auf das Gerätemodell einen TypeError auszulösen.
@@ -104,10 +113,10 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Nächste Schritte
 
-1. CI-Lauf für den Entwicklungsbranch abwarten und mögliche Test-/Lintfehler beheben.
-2. Polling und Fehlerpfade in `main.js` detailliert prüfen.
-3. Weitere kleine, isolierte Tests für Fehlerfälle ergänzen.
-4. Erst nach grüner CI die nächste eng begrenzte Stabilitätskorrektur umsetzen und dokumentieren.
+1. Testausführung ermöglichen und `npm test`, `npm run check` sowie `npm run lint` ausführen; Ergebnisse dokumentieren.
+2. HTTP-/Axios-Fehler und Antwortvalidierung einschließlich Retry-Verhalten untersuchen.
+3. Online-Zustände und `info.connection` bei mehreren Geräten gezielt testen.
+4. Erst nach grünen Prüfungen die nächste eng begrenzte Stabilitätskorrektur umsetzen.
 
 ## Pull-Request- und Release-Regeln
 
