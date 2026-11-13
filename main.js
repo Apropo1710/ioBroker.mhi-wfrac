@@ -12,6 +12,7 @@ const axiosRetry = require("axios-retry").default;
 
 const RETRYABLE_READ_COMMANDS = new Set(["getDeviceInfo", "getAirconStat"]);
 const RETRYABLE_HTTP_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
+const POLL_FAILURE_THRESHOLD = 3;
 
 function shouldRetryRequest(error) {
     if (!error?.config) {
@@ -948,6 +949,8 @@ class MHIWFRac extends utils.Adapter {
                 throw new Error("getAirconStat returned no airconStat");
             }
 
+            const previousPollFailures = device.pollFailureCount || 0;
+            device.pollFailureCount = 0;
             device.acCoder.fromBase64(device.airconStat, stat.airconStat);
             this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
             device.firmwareVersion_wireless = stat.wireless?.firmVer ?? "";
@@ -957,8 +960,21 @@ class MHIWFRac extends utils.Adapter {
             device.ledStat = stat.ledStat ?? 0;
             device.autoHeating = stat.autoHeating ?? 0;
             device.online = true;
+            if (previousPollFailures >= POLL_FAILURE_THRESHOLD) {
+                this.log.info(`${device.name}: Device is reachable again after ${previousPollFailures} failed polls`);
+                this.updateConnectionInfo();
+            }
         } catch (error) {
-            this.errorHandler(device, `Could not get Data: ${error}`);
+            device.pollFailureCount = (device.pollFailureCount || 0) + 1;
+            if (device.pollFailureCount < POLL_FAILURE_THRESHOLD) {
+                this.log.debug(
+                    `${device.name}: Poll failed (${device.pollFailureCount}/${POLL_FAILURE_THRESHOLD}); keeping device online: ${error}`,
+                );
+            } else if (device.pollFailureCount === POLL_FAILURE_THRESHOLD) {
+                this.errorHandler(device, `Could not get Data after ${POLL_FAILURE_THRESHOLD} failed polls: ${error}`);
+            } else {
+                this.log.debug(`${device.name}: Poll still failing (${device.pollFailureCount} consecutive failures)`);
+            }
         }
     }
 

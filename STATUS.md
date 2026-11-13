@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – 13.11.2026 (Polling-Fehlertoleranz)
+- Build #68 (Run `43475768037`) vollständig erfolgreich: Lint und alle sechs Matrixkombinationen, einschließlich macOS 15 Intel Node 22/24.
+- Ergänzt: Ein Gerät wird nach Polling-Fehlern erst nach drei aufeinanderfolgenden fehlgeschlagenen Abfragen offline gesetzt. Die ersten zwei Fehler bleiben Debug-Meldungen; der Offline-Fehler wird beim Erreichen der Schwelle einmalig protokolliert. Weitere Ausfälle erzeugen keine wiederholten Fehlerlogs.
+- Ein erfolgreicher Poll setzt den Zähler zurück und protokolliert nach einer Offline-Phase die Wiedererreichbarkeit. Benutzerinitiierte Schreibfehler und State-Publishing-Fehler bleiben unverändert sofortige Fehler.
+- Drei Regressionstests decken Toleranz, Schwelle/Einmal-Log und Wiederherstellung ab. Die Schwelle ist zunächst fest auf drei Polls gesetzt; keine zusätzliche Admin-Einstellung.
+- CI für diese Änderung steht aus.
+
 ## Geprüfter Entwicklungsstand – 13.11.2026 (Axios-Retry-Konfiguration)
 - Build #66 (Run `43473235619`) vollständig erfolgreich: Lint und alle sechs Kombinationen Ubuntu/Windows/macOS 15 Intel mit Node 22/24.
 - Der konkrete Axios-Retry-Fehler aus Original-PR #39 wurde behoben: normale Requests erhalten keinen lokalen `axios-retry`-Override mehr und behalten die globale Read-only-Retry-Regel; nur explizite Geräteerkennungs-Probes setzen `retries: 0`.

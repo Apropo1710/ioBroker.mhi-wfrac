@@ -555,6 +555,96 @@ describe("MHIWFRac state handling", () => {
     });
 
 
+    it("keeps a device online for the first two consecutive polling failures", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-poll-tolerance",
+            online: true,
+            pollFailureCount: 0,
+            acCoder: { fromBase64: () => {} },
+        };
+        const errors = [];
+        const debug = [];
+        adapter._postConnection = async () => {
+            throw new Error("temporary WiFi interruption");
+        };
+        adapter.errorHandler = (_device, error) => errors.push(error);
+        adapter.log.debug = message => debug.push(message);
+
+        await adapter.getDataFromDevice(device);
+        expect(device.online).to.equal(true);
+        expect(device.pollFailureCount).to.equal(1);
+        expect(errors).to.have.lengthOf(0);
+
+        await adapter.getDataFromDevice(device);
+        expect(device.online).to.equal(true);
+        expect(device.pollFailureCount).to.equal(2);
+        expect(errors).to.have.lengthOf(0);
+        expect(debug).to.have.lengthOf(2);
+    });
+
+    it("marks a device offline only on the third consecutive polling failure", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-poll-threshold",
+            online: true,
+            pollFailureCount: 0,
+        };
+        const errors = [];
+        adapter._postConnection = async () => {
+            throw new Error("device unreachable");
+        };
+        adapter.errorHandler = (currentDevice, error) => {
+            errors.push({ device: currentDevice, error });
+            currentDevice.online = false;
+        };
+
+        await adapter.getDataFromDevice(device);
+        await adapter.getDataFromDevice(device);
+        expect(device.online).to.equal(true);
+        expect(errors).to.have.lengthOf(0);
+
+        await adapter.getDataFromDevice(device);
+        expect(device.online).to.equal(false);
+        expect(device.pollFailureCount).to.equal(3);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0].device).to.equal(device);
+        expect(errors[0].error).to.contain("after 3 failed polls");
+
+        await adapter.getDataFromDevice(device);
+        expect(errors).to.have.lengthOf(1);
+    });
+
+    it("resets the polling failure counter and reports recovery after a successful poll", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-poll-recovery",
+            online: false,
+            pollFailureCount: 3,
+            acCoder: { fromBase64: () => {} },
+        };
+        const info = [];
+        let connectionUpdates = 0;
+        adapter._postConnection = async () => ({
+            response: {
+                result: 0,
+                contents: { airconStat: "valid-status" },
+            },
+        });
+        adapter.log.info = message => info.push(message);
+        adapter.updateConnectionInfo = () => {
+            connectionUpdates++;
+        };
+
+        await adapter.getDataFromDevice(device);
+
+        expect(device.pollFailureCount).to.equal(0);
+        expect(device.online).to.equal(true);
+        expect(info).to.have.lengthOf(1);
+        expect(info[0]).to.contain("reachable again after 3 failed polls");
+        expect(connectionUpdates).to.equal(1);
+    });
+
     it("marks a device offline when publishing an ioBroker state fails", async () => {
         const device = {
             name: "room",
