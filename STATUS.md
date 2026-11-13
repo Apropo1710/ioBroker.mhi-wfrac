@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Wiederanmeldung mehrerer Geräte
+- Fehler während eines einzelnen Wiederanmeldeversuchs werden pro konfiguriertem Endpunkt abgefangen und protokolliert.
+- Weitere aktivierte Geräte werden im selben Retry-Durchlauf weiter geprüft und können sich unabhängig wieder anmelden.
+- Ein Regressionstest deckt ab, dass ein fehlschlagender erster Endpunkt einen danach erreichbaren zweiten nicht blockiert.
+- CI für Commit steht aus.
+
+
 ## Shutdown-Fehlerbehandlung
 - Shutdown-Cleanup wird pro Gerät isoliert: Ein fehlgeschlagenes Offline-Update verhindert nicht mehr die Bereinigung weiterer Geräte.
 - Fehler beim Löschen des Polling-Timers und beim Zurücksetzen von `info.connection` werden separat protokolliert.

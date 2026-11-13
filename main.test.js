@@ -271,6 +271,38 @@ describe("MHIWFRac state handling", () => {
         expect(adapter.registrationRetryAt.has("192.0.2.10")).to.equal(true);
     });
 
+    it("continues retrying other devices when one registration attempt throws", async () => {
+        const calls = [];
+        const errors = [];
+        const first = { enabled: true, ip: "192.0.2.20", name: "offline-room" };
+        const second = { enabled: true, ip: "192.0.2.21", name: "reachable-room" };
+        const recovered = {
+            name: "reachable-room",
+            airconId: "aircon-recovered",
+            airconAddress: second.ip,
+            online: true,
+        };
+        adapter.config = { devices: [first, second] };
+        adapter.devices = {};
+        adapter.log.error = message => errors.push(message);
+        adapter.register = async (address, name) => {
+            calls.push(address);
+            if (address === first.ip) throw new Error("simulated registration failure");
+            adapter.devices[recovered.airconId] = recovered;
+        };
+        adapter.initIOBStates = async device => {
+            expect(device).to.equal(recovered);
+        };
+
+        await adapter.retryMissingDevices();
+
+        expect(calls).to.deep.equal([first.ip, second.ip]);
+        expect(adapter.devices[recovered.airconId]).to.equal(recovered);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("offline-room");
+        expect(errors[0]).to.contain("simulated registration failure");
+    });
+
     it("does not retry registration before the five-minute retry time", async () => {
         let calls = 0;
         adapter.config = { devices: [{ enabled: true, ip: "192.0.2.11", name: "bedroom" }] };

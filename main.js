@@ -912,18 +912,25 @@ class MHIWFRac extends utils.Adapter {
                 continue;
             }
 
-            this.log.info(`Retrying registration for unavailable device ${configuredDevice.name} (${address})`);
-            await this.register(address, configuredDevice.name);
+            try {
+                this.log.info(`Retrying registration for unavailable device ${configuredDevice.name} (${address})`);
+                await this.register(address, configuredDevice.name);
 
-            const registeredDevice = Object.values(this.devices).find(device => device.airconAddress === address);
-            if (registeredDevice) {
-                try {
-                    await this.initIOBStates(registeredDevice);
-                } catch (error) {
-                    this.log.error(
-                        `${registeredDevice.name}: Failed to initialize states after registration: ${error}`,
-                    );
+                const registeredDevice = Object.values(this.devices).find(device => device.airconAddress === address);
+                if (registeredDevice) {
+                    try {
+                        await this.initIOBStates(registeredDevice);
+                    } catch (error) {
+                        this.log.error(
+                            `${registeredDevice.name}: Failed to initialize states after registration: ${error}`,
+                        );
+                    }
                 }
+            } catch (error) {
+                // A failure for one configured endpoint must not block retries for later devices.
+                this.log.error(
+                    `Failed to retry registration for ${configuredDevice.name} (${address}): ${error}`,
+                );
             }
         }
     }
