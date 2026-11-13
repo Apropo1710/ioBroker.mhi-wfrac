@@ -2,13 +2,14 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter Code-Commit vor der Dokumentationspflege: `bea3de278e6a68ca556c946fc9be97097202bcb3`. Die aktuelle Branch-Spitze besteht aus den unten genannten Dokumentations-Commits.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head vor dieser CI-Matrix-Änderung: `04f3f52903816a49b8741f630af4a92bfe1198b0`.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
-- Letzter erfolgreicher Code-/Testlauf: „Test and Release“ #53 (Run `43093340834`) für Code-Commit `bea3de278e6a68ca556c946fc9be97097202bcb3`.
-- Der Commit `56e3be59` enthielt ausschließlich Dokumentationsänderungen (`STATUS.md`, neue `TODO.md`). Workflow #54 (Run `43095501406`) für diesen Doku-Commit wurde abgebrochen; daher wird kein erfolgreicher CI-Lauf für diesen Commit behauptet.
+- Letzter vollständig erfolgreicher Pflichtlauf vor Wiederaufnahme von macOS: „Test and Release“ #57 (Run `43405765495`) für Commit `bd5b3ccdf63b004755ea7905dbb4eee06f3a7b09`; Lint sowie Linux und Windows mit Node 22/24 waren erfolgreich.
+- Die beiden nachfolgenden Commits `128dfad` und `04f3f52` änderten ausschließlich `STATUS.md`/`TODO.md` und nutzten `[skip ci]`; der geprüfte Adaptercode blieb unverändert.
+- macOS wurde während einer GitHub-Actions-Störung vorübergehend aus der Matrix genommen. Da die Plattformrunner inzwischen wieder funktionieren und der Nutzer die Wiederaufnahme ausdrücklich bestätigt hat, wird macOS mit Node 22 und 24 wieder in die Pflichtmatrix aufgenommen.
+- Die nächste CI-Ausführung muss die vollständige Matrix Linux/Windows/macOS mit Node 22/24 erfolgreich abschließen.
 - Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
-- Diese Statuspflege ändert keinen Laufzeitcode und erstellt kein Release.
-
+- Diese Änderung betrifft den CI-Workflow und die Projektdokumentation, nicht den Adapter-Laufzeitcode.
 
 Stand: 2026-11-13
 
@@ -244,7 +245,7 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Nächste Schritte
 
-1. Bei der nächsten Codeänderung CI für den neuen Code-Commit vollständig abwarten; letzter erfolgreicher Code-/Teststand ist `bea3de2` (Run #53). Der abgebrochene Lauf #54 betraf ausschließlich Dokumentationsänderungen.
+1. Nach Wiederaufnahme von macOS den nächsten vollständigen CI-Lauf für alle sechs Plattform-/Node-Kombinationen abwarten und dokumentieren.
 2. HTTP-/Axios-Transportfehler, Timeout- und Retry-Verhalten getrennt untersuchen; POST-Wiederholungen nur mit belastbarer Idempotenzbewertung ändern.
 3. Online-Zustände und `info.connection` bei mehreren Geräten gezielt testen.
 4. `npm test`, `npm run check` und `npm run lint` für die nächste Codeänderung in CI auswerten; erst danach die nächste eng begrenzte Stabilitätskorrektur umsetzen.

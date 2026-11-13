@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; letzter Code-Commit vor der Dokumentationspflege: `bea3de278e6a68ca556c946fc9be97097202bcb3`. Die aktuelle Branch-Spitze enthält Dokumentationsänderungen. Letzter erfolgreicher Code-/Testlauf #53 (Run `43093340834`) gehört zum Code-Commit `bea3de278e6a68ca556c946fc9be97097202bcb3`. Der neuere Head enthält nur Dokumentation; Lauf #54 wurde abgebrochen. Bei der nächsten Codeänderung CI für den neuen Code-Commit erneut vollständig prüfen. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
+> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`. Letzter vollständig erfolgreicher Pflichtlauf vor Wiederaufnahme von macOS ist Build #57 (Run `43405765495`) für Commit `bd5b3cc`; Lint sowie Linux und Windows mit Node 22/24 waren erfolgreich. Die nachfolgenden Commits änderten nur die Dokumentation. macOS wird jetzt wieder mit Node 22/24 in die CI-Matrix aufgenommen; das Ergebnis des ersten vollständigen Laufs steht noch aus. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
 
 
 Stand: 2026-11-13
@@ -55,13 +55,13 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [ ] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs untersuchen und erwartetes Verhalten festlegen.
 - [ ] Verhalten bei geänderter oder deaktivierter Gerätekonfiguration während der Laufzeit untersuchen.
 - [ ] Prüfen, ob Fehler beim Publizieren von ioBroker-States Geräte-/Verbindungsstatus konsistent aktualisieren.
-- [ ] Testabdeckung und CI aktuell halten; macOS-Runner später wieder in die Pflichtmatrix aufnehmen, sobald stabil.
+- [ ] Testabdeckung und CI aktuell halten; macOS ist wieder in der Pflichtmatrix (Node 22/24) und muss mit dem nächsten Lauf erneut erfolgreich bestätigt werden.
 - [ ] Dependabot-/Workflow-Reste im Fork und Zielbranch getrennt behandeln; Original nicht ohne Abstimmung ändern.
 
 ## C. Vor Release oder Upstream-Pull-Request
 - [ ] Hardwareabhängige Punkte bewerten und offene Einschränkungen dokumentieren.
 - [ ] `npm test`, `npm run check` und `npm run lint` erfolgreich prüfen.
-- [ ] Linux und Windows mit unterstützten Node-Versionen erfolgreich; macOS wieder aufnehmen, sobald Runner zuverlässig verfügbar.
+- [ ] Linux, Windows und macOS mit Node 22/24 erfolgreich prüfen.
 - [ ] `STATUS.md` und diese TODO-Liste aktualisieren.
 - [ ] Änderungen gegen Fork-`main` prüfen; keine unbeabsichtigten Protokoll-, Konfigurations- oder Datenpunktänderungen.
 - [ ] PR an das Original erst nach ausdrücklicher Abstimmung vorbereiten. Kein automatischer Release und keine Versionsanhebung ohne Freigabe.
