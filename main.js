@@ -104,7 +104,13 @@ class MHIWFRac extends utils.Adapter {
         for (const device of this.config.devices) {
             if (device["enabled"]) {
                 this.log.debug(`onReady::register(${device["ip"]}/${device["name"]})`);
-                await this.register(device["ip"], device["name"]);
+                try {
+                    await this.register(device["ip"], device["name"]);
+                } catch (error) {
+                    this.log.error(
+                        `Failed to register configured device ${device["name"]} (${device["ip"]}): ${error}`,
+                    );
+                }
             }
         }
 

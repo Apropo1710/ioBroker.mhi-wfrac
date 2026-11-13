@@ -1,5 +1,11 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Fehlerisolierung beim Adapterstart
+- Registrierungsfehler eines einzelnen aktivierten Geräts werden während `onReady()` separat protokolliert.
+- Weitere konfigurierte Geräte werden weiterhin registriert; State-Initialisierung und Start des Pollings werden nicht durch einen einzelnen unerwarteten Registrierungsfehler verhindert.
+- Ein Regressionstest deckt den Start mit einem fehlschlagenden und einem erreichbaren Gerät ab. CI für Commit steht aus.
+
+
 ## CI-Korrektur Wiederanmeldung
 - Build #77 stoppte ausschließlich im Prettier-Lint wegen einer mehrzeilig formatierten Log-Zeile in `main.js`; Adaptertests wurden dadurch übersprungen.
 - Formatierung korrigiert. Funktionslogik unverändert; neuer CI-Lauf erforderlich.

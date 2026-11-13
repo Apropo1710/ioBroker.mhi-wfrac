@@ -49,6 +49,44 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
+    it("continues startup registration and starts polling when one device registration throws", async () => {
+        const errors = [];
+        const registered = [];
+        let updateCalled = false;
+        adapter.config = {
+            interval: 20,
+            devices: [
+                { enabled: true, ip: "192.0.2.30", name: "unavailable-room" },
+                { enabled: true, ip: "192.0.2.31", name: "reachable-room" },
+            ],
+        };
+        adapter.devices = {};
+        adapter.resetConnectionState = () => {};
+        adapter.setState = () => {};
+        adapter.log.error = message => errors.push(message);
+        adapter.register = async (ip, name) => {
+            registered.push(ip);
+            if (ip === "192.0.2.30") throw new Error("simulated startup registration failure");
+            adapter.devices["aircon-startup"] = {
+                name,
+                airconId: "aircon-startup",
+                airconAddress: ip,
+                online: true,
+            };
+        };
+        adapter.initIOBStates = async () => {};
+        adapter.update = () => {
+            updateCalled = true;
+        };
+
+        await adapter.onReady();
+
+        expect(registered).to.deep.equal(["192.0.2.30", "192.0.2.31"]);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("unavailable-room");
+        expect(updateCalled).to.equal(true);
+    });
+
     it("keeps devices online and continues initializing when state initialization fails", async () => {
         const firstDevice = { name: "room-1", airconId: "id-1", online: true };
         const secondDevice = { name: "room-2", airconId: "id-2", online: true };
