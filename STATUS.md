@@ -1,5 +1,11 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – 13.11.2026 (Axios-Retry-Konfiguration)
+- Build #66 (Run `43473235619`) vollständig erfolgreich: Lint und alle sechs Kombinationen Ubuntu/Windows/macOS 15 Intel mit Node 22/24.
+- Der konkrete Axios-Retry-Fehler aus Original-PR #39 wurde behoben: normale Requests erhalten keinen lokalen `axios-retry`-Override mehr und behalten die globale Read-only-Retry-Regel; nur explizite Geräteerkennungs-Probes setzen `retries: 0`.
+- Zwei Regressionstests prüfen den normalen Request sowie `disableRetry: true`; zusätzlich wird die globale Retry-Konfiguration mit vier Versuchen abgesichert.
+- Keine Änderung an Geräteprotokoll, Payloads oder Schreib-Retry-Regeln. CI für diesen Commit steht aus.
+
 ## Geprüfter Entwicklungsstand – 13.11.2026 (macOS-Runner-Wechsel)
 - Build #65 (Run `43470020808`) nach erfolgreichem Lint und vier erfolgreichen Linux-/Windows-Jobs fehlgeschlagen: Beide macOS-Jobs (`macos-latest`, Node 22 und 24) blieben queued und wurden ohne gestartete Steps cancelled.
 - Ursache ist die wiederholt ausbleibende Zuteilung der `macos-latest`-Runner; keine Testfehler. Die GitHub-Runner-Dokumentation ordnet `macos-latest` aktuell macOS 26 ARM64 zu und führt `macos-15-intel` als verfügbaren Intel/x64-Runner.

@@ -775,9 +775,7 @@ class MHIWFRac extends utils.Adapter {
             .post(url, data, {
                 timeout: 5000, // Set a timeout of 5 seconds
                 httpsAgent: connection.useHttps ? HTTPS_AGENT : undefined,
-                "axios-retry": {
-                    retries: options.disableRetry ? 0 : undefined,
-                },
+                ...(options.disableRetry ? { "axios-retry": { retries: 0 } } : {}),
                 headers: {
                     Connection: "close",
                     "Content-Type": "application/json;charset=UTF-8",

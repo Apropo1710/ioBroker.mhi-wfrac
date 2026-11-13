@@ -4,6 +4,19 @@ const { expect } = require("chai");
 const EventEmitter = require("node:events");
 const proxyquire = require("proxyquire").noCallThru();
 
+const axiosCalls = [];
+const axiosStub = {
+    post: async (...args) => {
+        axiosCalls.push(args);
+        return { data: { result: 0 } };
+    },
+};
+let configuredRetryOptions;
+const axiosRetryStub = (instance, options) => {
+    expect(instance).to.equal(axiosStub);
+    configuredRetryOptions = options;
+};
+
 class FakeAdapter extends EventEmitter {
     constructor(options) {
         super();
@@ -22,12 +35,17 @@ const createAdapter = proxyquire("./main.js", {
     "@iobroker/adapter-core": {
         Adapter: FakeAdapter,
     },
+    axios: axiosStub,
+    "axios-retry": {
+        default: axiosRetryStub,
+    },
 });
 
 describe("MHIWFRac state handling", () => {
     let adapter;
 
     beforeEach(() => {
+        axiosCalls.length = 0;
         adapter = createAdapter({});
     });
 
@@ -326,6 +344,32 @@ describe("MHIWFRac state handling", () => {
         expect(first.online).to.equal(false);
         expect(second.online).to.equal(true);
         expect(connectionState).to.equal(false);
+    });
+
+    it("preserves the global retry configuration for normal requests", async () => {
+        await adapter._postConnection({ address: "192.0.2.30", useHttps: false }, "getAirconStat");
+
+        expect(axiosCalls).to.have.lengthOf(1);
+        expect(axiosCalls[0][2]).not.to.have.property("axios-retry");
+        expect(configuredRetryOptions).to.include({
+            retries: 4,
+            shouldResetTimeout: true,
+        });
+        expect(configuredRetryOptions.retryCondition).to.be.a("function");
+        expect(configuredRetryOptions.retryDelay).to.be.a("function");
+    });
+
+    it("explicitly disables retries only for device detection requests", async () => {
+        await adapter._postConnection(
+            { address: "192.0.2.31", useHttps: false },
+            "getDeviceInfo",
+            undefined,
+            { disableRetry: true },
+        );
+
+        expect(axiosCalls).to.have.lengthOf(1);
+        expect(axiosCalls[0][2]["axios-retry"]).to.deep.equal({ retries: 0 });
+        expect(configuredRetryOptions.retries).to.equal(4);
     });
 
     it("retries transient failures only for read-only device commands", () => {
