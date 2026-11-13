@@ -1,6 +1,16 @@
 # TODO – ioBroker.mhi-wfrac
 
-## Abgleich der offenen Original-Issues und PRs – 13.11.2026
+## Aktueller Stand – 14.11.2026
+
+- Issue #40: E0036 für `@iobroker/testing` ist durch Update auf 6.3.2 behoben; npm ci, Integrationstest und Lint sind für Paketcommit `f709e8d` erfolgreich. E4048 bleibt offen, da keine verifizierte Maintainer-E-Mail für `W0w3` vorliegt.
+- Node.js 26 und `ioBroker/testing-action-check@v2` sind umgesetzt. PR #43 wird im Fork nicht benötigt, weil kein Auto-Merge-Workflow vorhanden ist.
+- Vollständige offizielle Ubuntu-/Windows-CI mit Node 22/24/26 ist für den Vorgängercommit `6be8872` grün. Der Paketcommit `f709e8d` hat keine erneute vollständige Matrix erhalten; das ist in `STATUS.md` dokumentiert.
+- `@iobroker/adapter-core` bleibt bei `^3.4.1`; Upgrade wegen zusätzlicher Peer-Abhängigkeit separat zurückgestellt. Adapterversion bleibt 2.3.0.
+- Keine Änderung am Originalrepository oder Fork-`main`.
+
+---
+
+## Abgleich der offenen Original-Issues und PRs – 14.11.2026
 - [x] Issue #34 / PR #39: Retry-Fehler und Verbindungsbehandlung im Fork behoben; die Korrekturen umfassen Retry-Konfiguration, Wiederregistrierung, sichere State-Verarbeitung, getrennte State-Publishing-Fehler und serialisierte Gerätezugriffe. Build #86 erfolgreich.
 - [x] PR #38: Gerät erst nach drei aufeinanderfolgenden fehlgeschlagenen Polls offline melden; Erholung wird erkannt. Build #86 erfolgreich.
 - [x] Issue #35 / PR #37: Node.js 26 geprüft und in Ubuntu-/Windows-Testmatrix aufgenommen; engines.node ist bereits >= 22. Build #85 erfolgreich.
