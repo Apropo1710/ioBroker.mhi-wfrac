@@ -1,6 +1,16 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
-Stand: 2026-11-11
+## Geprüfter Entwicklungsstand – 13.11.2026
+- Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`, Head `56e3be59bae65b49f9c46cce7ae01e4839e7b103`.
+- Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
+- Letzter erfolgreicher Code-/Testlauf: „Test and Release“ #53 (Run `43093340834`) für Code-Commit `bea3de278e6a68ca556c946fc9be97097202bcb3`.
+- Aktueller Head `56e3be59` enthält ausschließlich Dokumentationsänderungen (`STATUS.md`, neue `TODO.md`). Workflow #54 (Run `43095501406`) für diesen Doku-Commit wurde abgebrochen; daher wird kein erfolgreicher CI-Lauf für diesen Commit behauptet.
+- Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
+- Diese Statuspflege ändert keinen Laufzeitcode und erstellt kein Release.
+
+
+Stand: 2026-11-13
 
 ## Ziel und Arbeitsweise
 
@@ -234,10 +244,10 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Nächste Schritte
 
-1. Den aktuellen GitHub-Actions-Lauf vollständig abschließen lassen und Ergebnisse dokumentieren.
+1. Bei der nächsten Codeänderung CI für den neuen Code-Commit vollständig abwarten; letzter erfolgreicher Code-/Teststand ist `bea3de2` (Run #53). Der abgebrochene Lauf #54 betraf ausschließlich Dokumentationsänderungen.
 2. HTTP-/Axios-Transportfehler, Timeout- und Retry-Verhalten getrennt untersuchen; POST-Wiederholungen nur mit belastbarer Idempotenzbewertung ändern.
 3. Online-Zustände und `info.connection` bei mehreren Geräten gezielt testen.
-4. `npm test`, `npm run check` und `npm run lint` in CI auswerten; erst danach die nächste eng begrenzte Stabilitätskorrektur umsetzen.
+4. `npm test`, `npm run check` und `npm run lint` für die nächste Codeänderung in CI auswerten; erst danach die nächste eng begrenzte Stabilitätskorrektur umsetzen.
 
 ## Pull-Request- und Release-Regeln
 
