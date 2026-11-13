@@ -1,0 +1,35 @@
+name: Prepare dependency lockfile
+
+on:
+  push:
+    branches:
+      - dev/stability-error-handling
+    paths:
+      - .github/workflows/prepare-dependency-lockfile.yml
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out development branch
+        uses: actions/checkout@v4
+
+      - name: Set up supported Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Upgrade ioBroker testing dependency and regenerate lockfile
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund --save-dev @iobroker/testing@^6.3.2
+
+      - name: Upload regenerated manifest and lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: mhi-testing-6-lockfile
+          path: |
+            package.json
+            package-lock.json
+          if-no-files-found: error
