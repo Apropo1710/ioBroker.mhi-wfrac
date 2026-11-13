@@ -1,6 +1,9 @@
 # TODO – ioBroker.mhi-wfrac
 
-Stand: 2026-11-11
+> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`, Head `56e3be59bae65b49f9c46cce7ae01e4839e7b103`. Letzter erfolgreicher Code-/Testlauf #53 (Run `43093340834`) gehört zum Code-Commit `bea3de278e6a68ca556c946fc9be97097202bcb3`. Der neuere Head enthält nur Dokumentation; Lauf #54 wurde abgebrochen. Bei der nächsten Codeänderung CI für den neuen Code-Commit erneut vollständig prüfen. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
+
+
+Stand: 2026-11-13
 
 Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer installierten und erreichbaren Mitsubishi-Heavy-Anlage belastbar möglich sind. Hardwareabhängige Punkte bleiben offen, bis echte Gerätedaten vorliegen. Keine Protokoll- oder Befehlsänderung allein aufgrund statischer Vermutungen.
 
