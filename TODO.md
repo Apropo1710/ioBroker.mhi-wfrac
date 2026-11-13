@@ -1,10 +1,10 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller Branch-/CI-Stand (13.11.2026):** Letzter Adapter-Code-Commit auf `dev/stability-error-handling`: `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`). Für diesen Commit ist aktuell kein erfolgreicher GitHub-CI-Lauf nachweisbar; CI bleibt offen. Build #77 scheiterte zuvor am Prettier-Lint; die Formatierung wurde korrigiert. macOS ist auf Nutzerwunsch vorübergehend pausiert; Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
+> **Aktueller Branch-/CI-Stand (13.11.2026):** Adapter-Code-Commit `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`) ist mit Build #79 (Run `43499801940`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows Node 22/24. macOS ist auf Nutzerwunsch vorübergehend pausiert und in diesem Lauf nicht enthalten.
 
 > **Branchvergleich:** `dev/stability-error-handling` und `main` sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Nicht ungeprüft mergen.
 
-> **CI-Historie:** Build #71 (Run `43483508724`) war nach Retry vollständig erfolgreich; macOS wurde danach vorübergehend pausiert. Frühere erfolgreiche Läufe #64, #66, #68 und #71 bleiben historische Nachweise für die jeweiligen damaligen Commits, nicht für den aktuellen HEAD.
+> **CI-Historie:** Build #79 (Run `43499801940`) ist der aktuelle erfolgreiche Nachweis für den Adapter-Code-Commit `92bd02e`. Build #71 (Run `43483508724`) sowie #64, #66 und #68 sind historische Nachweise für frühere Commits.
 
 Stand: 2026-11-13
 
