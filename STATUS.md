@@ -1,5 +1,19 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Aktueller GitHub-Stand – 14.11.2026
+
+- Aktiver Arbeitsbranch: `dev/stability-error-handling`.
+- Letzter Paketcommit: [`f709e8d`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/commit/f709e8dcc2ae457775d7bf5de923ad6fc91953e7) – `chore: upgrade ioBroker testing to 6.3.2`.
+- `@iobroker/testing` ist in `package.json` auf `^6.3.2` und in `package-lock.json` auf exakt `6.3.2` aktualisiert. Beide Dateien wurden gemeinsam committed; die Lockdatei wurde auf einem GitHub-Runner mit npm generiert.
+- Der temporäre Workflow `.github/workflows/prepare-dependency-lockfile.yml` ist entfernt.
+- Validierung des Paketcommits: `npm ci`, `npm run test:integration` (1 Test bestanden) und `npm run lint` erfolgreich im Dependency-Workflow [Run 43523169063](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43523169063).
+- Die vollständige offizielle CI-Matrix mit `check-and-lint` sowie Ubuntu/Windows und Node 22/24/26 war für den unmittelbar vorausgehenden Commit `6be8872` erfolgreich ([Run 43523169051](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43523169051)). Der Paketcommit `f709e8d` wurde nicht erneut durch diese vollständige Matrix ausgeführt, weil der Push aus dem GitHub-Actions-Workflow erfolgte und keinen weiteren Workflow-Run ausgelöst hat. Deshalb wird die Matrix nicht fälschlich als auf `f709e8d` gelaufen dokumentiert.
+- Issue #40: Die Paketversion-Anforderung `@iobroker/testing >=6.2.2`, die Node-26-Matrix und die Check-Action v2 sind im Fork umgesetzt. Offen bleibt E4048 (gültige Maintainer-E-Mail für `W0w3`); dafür liegt keine verifizierte Adresse vor. Die Adapter-Core-Warnung und optionale Vorschläge werden nicht ungeprüft mitgezogen.
+- PR #43 (Dependabot-Auto-Merge) wird nicht übernommen: Im Entwicklungsbranch existiert kein Auto-Merge-Workflow, den dieser PR aktualisieren müsste. Das Originalrepository bleibt unangetastet.
+- Adapterversion bleibt **2.3.0**. Kein Release, keine Änderung an Fork-`main` oder Originalrepository. Mitsubishi-Hardwaretests sind weiterhin nicht möglich, da die Anlage noch nicht verfügbar ist.
+
+---
+
 ## Aktueller GitHub-Stand – 13.11.2026, geprüft
 
 ## Verbindlicher Arbeitsumfang
@@ -16,11 +30,11 @@
 - Original Issue #34 / PR #39: Die fünf relevanten Korrekturen sind im Fork umgesetzt: Retry-Konfiguration, erneute Registrierung nicht erreichbarer Geräte, Schutz vor State-Änderungen für nicht registrierte Geräte, getrennte Behandlung von State-Publishing-Fehlern und serialisierte Gerätezugriffe. Der aktuelle Entwicklungsstand enthält diese Korrekturen; die CI ist bis Build #86 erfolgreich.
 - PR #38: Offline-Erkennung erst nach drei aufeinanderfolgenden fehlgeschlagenen Polls ist im Fork umgesetzt. Fehler unterhalb der Schwelle werden nur auf Debug protokolliert; nach Erholung wird die Wiedererreichbarkeit gemeldet. In der aktuellen Codebasis vorhanden und von den erfolgreichen CI-Läufen abgedeckt.
 - Original Issue #35 / PR #37: Node.js 26 ist in der Ubuntu-/Windows-Matrix enthalten; engines.node steht bereits auf >= 22. Build #85 erfolgreich.
-- Original Issue #40: Node-26-Matrix und Check-Action v2 sind im Fork umgesetzt. Offen bleibt der vom Checker geforderte Wechsel von @iobroker/testing 5.2.2 auf 6.x. Keine Paketänderung vorgenommen, da die package-lock.json nicht reproduzierbar regeneriert werden konnte. Die fehlende Maintainer-E-Mail für W0w3 kann nicht erfunden werden. Das adapter-core-Update ist nur eine Warnung und wegen der zusätzlichen Peer-Abhängigkeit nicht Teil einer ungeprüften Änderung.
+- Original Issue #40: Node-26-Matrix, Check-Action v2 und das Update von @iobroker/testing auf 6.3.2 sind im Fork umgesetzt. package.json und package-lock.json wurden gemeinsam aktualisiert; npm ci, Integrationstest und Lint waren erfolgreich. Die vollständige Matrix war auf dem unmittelbar vorherigen Commit erfolgreich, nicht erneut auf dem Paketcommit. Offen bleibt E4048 (gültige Maintainer-E-Mail für W0w3); eine Adresse wird nicht erfunden. Das adapter-core-Update bleibt wegen der zusätzlichen Peer-Abhängigkeit zurückgestellt.
 - Original Issue #41 / PR #43: Das Original verwendet noch pull_request_target im Dependabot-Auto-Merge-Workflow. Dieser Workflow ist im Fork-Entwicklungsbranch nicht vorhanden (die Auto-Merge-Automation wurde dort bewusst entfernt). Daher besteht dort kein entsprechender Workflow, der migriert werden müsste; PR #43 wird nicht übernommen.
 - Keine Änderungen am Originalrepository. Adapterversion bleibt 2.3.0.
 
-## CI-Ergebnis – Build #86 (aktualisiert)
+## CI-Ergebnis – Build #86 (historischer Stand vor dem Paketupdate)
 
 - Build #86 (Run `43518735834`) für Commit `0d4939556c572972d0cef217b1556939192bbc96` vollständig erfolgreich.
 - `check-and-lint` erfolgreich mit `ioBroker/testing-action-check@v2`.
