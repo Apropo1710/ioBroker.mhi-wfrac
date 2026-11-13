@@ -928,9 +928,7 @@ class MHIWFRac extends utils.Adapter {
                 }
             } catch (error) {
                 // A failure for one configured endpoint must not block retries for later devices.
-                this.log.error(
-                    `Failed to retry registration for ${configuredDevice.name} (${address}): ${error}`,
-                );
+                this.log.error(`Failed to retry registration for ${configuredDevice.name} (${address}): ${error}`);
             }
         }
     }

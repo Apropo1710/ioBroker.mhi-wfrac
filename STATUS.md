@@ -1,5 +1,10 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## CI-Korrektur Wiederanmeldung
+- Build #77 stoppte ausschließlich im Prettier-Lint wegen einer mehrzeilig formatierten Log-Zeile in `main.js`; Adaptertests wurden dadurch übersprungen.
+- Formatierung korrigiert. Funktionslogik unverändert; neuer CI-Lauf erforderlich.
+
+
 ## Wiederanmeldung mehrerer Geräte
 - Fehler während eines einzelnen Wiederanmeldeversuchs werden pro konfiguriertem Endpunkt abgefangen und protokolliert.
 - Weitere aktivierte Geräte werden im selben Retry-Durchlauf weiter geprüft und können sich unabhängig wieder anmelden.
