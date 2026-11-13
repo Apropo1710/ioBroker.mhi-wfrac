@@ -1,5 +1,11 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Konfigurationsänderungen und State-Publishing
+- Die Adapterinstanz verarbeitet ihre Konfiguration beim Start (`ready`). Änderungen an IP oder Aktivierung werden nach dem von ioBroker vorgesehenen Instanzneustart übernommen; ein eigener Laufzeit-Konfigurationshandler ist nicht erforderlich.
+- State-Publishing-Fehler werden von Geräte-Kommunikationsfehlern getrennt und setzen ein erreichbares Gerät nicht offline. Regressionstest vorhanden.
+- Die macOS-CI-Pause bleibt vorübergehend bestehen; Ubuntu/Windows Node 22/24 und Lint sind aktiv.
+
+
 ## Geprüfter Entwicklungsstand – Decoderfehler im Polling
 - Polling-Fehlerzähler wird erst zurückgesetzt, nachdem `acCoder.fromBase64()` erfolgreich abgeschlossen wurde.
 - Zuvor wurde der Zähler bei formal erfolgreicher HTTP-/Geräteantwort vor dem Decoder zurückgesetzt. Decoder-Ausnahmen konnten dadurch die Offline-Schwelle von drei Fehlern nie erreichen.

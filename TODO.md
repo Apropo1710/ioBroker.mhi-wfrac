@@ -63,9 +63,9 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [x] Decoder-Ausnahmen zählen korrekt als Polling-Fehler; der Fehlerzähler wird erst nach erfolgreichem Dekodieren zurückgesetzt. Regressionstests für Schwelle und Erholung ergänzt.
 - [ ] Weitere Fehlerpfade in Registrierung, Polling, State-Publishing und Shutdown mit gemockten Tests abdecken.
 - [x] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs absichern: doppelte IPs werden nicht erneut registriert und zählen als ein Endpunkt; kollidierende `airconId`-Werte überschreiben kein bereits registriertes Gerät. Regressionstests ergänzt.
-- [ ] Verhalten bei geänderter oder deaktivierter Gerätekonfiguration während der Laufzeit untersuchen (derzeit keine Laufzeit-Konfigurationsereignisbehandlung im Konstruktor registriert; Änderung wirkt nach aktuellem Codebild erst beim Neustart).
-- [ ] Prüfen, ob Fehler beim Publizieren von ioBroker-States Geräte-/Verbindungsstatus konsistent aktualisieren.
-- [x] Testabdeckung und CI aktuell halten; macOS ist wieder in der Pflichtmatrix (Node 22/24); vollständiger Lauf #62 erfolgreich.
+- [x] Laufzeit-Konfigurationsänderungen geprüft: ioBroker-Adapterinstanzen laufen als eigene Prozesse; die Konfiguration wird beim `ready`-Start geladen. Änderungen an der Instanzkonfiguration erfordern den Neustart der Instanz. Daher ist für IP-/Enabled-Änderungen kein zusätzlicher Laufzeit-Event-Handler erforderlich. Bei Änderung während des Betriebs wird die neue Konfiguration nach dem Neustart verarbeitet.
+- [x] State-Publishing-Fehler geprüft: Fehler werden separat protokolliert und setzen ein erreichbares Gerät nicht offline; Regressionstest vorhanden.
+- [x] Testabdeckung und CI aktuell halten; Ubuntu/Windows mit Node 22/24 und Lint aktiv. macOS ist auf Nutzerwunsch vorübergehend pausiert und nach der Beobachtungsphase wieder aufzunehmen.
 - [ ] Dependabot-/Workflow-Reste im Fork und Zielbranch getrennt behandeln; Original nicht ohne Abstimmung ändern.
 
 ## C. Vor Release oder Upstream-Pull-Request
