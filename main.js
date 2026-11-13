@@ -837,6 +837,15 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async register(address, name) {
+        const registeredAtAddress = Object.values(this.devices).find(device => device.airconAddress === address);
+        if (registeredAtAddress) {
+            this.log.warn(
+                `Skipping duplicate registration for ${name} (${address}); already registered as ${registeredAtAddress.airconId}`,
+            );
+            this.registrationRetryAt.delete(address);
+            return;
+        }
+
         const device = new Device(this.log);
         device.name = name;
         device.airconAddress = address;
@@ -853,6 +862,16 @@ class MHIWFRac extends utils.Adapter {
 
             this.log.debug(`Register(${address}) | return: ${JSON.stringify(ret)}`);
             device.airconId = deviceInfo.airconId;
+
+            const existingDevice = this.devices[device.airconId];
+            if (existingDevice) {
+                this.registrationRetryAt.set(address, Date.now() + 5 * 60 * 1000);
+                this.log.error(
+                    `Cannot register ${name} (${address}): airconId ${device.airconId} is already registered at ${existingDevice.airconAddress}`,
+                );
+                return;
+            }
+
             device.airconApMode = deviceInfo.apMode ?? 0;
             device.airconMac = deviceInfo.macAddress ?? "";
             device.online = true;
@@ -911,7 +930,8 @@ class MHIWFRac extends utils.Adapter {
     }
 
     updateConnectionInfo() {
-        const enabledDevices = this.config.devices.filter(d => d["enabled"]).length;
+        // Multiple configuration rows for the same IP represent one physical endpoint.
+        const enabledDevices = new Set(this.config.devices.filter(d => d["enabled"]).map(d => d.ip)).size;
         const onlineDevices = Object.values(this.devices).filter(d => d.online).length;
 
         // No configured devices must not be reported as a successful connection.

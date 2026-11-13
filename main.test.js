@@ -159,6 +159,62 @@ describe("MHIWFRac state handling", () => {
         expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
     });
 
+    it("does not register the same configured IP address more than once", async () => {
+        const existing = { name: "living-room", airconId: "id-1", airconAddress: "192.0.2.20" };
+        let detectionCalled = false;
+        adapter.devices = { [existing.airconId]: existing };
+        adapter.detectDeviceConnection = async () => {
+            detectionCalled = true;
+        };
+
+        await adapter.register("192.0.2.20", "living-room-copy");
+
+        expect(detectionCalled).to.equal(false);
+        expect(adapter.devices[existing.airconId]).to.equal(existing);
+    });
+
+    it("does not overwrite an existing device when another IP reports the same airconId", async () => {
+        const existing = { name: "living-room", airconId: "duplicate-id", airconAddress: "192.0.2.21" };
+        const loggedErrors = [];
+        let handledErrors = 0;
+        adapter.devices = { [existing.airconId]: existing };
+        adapter.detectDeviceConnection = async () => ({});
+        adapter._postConnection = async () => ({
+            response: { result: 0, contents: { airconId: "duplicate-id" } },
+        });
+        adapter.log.error = message => loggedErrors.push(message);
+        adapter.errorHandler = () => {
+            handledErrors++;
+        };
+
+        await adapter.register("192.0.2.22", "bedroom");
+
+        expect(adapter.devices[existing.airconId]).to.equal(existing);
+        expect(loggedErrors).to.have.lengthOf(1);
+        expect(loggedErrors[0]).to.contain("already registered at 192.0.2.21");
+        expect(handledErrors).to.equal(0);
+        expect(adapter.registrationRetryAt.has("192.0.2.22")).to.equal(true);
+    });
+
+    it("counts duplicate configured IP addresses as one enabled device", () => {
+        let connectionState;
+        const device = { name: "living-room", airconId: "id-1", airconAddress: "192.0.2.23", online: true };
+        adapter.config = {
+            devices: [
+                { enabled: true, ip: "192.0.2.23" },
+                { enabled: true, ip: "192.0.2.23" },
+            ],
+        };
+        adapter.devices = { [device.airconId]: device };
+        adapter.setState = (_id, value) => {
+            connectionState = value;
+        };
+
+        adapter.updateConnectionInfo();
+
+        expect(connectionState).to.equal(true);
+    });
+
     it("retries registration for a configured device that is still unavailable", async () => {
         const calls = [];
         adapter.config = { devices: [{ enabled: true, ip: "192.0.2.10", name: "living-room" }] };

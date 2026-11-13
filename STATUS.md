@@ -2,7 +2,7 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head vor dieser Workflowänderung: `ca957bb2609582958661b0e279003c29d4be9174`.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter CI-geprüfter Workflowstand: `43d0db2d6f48f9ecd60c08db18e9170573ced9df`. Die anschließende Registrierungskorrektur wird mit CI geprüft.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
 - Letzter vollständig erfolgreicher Pflichtlauf vor dieser Workflowänderung: „Test and Release“ #59 (Run `43412100181`) für Commit `ca957bb2609582958661b0e279003c29d4be9174`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
 - Reine Markdown- und `docs/`-Änderungen werden künftig bereits am Push-Trigger ignoriert; gemischte Commits mit Codeänderungen lösen weiterhin die CI aus. `[skip ci]` wird nicht mehr benötigt.
@@ -102,6 +102,15 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-13 – Geräteerkennung gegen doppelte IPs und Geräte-IDs absichern
+
+- Die Registrierung überspringt eine IP-Adresse, die bereits einem registrierten Gerät zugeordnet ist.
+- Meldet eine andere IP eine bereits verwendete `airconId`, wird der vorhandene Geräteeintrag nicht überschrieben. Der Konflikt wird protokolliert und die neue Adresse erhält eine verzögerte erneute Prüfung.
+- Mehrere aktivierte Konfigurationseinträge mit derselben IP zählen für `info.connection` nur als ein physischer Endpunkt.
+- Drei Regressionstests ergänzen die doppelte IP-, doppelte Geräte-ID- und Verbindungszähler-Prüfung.
+- Keine Änderung an Geräteprotokoll, Kodierung oder Befehlen.
+
 
 ### 2026-11-13 – Reine Dokumentationsänderungen aus CI ausschließen
 

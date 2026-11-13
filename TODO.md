@@ -52,7 +52,7 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 
 ## B. Ohne angeschlossene Anlage – laufende Softwarearbeit
 - [ ] Weitere Fehlerpfade in Registrierung, Polling, State-Publishing und Shutdown mit gemockten Tests abdecken.
-- [ ] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs untersuchen und erwartetes Verhalten festlegen.
+- [x] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs absichern: doppelte IPs werden nicht erneut registriert und zählen als ein Endpunkt; kollidierende `airconId`-Werte überschreiben kein bereits registriertes Gerät. Regressionstests ergänzt.
 - [ ] Verhalten bei geänderter oder deaktivierter Gerätekonfiguration während der Laufzeit untersuchen.
 - [ ] Prüfen, ob Fehler beim Publizieren von ioBroker-States Geräte-/Verbindungsstatus konsistent aktualisieren.
 - [x] Testabdeckung und CI aktuell halten; macOS ist wieder in der Pflichtmatrix (Node 22/24); vollständiger Lauf #58 erfolgreich.
