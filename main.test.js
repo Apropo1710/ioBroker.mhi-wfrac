@@ -853,6 +853,44 @@ describe("MHIWFRac state handling", () => {
         expect(scheduled).to.equal(false);
     });
 
+    it("continues shutdown cleanup when one device status update fails", () => {
+        const first = { name: "room-1", airconId: "id-1" };
+        const second = { name: "room-2", airconId: "id-2" };
+        const attempted = [];
+        let callbackCount = 0;
+        const loggedErrors = [];
+
+        adapter.devices = { first, second };
+        adapter.log.error = message => loggedErrors.push(message);
+        adapter.setOnlineState = device => {
+            attempted.push(device);
+            if (device === first) throw new Error("simulated state failure");
+        };
+        adapter.setState = () => {};
+
+        adapter.onUnload(() => {
+            callbackCount++;
+        });
+
+        expect(attempted).to.deep.equal([first, second]);
+        expect(callbackCount).to.equal(1);
+        expect(adapter.unloading).to.equal(true);
+        expect(loggedErrors).to.have.lengthOf(1);
+        expect(loggedErrors[0]).to.contain("room-1");
+    });
+
+    it("does not invoke the shutdown callback twice if the callback throws", () => {
+        let callbackCount = 0;
+        adapter.devices = {};
+        adapter.setState = () => {};
+
+        expect(() => adapter.onUnload(() => {
+            callbackCount++;
+            throw new Error("callback failure");
+        })).to.throw("callback failure");
+        expect(callbackCount).to.equal(1);
+    });
+
     it("catches errors raised while processing a subscribed state change", async () => {
         const loggedErrors = [];
         adapter.log.error = message => loggedErrors.push(message);

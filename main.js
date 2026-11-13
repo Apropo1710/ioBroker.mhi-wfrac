@@ -687,21 +687,32 @@ class MHIWFRac extends utils.Adapter {
      */
     onUnload(callback) {
         this.unloading = true;
-        try {
-            // Here you must clear all timeouts or intervals that may still be active
-            if (this.timeout) {
-                this.clearTimeout(this.timeout);
-            }
-            // set online state to false for all devices
-            Object.values(this.devices).forEach(device => {
-                this.setOnlineState(device, false);
-            });
-            this.setState("info.connection", false, true);
 
-            callback();
-        } catch (e) {
-            callback();
+        // A failure for one device must not prevent cleanup of the remaining devices.
+        if (this.timeout) {
+            try {
+                this.clearTimeout(this.timeout);
+            } catch (error) {
+                this.log.error(`Failed to clear polling timeout during shutdown: ${error}`);
+            }
         }
+
+        Object.values(this.devices).forEach(device => {
+            try {
+                this.setOnlineState(device, false);
+            } catch (error) {
+                this.log.error(`Failed to set ${device.name || device.airconId} offline during shutdown: ${error}`);
+            }
+        });
+
+        try {
+            this.setState("info.connection", false, true);
+        } catch (error) {
+            this.log.error(`Failed to reset adapter connection state during shutdown: ${error}`);
+        }
+
+        // Invoke the controller callback exactly once, outside cleanup error handling.
+        callback();
     }
 
     /**

@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Shutdown-Fehlerbehandlung
+- Shutdown-Cleanup wird pro Gerät isoliert: Ein fehlgeschlagenes Offline-Update verhindert nicht mehr die Bereinigung weiterer Geräte.
+- Fehler beim Löschen des Polling-Timers und beim Zurücksetzen von `info.connection` werden separat protokolliert.
+- Der ioBroker-Shutdown-Callback wird genau einmal und außerhalb der Cleanup-Fehlerbehandlung aufgerufen.
+- Zwei Regressionstests decken Teilausfälle und Callback-Verhalten ab. CI für Commit steht aus.
+
+
 ## Konfigurationsänderungen und State-Publishing
 - Die Adapterinstanz verarbeitet ihre Konfiguration beim Start (`ready`). Änderungen an IP oder Aktivierung werden nach dem von ioBroker vorgesehenen Instanzneustart übernommen; ein eigener Laufzeit-Konfigurationshandler ist nicht erforderlich.
 - State-Publishing-Fehler werden von Geräte-Kommunikationsfehlern getrennt und setzen ein erreichbares Gerät nicht offline. Regressionstest vorhanden.
