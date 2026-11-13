@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – State-Initialisierung
+- Fehler beim Anlegen/Aktualisieren der ioBroker-States während des Starts oder einer späteren Geräte-Wiederregistrierung markieren das physisch erreichbare Gerät nicht mehr fälschlich offline.
+- Fehler werden separat protokolliert; die Initialisierung weiterer Geräte und das Polling laufen weiter.
+- Zwei Regressionstests decken Start und Wiederregistrierung ab.
+- CI für Commit steht aus; macOS bleibt vorübergehend pausiert.
+
+
 ## Geprüfter Entwicklungsstand – optionale Kontoaktualisierung
 - Fehler bei `update_account_info()` setzen ein bereits erfolgreich erkanntes/registriertes Gerät nicht mehr offline.
 - Die optionale Metadatenaktualisierung protokolliert den Fehler separat; echte Erkennungs- und Kommunikationsfehler behalten ihre bisherige Fehlerbehandlung.

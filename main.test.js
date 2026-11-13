@@ -49,9 +49,9 @@ describe("MHIWFRac state handling", () => {
         adapter = createAdapter({});
     });
 
-    it("continues initializing other devices when one device state initialization fails", async () => {
-        const firstDevice = { name: "room-1", airconId: "id-1" };
-        const secondDevice = { name: "room-2", airconId: "id-2" };
+    it("keeps devices online and continues initializing when state initialization fails", async () => {
+        const firstDevice = { name: "room-1", airconId: "id-1", online: true };
+        const secondDevice = { name: "room-2", airconId: "id-2", online: true };
         const initialized = [];
         const errors = [];
         let updateCalled = false;
@@ -66,7 +66,10 @@ describe("MHIWFRac state handling", () => {
                 throw new Error("database unavailable");
             }
         };
-        adapter.errorHandler = (device, error) => errors.push({ device, error });
+        adapter.log.error = message => errors.push(message);
+        adapter.errorHandler = () => {
+            throw new Error("State initialization must not mark a device offline");
+        };
         adapter.update = () => {
             updateCalled = true;
         };
@@ -74,9 +77,10 @@ describe("MHIWFRac state handling", () => {
         await adapter.onReady();
 
         expect(initialized).to.deep.equal(["id-1", "id-2"]);
+        expect(firstDevice.online).to.equal(true);
+        expect(secondDevice.online).to.equal(true);
         expect(errors).to.have.lengthOf(1);
-        expect(errors[0].device).to.equal(firstDevice);
-        expect(errors[0].error).to.contain("database unavailable");
+        expect(errors[0]).to.contain("database unavailable");
         expect(updateCalled).to.equal(true);
     });
 
@@ -296,6 +300,29 @@ describe("MHIWFRac state handling", () => {
         await adapter.retryMissingDevices();
 
         expect(initialized).to.equal(device);
+    });
+
+    it("keeps a recovered device online when state initialization fails", async () => {
+        const device = { name: "office", airconId: "aircon-3", airconAddress: "192.0.2.12", online: true };
+        const errors = [];
+        adapter.config = { devices: [{ enabled: true, ip: "192.0.2.12", name: "office" }] };
+        adapter.devices = {};
+        adapter.register = async () => {
+            adapter.devices[device.airconId] = device;
+        };
+        adapter.initIOBStates = async () => {
+            throw new Error("database unavailable");
+        };
+        adapter.log.error = message => errors.push(message);
+        adapter.errorHandler = () => {
+            throw new Error("State initialization must not mark a device offline");
+        };
+
+        await adapter.retryMissingDevices();
+
+        expect(device.online).to.equal(true);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("database unavailable");
     });
 
     it("reports disconnected when no devices are enabled", () => {

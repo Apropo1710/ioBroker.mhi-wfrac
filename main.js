@@ -113,7 +113,7 @@ class MHIWFRac extends utils.Adapter {
             try {
                 await this.initIOBStates(device);
             } catch (error) {
-                this.errorHandler(device, `Failed to initialize ioBroker states: ${error}`);
+                this.log.error(`${device.name}: Failed to initialize ioBroker states: ${error}`);
             }
         }
 
@@ -909,7 +909,9 @@ class MHIWFRac extends utils.Adapter {
                 try {
                     await this.initIOBStates(registeredDevice);
                 } catch (error) {
-                    this.errorHandler(registeredDevice, `Failed to initialize states after registration: ${error}`);
+                    this.log.error(
+                        `${registeredDevice.name}: Failed to initialize states after registration: ${error}`,
+                    );
                 }
             }
         }
