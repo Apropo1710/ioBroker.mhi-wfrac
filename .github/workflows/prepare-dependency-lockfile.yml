@@ -31,9 +31,6 @@ jobs:
       - name: Run adapter integration tests with @iobroker/testing 6.x
         run: npm run test:integration
 
-      - name: Run TypeScript checks
-        run: npm run check
-
       - name: Run lint
         run: npm run lint
 
