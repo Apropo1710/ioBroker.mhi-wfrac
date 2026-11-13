@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller Branch-/CI-Stand (13.11.2026):** Adapter-Code-/Test-Commit `4dd7575fbda0293fed3913efe98caa016dd60b59` ist mit Build #84 (Run `43505183908`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows Node 22/24. macOS ist auf Nutzerwunsch vorübergehend pausiert.
+> **Aktueller Branch-/CI-Stand (13.11.2026):** Workflow-Commit `0d4939556c572972d0cef217b1556939192bbc96` ist mit Build #86 (Run `43518735834`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows jeweils mit Node 22, 24 und 26. macOS ist auf Nutzerwunsch vorübergehend pausiert.
 
 > **Branchvergleich:** `dev/stability-error-handling` und `main` sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Nicht ungeprüft mergen.
 
@@ -83,8 +83,7 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 
 ## D. Kompatibilität und Wartbarkeit – Stand 13.11.2026
 - [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
-- [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Check-/Lint-Job in Build #86 erfolgreich.
-- [ ] Build #86 vollständig abwarten und alle sechs Adapter-Testjobs dokumentieren.
+- [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Build #86 vollständig erfolgreich, einschließlich Check-/Lint-Job und aller sechs Adapter-Testjobs.
 - [ ] `@iobroker/testing` auf eine aktuelle 6.x-Version (derzeit geprüft: 6.3.2) aktualisieren, sobald `package-lock.json` reproduzierbar mit npm regeneriert und die Tests mit der neuen Testbibliothek ausgeführt werden können. 6.x setzt Node.js >=22.19.0 voraus.
 - [ ] `@iobroker/adapter-core`-Upgrade gesondert bewerten: Version 3.4.3 verlangt peer `@iobroker/js-controller-common-db >=7.2.2`; vorher die bisherige js-controller-Mindestversion 6.0.11 und Installationskompatibilität klären. Nicht nur die Versionsnummer anheben.
 - [ ] Veröffentlichte v2-Versionen der Adapter-Test- und Deploy-Actions beobachten; aktuell bleiben beide auf v1.
