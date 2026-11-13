@@ -978,3 +978,31 @@ describe("MHIWFRac state handling", () => {
         expect(loggedErrors[0]).to.contain("simulated state write failure");
     });
 });
+
+describe("AirconStatCoder input validation", () => {
+    const AirconStatCoder = require("./lib/AirconStatCoder.js");
+    const coder = new AirconStatCoder();
+
+    it("rejects status payloads without the segment header", () => {
+        expect(() => coder.byteToStat({}, Array(18).fill(0))).to.throw(
+            "Aircon status is too short to contain the segment header",
+        );
+    });
+
+    it("rejects a truncated fixed status block before decoding values", () => {
+        const payload = Array(35).fill(0);
+        payload[18] = 0;
+
+        expect(() => coder.byteToStat({}, payload)).to.throw(
+            "Aircon status is too short to contain the complete status block",
+        );
+    });
+
+    it("accepts a complete minimum-sized fixed status block", () => {
+        const payload = Array(36).fill(0);
+        payload[18] = 0;
+
+        expect(() => coder.byteToStat({}, payload)).not.to.throw();
+    });
+});
+
