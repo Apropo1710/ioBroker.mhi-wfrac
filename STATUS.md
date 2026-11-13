@@ -2,10 +2,10 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`, Head `56e3be59bae65b49f9c46cce7ae01e4839e7b103`.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter Code-Commit vor der Dokumentationspflege: `bea3de278e6a68ca556c946fc9be97097202bcb3`. Die aktuelle Branch-Spitze besteht aus den unten genannten Dokumentations-Commits.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
 - Letzter erfolgreicher Code-/Testlauf: „Test and Release“ #53 (Run `43093340834`) für Code-Commit `bea3de278e6a68ca556c946fc9be97097202bcb3`.
-- Aktueller Head `56e3be59` enthält ausschließlich Dokumentationsänderungen (`STATUS.md`, neue `TODO.md`). Workflow #54 (Run `43095501406`) für diesen Doku-Commit wurde abgebrochen; daher wird kein erfolgreicher CI-Lauf für diesen Commit behauptet.
+- Der Commit `56e3be59` enthielt ausschließlich Dokumentationsänderungen (`STATUS.md`, neue `TODO.md`). Workflow #54 (Run `43095501406`) für diesen Doku-Commit wurde abgebrochen; daher wird kein erfolgreicher CI-Lauf für diesen Commit behauptet.
 - Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
 - Diese Statuspflege ändert keinen Laufzeitcode und erstellt kein Release.
 
