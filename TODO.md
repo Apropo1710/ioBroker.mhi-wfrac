@@ -1,10 +1,8 @@
 # TODO – ioBroker.mhi-wfrac
 
-# TODO – ioBroker.mhi-wfrac
+> **Aktueller Branch-/CI-Stand (13.11.2026):** Letzter Adapter-Code-Commit auf `dev/stability-error-handling`: `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`). Für diesen Commit ist aktuell kein erfolgreicher GitHub-CI-Lauf nachweisbar; CI bleibt offen. Build #77 scheiterte zuvor am Prettier-Lint; die Formatierung wurde korrigiert. macOS ist auf Nutzerwunsch vorübergehend pausiert; Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
 
-> **Aktueller Branch-/CI-Stand (13.11.2026):** `dev/stability-error-handling` steht auf `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`). Für diesen Commit ist aktuell kein erfolgreicher GitHub-CI-Lauf nachweisbar; CI bleibt offen. Build #77 scheiterte zuvor am Prettier-Lint; die Formatierung wurde korrigiert. macOS ist auf Nutzerwunsch vorübergehend pausiert; Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
-
-> **Branchvergleich:** `dev/stability-error-handling` ist 73 Commits vor und 1 Commit hinter `main`. Der zusätzliche `main`-Commit entfernt den alten Dependabot-Auto-Merge-Workflow. Nicht ungeprüft mergen.
+> **Branchvergleich:** `dev/stability-error-handling` ist 75 Commits vor und 1 Commit hinter `main`. Der zusätzliche `main`-Commit entfernt den alten Dependabot-Auto-Merge-Workflow. Nicht ungeprüft mergen.
 
 > **CI-Historie:** Build #71 (Run `43483508724`) war nach Retry vollständig erfolgreich; macOS wurde danach vorübergehend pausiert. Frühere erfolgreiche Läufe #64, #66, #68 und #71 bleiben historische Nachweise für die jeweiligen damaligen Commits, nicht für den aktuellen HEAD.
 
