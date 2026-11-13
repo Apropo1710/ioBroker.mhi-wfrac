@@ -104,6 +104,14 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
 
+### 2026-11-13 – Laufzeit-Konfigurationsänderungen geprüft
+
+- Adapterkonfiguration wird in `onReady()` über `this.config` gelesen und die Geräte werden dort registriert.
+- Nach dem ioBroker-Instanzmodell werden Änderungen der Instanzkonfiguration durch Neustart der Instanz übernommen; `ready` wird erneut ausgeführt und liest die aktualisierte Konfiguration.
+- Ein zusätzlicher Laufzeit-Konfigurationshandler ist daher nicht erforderlich und wurde nicht implementiert.
+- Keine Codeänderung.
+
+
 ### 2026-11-13 – CI-Ergebnis und Registrierungsabsicherung
 
 - Build #62 (Run `43417634254`) vollständig erfolgreich: Lint und alle sechs OS-/Node-Kombinationen.
