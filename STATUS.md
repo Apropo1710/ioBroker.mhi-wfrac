@@ -2,14 +2,15 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter CI-geprüfter Workflowstand: `43d0db2d6f48f9ecd60c08db18e9170573ced9df`. Die anschließende Registrierungskorrektur wird mit CI geprüft.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller geprüfter Adapterstand: `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
-- Letzter vollständig erfolgreicher Pflichtlauf vor dieser Workflowänderung: „Test and Release“ #59 (Run `43412100181`) für Commit `ca957bb2609582958661b0e279003c29d4be9174`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
+- Letzter vollständig erfolgreicher Pflichtlauf: „Test and Release“ #62 (Run `43417634254`) für Commit `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
 - Reine Markdown- und `docs/`-Änderungen werden künftig bereits am Push-Trigger ignoriert; gemischte Commits mit Codeänderungen lösen weiterhin die CI aus. `[skip ci]` wird nicht mehr benötigt.
 - macOS wurde während einer GitHub-Actions-Störung vorübergehend aus der Matrix genommen. Da die Plattformrunner inzwischen wieder funktionieren und der Nutzer die Wiederaufnahme ausdrücklich bestätigt hat, wird macOS mit Node 22 und 24 wieder in die Pflichtmatrix aufgenommen.
-- Die vollständige CI-Matrix Linux/Windows/macOS mit Node 22/24 ist mit Build #59 erfolgreich bestätigt.
+- Die vollständige CI-Matrix Linux/Windows/macOS mit Node 22/24 ist mit Build #62 erfolgreich bestätigt.
 - Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
-- Diese Änderung betrifft den CI-Workflow und die Projektdokumentation, nicht den Adapter-Laufzeitcode.
+- Die aktuelle Adapterkorrektur verhindert doppelte Registrierungen derselben IP und das Überschreiben bereits registrierter Geräte bei kollidierender `airconId`; drei Regressionstests decken diese Fälle ab.
+- Die CI-Aufräumarbeiten filtern reine Markdown-/`docs/`-Änderungen bereits am Push-Trigger und entfernen den alten Auto-Merge-Dependabot-Workflow aus dem Fork-`main`; das Original bleibt unverändert.
 
 Stand: 2026-11-13
 
@@ -102,6 +103,15 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-13 – CI-Ergebnis und Registrierungsabsicherung
+
+- Build #62 (Run `43417634254`) vollständig erfolgreich: Lint und alle sechs OS-/Node-Kombinationen.
+- Doppelte IP-Registrierung wird übersprungen; doppelte Geräte-ID überschreibt keinen vorhandenen Eintrag; doppelte konfigurierte IPs zählen als ein Endpunkt.
+- Drei Regressionstests ergänzt. Keine Protokoll- oder Hardwarebefehle geändert.
+- Reine Markdown-/`docs/`-Änderungen lösen dank `paths-ignore` keinen Testlauf aus.
+- Alter Auto-Merge-Dependabot-Workflow aus Fork-`main` entfernt; Build #61 erfolgreich.
+
 
 ### 2026-11-13 – Geräteerkennung gegen doppelte IPs und Geräte-IDs absichern
 
