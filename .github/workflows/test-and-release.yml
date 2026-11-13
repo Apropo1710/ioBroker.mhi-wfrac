@@ -58,30 +58,12 @@ jobs:
           # Uncomment the following line if your adapter cannot be installed using 'npm ci'
           # install-command: 'npm install'
 
-  # Serialize macOS jobs to reduce simultaneous runner-allocation requests
-  macos-tests:
-    needs: [check-and-lint]
-    if: contains(github.event.head_commit.message, '[skip ci]') == false
-
-    runs-on: macos-15-intel
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        node-version: [22.x, 24.x]
-
-    steps:
-      - uses: ioBroker/testing-action-adapter@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-          os: macos-15-intel
-          # Uncomment the following line if your adapter cannot be installed using 'npm ci'
-          # install-command: 'npm install'
+  # macOS checks are temporarily paused due to intermittent GitHub-hosted runner queue failures.
+  # Re-enable the macos-tests job and add it back to deploy.needs after the observation period.
 
   # Deploys the final package to NPM
   deploy:
-    needs: [check-and-lint, adapter-tests, macos-tests]
+    needs: [check-and-lint, adapter-tests]
 
     # Trigger this step only when a commit on any branch is tagged with a version number
     if: |

@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – CI-Pause macOS
+- Build #71 (Run `43483508724`) nach Retry des einzigen abgebrochenen Jobs vollständig erfolgreich: Lint, Ubuntu/Windows Node 22/24 sowie macOS Intel Node 22/24 grün.
+- BambuLab Build #176 (Run `43484902511`) ebenfalls vollständig erfolgreich; beide macOS-Jobs wurden dort ohne Workflowänderung erfolgreich ausgeführt.
+- Auf Nutzerwunsch werden macOS-Tests im Mitsubishi-Workflow vorübergehend für einige Tage pausiert. Ubuntu und Windows mit Node 22/24 sowie Lint bleiben aktiv. macOS ist ausdrücklich nicht dauerhaft entfernt; Wiedereinführung nach Beobachtungsphase.
+- Deploy benötigt während der Pause nur Lint und Ubuntu/Windows-Testgruppe.
+- Nächster Lauf prüft die reduzierte CI-Matrix. Keine lokale Tests behauptet.
+
 ## Geprüfter Entwicklungsstand – State-Publishing-Fehler
 - Fehler beim Schreiben von ioBroker-States führen nicht mehr dazu, dass ein erreichbares Klimagerät als offline markiert wird.
 - `setIOBStates()` protokolliert den tatsächlichen Publishing-Fehler inklusive Aircon-Status und lässt den Gerätestatus unverändert. Echte Kommunikationsfehler laufen weiterhin über `errorHandler()`.

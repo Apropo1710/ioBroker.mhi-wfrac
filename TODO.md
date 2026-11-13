@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **CI-Maßnahme (13.11.2026):** Build #69 (`43477654128`) verlor beide `macos-15-intel`-Jobs nach 15:01 Minuten queued ohne gestartete Steps; Linux/Windows und Lint waren erfolgreich. Da öffentliche Berichte denselben Fehler auf ARM und Intel zeigen und GitHub am 9./11. November Actions-Queue-Störungen bestätigte, ist ein Backend-/Runner-Scheduler-Problem plausibel. Workaround: macOS in separaten Job auslagern und Node 22/24 mit `max-parallel: 1` seriell anfordern; Ubuntu/Windows bleiben parallel. Keine Testabdeckung entfernt.
+> **CI-Maßnahme (13.11.2026):** Nach erfolgreichem Retry von Build #71 (Run `43483508724`, alle sechs OS/Node-Kombinationen grün) wird macOS auf Nutzerwunsch vorübergehend für einige Tage aus der Mitsubishi-CI genommen. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv. macOS-Abdeckung ist nur pausiert, nicht dauerhaft gestrichen; nach Beobachtungsphase wieder aktivieren. BambuLab Build #176 (Run `43484902511`) war ebenfalls vollständig erfolgreich.
 
 > **CI-Beobachtung (13.11.2026):** Build #64 (Run `43466212800`) ist nach gezieltem Retry des abgebrochenen macOS-Node-22-Jobs vollständig erfolgreich (alle sechs Matrixjobs + Lint). Matrix-Härtung mit `fail-fast: false` und `timeout-minutes: 30` ist aktiv. Concurrency-Gruppe verwendet jetzt `${{ github.workflow }}-${{ github.ref }}`.
 
