@@ -1,11 +1,12 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **CI-Maßnahme (13.11.2026):** Nach erfolgreichem Retry von Build #71 (Run `43483508724`, alle sechs OS/Node-Kombinationen grün) wird macOS auf Nutzerwunsch vorübergehend für einige Tage aus der Mitsubishi-CI genommen. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv. macOS-Abdeckung ist nur pausiert, nicht dauerhaft gestrichen; nach Beobachtungsphase wieder aktivieren. BambuLab Build #176 (Run `43484902511`) war ebenfalls vollständig erfolgreich.
+# TODO – ioBroker.mhi-wfrac
 
-> **CI-Beobachtung (13.11.2026):** Build #64 (Run `43466212800`) ist nach gezieltem Retry des abgebrochenen macOS-Node-22-Jobs vollständig erfolgreich (alle sechs Matrixjobs + Lint). Matrix-Härtung mit `fail-fast: false` und `timeout-minutes: 30` ist aktiv. Concurrency-Gruppe verwendet jetzt `${{ github.workflow }}-${{ github.ref }}`.
+> **Aktueller Branch-/CI-Stand (13.11.2026):** `dev/stability-error-handling` steht auf `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`). Für diesen Commit ist aktuell kein erfolgreicher GitHub-CI-Lauf nachweisbar; CI bleibt offen. Build #77 scheiterte zuvor am Prettier-Lint; die Formatierung wurde korrigiert. macOS ist auf Nutzerwunsch vorübergehend pausiert; Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
 
-> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; letzter Adapter-Code-Head `4017d51`; Build #62 (Run `43417634254`) war vollständig erfolgreich. Regressionstest für State-Publishing-Fehler ergänzt; CI-Prüfung folgt: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. Reine Markdown-/`docs/`-Änderungen werden künftig per `paths-ignore` aus dem CI-Trigger ausgeschlossen; gemischte Commits laufen weiterhin durch die vollständige Matrix.
+> **Branchvergleich:** `dev/stability-error-handling` ist 73 Commits vor und 1 Commit hinter `main`. Der zusätzliche `main`-Commit entfernt den alten Dependabot-Auto-Merge-Workflow. Nicht ungeprüft mergen.
 
+> **CI-Historie:** Build #71 (Run `43483508724`) war nach Retry vollständig erfolgreich; macOS wurde danach vorübergehend pausiert. Frühere erfolgreiche Läufe #64, #66, #68 und #71 bleiben historische Nachweise für die jeweiligen damaligen Commits, nicht für den aktuellen HEAD.
 
 Stand: 2026-11-13
 
@@ -61,12 +62,13 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [x] State-Publishing- und State-Initialisierungsfehler von Geräte-Kommunikationsfehlern trennen: ioBroker-Schreib-/Initialisierungsfehler protokollieren, aber das erreichbare Gerät nicht offline setzen.
 - [x] Axios-Retry-Override korrigieren: normale Requests überschreiben die globale Retry-Konfiguration nicht mehr; `disableRetry: true` setzt weiterhin explizit `retries: 0`. Regressionstests ergänzt.
 - [x] Decoder-Ausnahmen zählen korrekt als Polling-Fehler; der Fehlerzähler wird erst nach erfolgreichem Dekodieren zurückgesetzt. Regressionstests für Schwelle und Erholung ergänzt.
-- [ ] Weitere Fehlerpfade in Registrierung, Polling, State-Publishing und Shutdown mit gemockten Tests abdecken.
+- [x] Bereits identifizierte Fehlerpfade mit Regressionstests absichern: Polling, State-Publishing/-Initialisierung, Startregistrierung, geräteweise Wiederanmeldung und Shutdown-Cleanup.
+- [ ] Verbleibende unerwartete Fehlerpfade in Registrierung, Polling und State-Verarbeitung weiter prüfen und gezielt testen.
 - [x] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs absichern: doppelte IPs werden nicht erneut registriert und zählen als ein Endpunkt; kollidierende `airconId`-Werte überschreiben kein bereits registriertes Gerät. Regressionstests ergänzt.
 - [x] Laufzeit-Konfigurationsänderungen geprüft: ioBroker-Adapterinstanzen laufen als eigene Prozesse; die Konfiguration wird beim `ready`-Start geladen. Änderungen an der Instanzkonfiguration erfordern den Neustart der Instanz. Daher ist für IP-/Enabled-Änderungen kein zusätzlicher Laufzeit-Event-Handler erforderlich. Bei Änderung während des Betriebs wird die neue Konfiguration nach dem Neustart verarbeitet.
 - [x] State-Publishing-Fehler geprüft: Fehler werden separat protokolliert und setzen ein erreichbares Gerät nicht offline; Regressionstest vorhanden.
 - [x] Testabdeckung und CI aktuell halten; Ubuntu/Windows mit Node 22/24 und Lint aktiv. macOS ist auf Nutzerwunsch vorübergehend pausiert und nach der Beobachtungsphase wieder aufzunehmen.
-- [ ] Dependabot-/Workflow-Reste im Fork und Zielbranch getrennt behandeln; Original nicht ohne Abstimmung ändern.
+- [ ] Den einen zusätzlichen Commit auf Fork-`main` (Entfernung des alten Dependabot-Auto-Merge-Workflows) separat gegen den Entwicklungsbranch prüfen und bewusst übernehmen oder verwerfen; Original nicht ohne Abstimmung ändern.
 
 ## C. Vor Release oder Upstream-Pull-Request
 - [ ] Hardwareabhängige Punkte bewerten und offene Einschränkungen dokumentieren.
