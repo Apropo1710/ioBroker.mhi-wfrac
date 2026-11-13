@@ -1006,3 +1006,27 @@ describe("AirconStatCoder input validation", () => {
     });
 });
 
+describe("AirconStatCoder recorded protocol response", () => {
+    const AirconStat = require("./lib/AirconStat.js");
+    const AirconStatCoder = require("./lib/AirconStatCoder.js");
+
+    it("decodes the recorded WF-RAC status response into stable core values", () => {
+        // Captured in mitsu_app_transfer.txt from a successful getAirconStat response.
+        const payload = "AACymKb/AAAAAAASCgAAAAAAAf////9geIAEEBAmjAAAiAAAAgAAAAAAAAOAIIz/gBBc/5QQDgCaXw==";
+        const status = new AirconStat();
+        const coder = new AirconStatCoder();
+
+        coder.fromBase64(status, payload);
+
+        expect(status.operation).to.equal(false);
+        expect(status.presetTemp).to.equal(19);
+        expect(status.operationMode).to.equal(2);
+        expect(status.airFlow).to.equal(1);
+        expect(status.windDirectionUD).to.equal(2);
+        expect(status.windDirectionLR).to.equal(3);
+        expect(status.entrust).to.equal(false);
+        expect(status.modelNo).to.equal(0);
+        expect(status.errorCode).to.equal("00");
+        expect(status.electric).to.equal(3.5);
+    });
+});
