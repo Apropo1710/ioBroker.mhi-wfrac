@@ -1,5 +1,18 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Aktueller GitHub-Stand – 13.11.2026, geprüft
+
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`.
+- Aktueller Branch-Head: `92bd02eb8b69e09a168b87c69a6dfe2836457e92` – `fix: isolate startup registration failures`.
+- Die letzte Codeänderung isoliert Registrierungsfehler einzelner aktivierter Geräte in `onReady()`. Weitere Geräte werden weiter registriert; State-Initialisierung und Polling-Start werden nicht durch einen einzelnen Registrierungsfehler verhindert. Ein Regressionstest deckt diesen Fall ab.
+- Für diesen Commit ist über den verfügbaren GitHub-Status-/Workflow-Zugriff aktuell kein CI-Lauf und kein erfolgreicher Status nachweisbar. **CI bleibt offen; der Commit ist nicht als CI-bestätigt zu behandeln.**
+- Der vorherige Build #77 scheiterte laut Dokumentation ausschließlich am Prettier-Lint; die Formatierung wurde anschließend korrigiert. Der aktuelle Commit enthält diese Korrektur und die Startfehler-Isolierung. Ein neuer erfolgreicher Lauf ist noch nicht belegt.
+- Branchvergleich mit `main`: Entwicklungsbranch 73 Commits voraus und 1 Commit zurück; Branches sind divergent. Der zusätzliche Commit auf `main` entfernt den veralteten Dependabot-Auto-Merge-Workflow. Nicht automatisch mergen; separat prüfen.
+- macOS-CI bleibt wie vom Nutzer gewünscht vorübergehend pausiert. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
+- Adapterversion bleibt 2.3.0. Kein Release, keine Versionsanhebung und keine Mitsubishi-Hardwaretests bestätigt.
+
+---
+
 ## Fehlerisolierung beim Adapterstart
 - Registrierungsfehler eines einzelnen aktivierten Geräts werden während `onReady()` separat protokolliert.
 - Weitere konfigurierte Geräte werden weiterhin registriert; State-Initialisierung und Start des Pollings werden nicht durch einen einzelnen unerwarteten Registrierungsfehler verhindert.
@@ -99,7 +112,7 @@
 - Matrix-Härtung aktiv: `fail-fast: false` und `timeout-minutes: 30`; alle sechs Pflichtkombinationen bleiben erhalten.
 - Concurrency-Gruppe ist jetzt auf `${{ github.workflow }}-${{ github.ref }}` umgestellt, damit unterschiedliche Workflows auf demselben Branch sich nicht gegenseitig abbrechen.
 
-## Geprüfter Entwicklungsstand – 13.11.2026
+## Historischer Entwicklungsstand – 13.11.2026 (älterer Snapshot vor den nachfolgenden Stabilitätsänderungen)
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
 - Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter erfolgreich CI-geprüfter Adapterstand: `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`; nachfolgende Dokumentations- und Teständerungen werden mit Build #63 geprüft.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
