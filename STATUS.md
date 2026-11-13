@@ -2,7 +2,17 @@
 
 ## Aktueller GitHub-Stand – 13.11.2026, geprüft
 
-## CI-Ergebnis – Build #84
+## CI-Ergebnis – Build #86 (aktualisiert)
+
+- Build #86 (Run `43518735834`) für Commit `0d4939556c572972d0cef217b1556939192bbc96` vollständig erfolgreich.
+- `check-and-lint` erfolgreich mit `ioBroker/testing-action-check@v2`.
+- Alle sechs Adapter-Testjobs erfolgreich: Ubuntu und Windows jeweils mit Node 22, 24 und 26.
+- Deploy wurde erwartungsgemäß übersprungen; kein Release und keine Versionsänderung.
+- Node 26 ist damit sowohl in Ubuntu als auch Windows praktisch geprüft. macOS bleibt vorübergehend pausiert.
+- Adapterversion bleibt 2.3.0; Fork-`main` und Originalrepository unverändert.
+
+
+## CI-Ergebnis – Build #84 (historischer Stand)
 
 - Build #84 (Run `43505183908`) für Commit `4dd7575fbda0293fed3913efe98caa016dd60b59` vollständig erfolgreich.
 - `check-and-lint` erfolgreich.
