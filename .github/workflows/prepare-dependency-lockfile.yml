@@ -25,6 +25,18 @@ jobs:
       - name: Upgrade ioBroker testing dependency and regenerate lockfile
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund --save-dev @iobroker/testing@^6.3.2
 
+      - name: Install the exact regenerated dependency tree
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Run adapter tests with @iobroker/testing 6.x
+        run: npm test
+
+      - name: Run TypeScript checks
+        run: npm run check
+
+      - name: Run lint
+        run: npm run lint
+
       - name: Upload regenerated manifest and lockfile
         uses: actions/upload-artifact@v4
         with:
