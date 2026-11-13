@@ -4,8 +4,8 @@
 - [x] Issue #34 / PR #39: Retry-Fehler und Verbindungsbehandlung im Fork behoben; die Korrekturen umfassen Retry-Konfiguration, Wiederregistrierung, sichere State-Verarbeitung, getrennte State-Publishing-Fehler und serialisierte Gerätezugriffe. Build #86 erfolgreich.
 - [x] PR #38: Gerät erst nach drei aufeinanderfolgenden fehlgeschlagenen Polls offline melden; Erholung wird erkannt. Build #86 erfolgreich.
 - [x] Issue #35 / PR #37: Node.js 26 geprüft und in Ubuntu-/Windows-Testmatrix aufgenommen; engines.node ist bereits >= 22. Build #85 erfolgreich.
-- [ ] Issue #40: @iobroker/testing von 5.2.2 auf 6.x aktualisieren, sobald package-lock.json reproduzierbar regeneriert und getestet werden kann. Fehlende E-Mail für W0w3 nicht erfinden. adapter-core-Update ist eine Warnung und bleibt wegen zusätzlicher Peer-Abhängigkeit zurückgestellt.
-- [x] Issue #41 im Fork nicht anwendbar: Dependabot-Auto-Merge-Workflow ist im Fork bewusst nicht vorhanden. PR #43 wird deshalb nicht übernommen.
+- [x] Issue #40 – E0036: @iobroker/testing auf ^6.3.2 aktualisiert; package-lock.json enthält exakt 6.3.2. npm ci, npm run test:integration (1 passing) und npm run lint erfolgreich im Run 43523169063. Die vollständige Ubuntu-/Windows-Matrix mit Node 22/24/26 war für den vorherigen Commit 6be8872 erfolgreich, nicht erneut für den Paketcommit f709e8d. [ ] E4048 bleibt offen: gültige Maintainer-E-Mail für W0w3 fehlt und wird nicht erfunden. adapter-core-Warnung bleibt zurückgestellt; siehe Abschnitt D.
+- [x] PR #43 / Dependabot-Auto-Merge: im Fork nicht anwendbar, da im Entwicklungsbranch kein Auto-Merge-Workflow existiert, den PR #43 aktualisieren müsste. Nicht übernommen; Original bleibt unverändert.
 - Keine weiteren Wartungsarbeiten ohne konkreten Bezug zu einem offenen Original-Issue/PR.
 
 ## Verbindlicher Arbeitsumfang ab 13.11.2026
@@ -16,13 +16,13 @@
 - Keine davon unabhängigen Paketupdates, CI-/Node-Matrix-Erweiterungen, Optimierungen, Refactorings oder sonstigen Wartungsarbeiten.
 - Die unten aufgeführten allgemeinen Wartungs- und Kompatibilitätspunkte sind bis auf Weiteres zurückgestellt. Sie werden nur wieder aufgenommen, wenn sie zur Behebung eines konkreten Issues/PRs zwingend nötig sind.
 
-> **Aktueller Branch-/CI-Stand (13.11.2026):** Workflow-Commit `0d4939556c572972d0cef217b1556939192bbc96` ist mit Build #86 (Run `43518735834`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows jeweils mit Node 22, 24 und 26. macOS ist auf Nutzerwunsch vorübergehend pausiert.
+> **Aktueller Branch-/CI-Stand (14.11.2026):** Paketcommit `f709e8dcc2ae457775d7bf5de923ad6fc91953e7` aktualisiert @iobroker/testing auf 6.3.2. npm ci, Integrationstest und Lint sind für diesen Commit erfolgreich. Die vollständige offizielle Matrix (Ubuntu/Windows, Node 22/24/26) ist für den Vorgängercommit `6be8872355c73b8949a184b2cf0defa7a4f7a8a2` in Run `43523169051` erfolgreich; sie wurde für den Paketcommit nicht erneut ausgelöst. macOS ist auf Nutzerwunsch vorübergehend pausiert.
 
 > **Branchvergleich:** `dev/stability-error-handling` und `main` sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Nicht ungeprüft mergen.
 
 > **Aktuelle Protokoll-Testabdeckung:** Build #82 prüft eine aufgezeichnete Statusantwort, Build #83 die Befehlsbytes und Build #84 die CRCs beider Blöcke einer aufgezeichneten echten Schreib-Nutzlast. Das ist Softwaretestabdeckung anhand historischer Daten, kein Hardwaretest und keine vollständige Verifikation aller Betriebsarten.
 
-Stand: 2026-11-13
+Stand: 2026-11-14
 
 Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer installierten und erreichbaren Mitsubishi-Heavy-Anlage belastbar möglich sind. Hardwareabhängige Punkte bleiben offen, bis echte Gerätedaten vorliegen. Keine Protokoll- oder Befehlsänderung allein aufgrund statischer Vermutungen.
 
@@ -100,6 +100,6 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 ## D. Zurückgestellte Kompatibilitäts- und Wartungsarbeiten – nicht Teil des aktuellen Auftrags
 - [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
 - [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Build #86 vollständig erfolgreich, einschließlich Check-/Lint-Job und aller sechs Adapter-Testjobs.
-- [ ] `@iobroker/testing` auf eine aktuelle 6.x-Version (derzeit geprüft: 6.3.2) aktualisieren, sobald `package-lock.json` reproduzierbar mit npm regeneriert und die Tests mit der neuen Testbibliothek ausgeführt werden können. 6.x setzt Node.js >=22.19.0 voraus.
+- [x] `@iobroker/testing` auf `^6.3.2` aktualisieren und Lockdatei reproduzierbar regenerieren. Paketcommit `f709e8d`; npm ci, Integrationstest und Lint erfolgreich. Die Bibliothek 6.3.2 verlangt Node.js >=22.19.0; die CI-Matrix verwendet Node 22/24/26. Die vollständige Matrix wurde für den direkten Vorgängercommit erfolgreich ausgeführt, nicht erneut für den Paketcommit.
 - [ ] `@iobroker/adapter-core`-Upgrade gesondert bewerten: Version 3.4.3 verlangt peer `@iobroker/js-controller-common-db >=7.2.2`; vorher die bisherige js-controller-Mindestversion 6.0.11 und Installationskompatibilität klären. Nicht nur die Versionsnummer anheben.
 - [ ] Veröffentlichte v2-Versionen der Adapter-Test- und Deploy-Actions beobachten; aktuell bleiben beide auf v1.
