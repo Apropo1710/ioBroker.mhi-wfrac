@@ -1030,3 +1030,40 @@ describe("AirconStatCoder recorded protocol response", () => {
         expect(status.electric).to.equal(3.5);
     });
 });
+
+describe("AirconStatCoder command encoding", () => {
+    const AirconStatCoder = require("./lib/AirconStatCoder.js");
+    const coder = new AirconStatCoder();
+
+    it("encodes the recorded WF-RAC core settings into expected command bytes", () => {
+        const commandBytes = coder.command_to_byte({
+            operation: false,
+            operationMode: 2,
+            airFlow: 1,
+            windDirectionUD: 2,
+            windDirectionLR: 3,
+            presetTemp: 19,
+            entrust: false,
+            modelNo: 0,
+        });
+
+        expect(commandBytes).to.deep.equal([
+            0, 0, 178, 152, 166, 255, 0, 0, 0, 0, 0, 18, 10, 0, 0, 0, 0, 0,
+        ]);
+    });
+
+    it("uses the fixed 25-degree payload for ventilation mode", () => {
+        const commandBytes = coder.command_to_byte({
+            operation: true,
+            operationMode: 3,
+            airFlow: 0,
+            windDirectionUD: 0,
+            windDirectionLR: 0,
+            presetTemp: 18,
+            entrust: false,
+            modelNo: 0,
+        });
+
+        expect(commandBytes[4]).to.equal(178);
+    });
+});
