@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – 13.11.2026 (macOS-Queue-Workaround)
+- Build #69 (Run `43477654128`) abgeschlossen mit failure: Lint sowie Ubuntu/Windows Node 22/24 erfolgreich; beide `macos-15-intel`-Jobs wurden nach 15:01 Minuten queued ohne gestartete Steps cancelled. Keine Testfehler.
+- Vergleichbare öffentliche Meldungen dokumentieren denselben Runner-Akquisitionsfehler sowohl auf ARM als auch Intel. GitHub Status dokumentiert Actions-Störungen am 9. und 11. November 2026; insbesondere Queue-/Scheduler-Probleme sind als plausible Ursache belegt, aber die individuelle Ursache dieses Runs bleibt unbestätigt.
+- Workflow geändert: Ubuntu/Windows bleiben in der parallelen Matrix; macOS wurde in einen separaten Job verschoben und die beiden Node-Versionen werden mit `max-parallel: 1` nacheinander auf dem bereits einmal erfolgreich getesteten `macos-15-intel` ausgeführt. So wird nur eine macOS-Runner-Zuteilung gleichzeitig angefordert.
+- Deploy wartet jetzt auf beide Testjobs. Keine Änderung am Adaptercode oder an der Pflichtabdeckung (weiterhin 6 Kombinationen).
+- Nächster CI-Lauf soll zeigen, ob die serielle Anforderung die Zuteilung stabilisiert.
+
 ## Geprüfter Entwicklungsstand – 13.11.2026 (Polling-Fehlertoleranz)
 - Build #68 (Run `43475768037`) vollständig erfolgreich: Lint und alle sechs Matrixkombinationen, einschließlich macOS 15 Intel Node 22/24.
 - Ergänzt: Ein Gerät wird nach Polling-Fehlern erst nach drei aufeinanderfolgenden fehlgeschlagenen Abfragen offline gesetzt. Die ersten zwei Fehler bleiben Debug-Meldungen; der Offline-Fehler wird beim Erreichen der Schwelle einmalig protokolliert. Weitere Ausfälle erzeugen keine wiederholten Fehlerlogs.

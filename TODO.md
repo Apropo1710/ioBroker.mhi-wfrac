@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **CI-Maßnahme (13.11.2026):** Build #65 (`43470020808`) verlor beide macOS-Jobs bereits in der Warteschlange, ohne dass Steps starteten. Die Matrix verwendet deshalb vorerst `macos-15-intel` (Intel/x64) statt `macos-latest` (aktuell macOS 26 ARM64). Node 22/24 und alle sechs Matrixkombinationen bleiben erhalten. Nach Stabilisierung der GitHub-Runner-Zuteilung ARM64 erneut bewerten.
+> **CI-Maßnahme (13.11.2026):** Build #69 (`43477654128`) verlor beide `macos-15-intel`-Jobs nach 15:01 Minuten queued ohne gestartete Steps; Linux/Windows und Lint waren erfolgreich. Da öffentliche Berichte denselben Fehler auf ARM und Intel zeigen und GitHub am 9./11. November Actions-Queue-Störungen bestätigte, ist ein Backend-/Runner-Scheduler-Problem plausibel. Workaround: macOS in separaten Job auslagern und Node 22/24 mit `max-parallel: 1` seriell anfordern; Ubuntu/Windows bleiben parallel. Keine Testabdeckung entfernt.
 
 > **CI-Beobachtung (13.11.2026):** Build #64 (Run `43466212800`) ist nach gezieltem Retry des abgebrochenen macOS-Node-22-Jobs vollständig erfolgreich (alle sechs Matrixjobs + Lint). Matrix-Härtung mit `fail-fast: false` und `timeout-minutes: 30` ist aktiv. Concurrency-Gruppe verwendet jetzt `${{ github.workflow }}-${{ github.ref }}`.
 
