@@ -1,5 +1,13 @@
 # TODO – ioBroker.mhi-wfrac
 
+## Verbindlicher Arbeitsumfang ab 13.11.2026
+
+- [ ] Offene und relevante Issues/PRs des Originalprojekts sichten und priorisieren.
+- [ ] Fehler aus diesen Issues/PRs gezielt im Fork beheben; jede Änderung mit Referenz auf Issue/PR dokumentieren und testen.
+- [ ] Korrekturen erst nach erfolgreicher CI als erledigt betrachten.
+- Keine davon unabhängigen Paketupdates, CI-/Node-Matrix-Erweiterungen, Optimierungen, Refactorings oder sonstigen Wartungsarbeiten.
+- Die unten aufgeführten allgemeinen Wartungs- und Kompatibilitätspunkte sind bis auf Weiteres zurückgestellt. Sie werden nur wieder aufgenommen, wenn sie zur Behebung eines konkreten Issues/PRs zwingend nötig sind.
+
 > **Aktueller Branch-/CI-Stand (13.11.2026):** Workflow-Commit `0d4939556c572972d0cef217b1556939192bbc96` ist mit Build #86 (Run `43518735834`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows jeweils mit Node 22, 24 und 26. macOS ist auf Nutzerwunsch vorübergehend pausiert.
 
 > **Branchvergleich:** `dev/stability-error-handling` und `main` sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Nicht ungeprüft mergen.
@@ -81,7 +89,7 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - Unterschiede zwischen Gerätemodellen und Firmwareständen sind noch nicht ausreichend durch eigene Hardware-Referenzdaten belegt.
 - Die Nebenwirkungsfreiheit wiederholter Schreibbefehle ist nicht belegt; schreibende Requests werden daher nicht automatisch wiederholt.
 
-## D. Kompatibilität und Wartbarkeit – Stand 13.11.2026
+## D. Zurückgestellte Kompatibilitäts- und Wartungsarbeiten – nicht Teil des aktuellen Auftrags
 - [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
 - [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Build #86 vollständig erfolgreich, einschließlich Check-/Lint-Job und aller sechs Adapter-Testjobs.
 - [ ] `@iobroker/testing` auf eine aktuelle 6.x-Version (derzeit geprüft: 6.3.2) aktualisieren, sobald `package-lock.json` reproduzierbar mit npm regeneriert und die Tests mit der neuen Testbibliothek ausgeführt werden können. 6.x setzt Node.js >=22.19.0 voraus.
