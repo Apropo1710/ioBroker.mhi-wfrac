@@ -1067,3 +1067,27 @@ describe("AirconStatCoder command encoding", () => {
         expect(commandBytes[4]).to.equal(178);
     });
 });
+
+
+describe("AirconStatCoder recorded command payload integrity", () => {
+    const AirconStatCoder = require("./lib/AirconStatCoder.js");
+    const coder = new AirconStatCoder();
+
+    it("validates both CRC-16/CCITT-FALSE frames in a recorded WF-RAC set request", () => {
+        // Captured from the historical Mitsu app HTTP transfer log.
+        const payload = Buffer.from(
+            "AACymKf/AAAAAAASCgAAAAAAAf////9/pgAAEBAn/wAAAAAAAgAAAAAAAAH/////A1Y=",
+            "base64",
+        );
+
+        expect(payload).to.have.lengthOf(50);
+
+        for (const offset of [0, 25]) {
+            const frame = [...payload.subarray(offset, offset + 25)];
+            const frameData = frame.slice(0, 23);
+            const transmittedCrc = frame[23] | (frame[24] << 8);
+
+            expect(coder.crc16ccitt(frameData)).to.equal(transmittedCrc);
+        }
+    });
+});
