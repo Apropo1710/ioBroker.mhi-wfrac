@@ -28,8 +28,8 @@ jobs:
       - name: Install the exact regenerated dependency tree
         run: npm ci --ignore-scripts --no-audit --no-fund
 
-      - name: Run adapter tests with @iobroker/testing 6.x
-        run: npm test
+      - name: Run adapter integration tests with @iobroker/testing 6.x
+        run: npm run test:integration
 
       - name: Run TypeScript checks
         run: npm run check
