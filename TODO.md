@@ -1,5 +1,13 @@
 # TODO – ioBroker.mhi-wfrac
 
+## Abgleich der offenen Original-Issues und PRs – 13.11.2026
+- [x] Issue #34 / PR #39: Retry-Fehler und Verbindungsbehandlung im Fork behoben; die Korrekturen umfassen Retry-Konfiguration, Wiederregistrierung, sichere State-Verarbeitung, getrennte State-Publishing-Fehler und serialisierte Gerätezugriffe. Build #86 erfolgreich.
+- [x] PR #38: Gerät erst nach drei aufeinanderfolgenden fehlgeschlagenen Polls offline melden; Erholung wird erkannt. Build #86 erfolgreich.
+- [x] Issue #35 / PR #37: Node.js 26 geprüft und in Ubuntu-/Windows-Testmatrix aufgenommen; engines.node ist bereits >= 22. Build #85 erfolgreich.
+- [ ] Issue #40: @iobroker/testing von 5.2.2 auf 6.x aktualisieren, sobald package-lock.json reproduzierbar regeneriert und getestet werden kann. Fehlende E-Mail für W0w3 nicht erfinden. adapter-core-Update ist eine Warnung und bleibt wegen zusätzlicher Peer-Abhängigkeit zurückgestellt.
+- [x] Issue #41 im Fork nicht anwendbar: Dependabot-Auto-Merge-Workflow ist im Fork bewusst nicht vorhanden. PR #43 wird deshalb nicht übernommen.
+- Keine weiteren Wartungsarbeiten ohne konkreten Bezug zu einem offenen Original-Issue/PR.
+
 ## Verbindlicher Arbeitsumfang ab 13.11.2026
 
 - [ ] Offene und relevante Issues/PRs des Originalprojekts sichten und priorisieren.
