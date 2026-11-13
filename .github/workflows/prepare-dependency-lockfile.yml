@@ -8,7 +8,7 @@ on:
       - .github/workflows/prepare-dependency-lockfile.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   regenerate-lockfile:
@@ -33,6 +33,15 @@ jobs:
 
       - name: Run lint
         run: npm run lint
+
+      - name: Commit package update and remove temporary workflow
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git rm .github/workflows/prepare-dependency-lockfile.yml
+          git commit -m "chore: upgrade ioBroker testing to 6.3.2"
+          git push
 
       - name: Upload regenerated manifest and lockfile
         uses: actions/upload-artifact@v4
