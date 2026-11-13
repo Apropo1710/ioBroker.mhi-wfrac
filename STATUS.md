@@ -2,11 +2,20 @@
 
 ## Aktueller GitHub-Stand – 13.11.2026, geprüft
 
+## CI-Ergebnis – Build #79 für den Adapterstart-Fix
+
+- Build #79 (Run `43499801940`) für Code-Commit `92bd02eb8b69e09a168b87c69a6dfe2836457e92` vollständig erfolgreich.
+- `check-and-lint` erfolgreich.
+- Adaptertests erfolgreich auf Ubuntu und Windows jeweils mit Node 22 und Node 24 (vier Matrixjobs).
+- macOS bleibt wie vereinbart vorübergehend pausiert; dieser Build enthält daher keine macOS-Prüfung.
+- Der reine Dokumentationsabgleich danach löst wegen `paths-ignore` keinen weiteren CI-Lauf aus.
+- Kein Release und keine Versionsänderung.
+
 - Aktiver Entwicklungsbranch: `dev/stability-error-handling`.
 - Letzter Adapter-Code-Commit: `92bd02eb8b69e09a168b87c69a6dfe2836457e92` – `fix: isolate startup registration failures`. Die nachfolgenden Commits dienen ausschließlich dem Abgleich dieser Dokumentation.
 - Die letzte Codeänderung isoliert Registrierungsfehler einzelner aktivierter Geräte in `onReady()`. Weitere Geräte werden weiter registriert; State-Initialisierung und Polling-Start werden nicht durch einen einzelnen Registrierungsfehler verhindert. Ein Regressionstest deckt diesen Fall ab.
-- Für diesen Commit ist über den verfügbaren GitHub-Status-/Workflow-Zugriff aktuell kein CI-Lauf und kein erfolgreicher Status nachweisbar. **CI bleibt offen; der Commit ist nicht als CI-bestätigt zu behandeln.**
-- Der vorherige Build #77 scheiterte laut Dokumentation ausschließlich am Prettier-Lint; die Formatierung wurde anschließend korrigiert. Der aktuelle Commit enthält diese Korrektur und die Startfehler-Isolierung. Ein neuer erfolgreicher Lauf ist noch nicht belegt.
+- Build #79 (Run `43499801940`) ist für diesen Commit vollständig erfolgreich: Lint sowie Ubuntu/Windows mit Node 22/24. macOS ist vereinbarungsgemäß vorübergehend pausiert.
+- Der vorherige Build #77 scheiterte ausschließlich am Prettier-Lint; die Formatierung wurde korrigiert und anschließend mit Build #79 erfolgreich geprüft.
 - Branchvergleich mit `main`: Die Branches sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des veralteten Dependabot-Auto-Merge-Workflows; nicht automatisch mergen, sondern separat prüfen.
 - macOS-CI bleibt wie vom Nutzer gewünscht vorübergehend pausiert. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
 - Adapterversion bleibt 2.3.0. Kein Release, keine Versionsanhebung und keine Mitsubishi-Hardwaretests bestätigt.
