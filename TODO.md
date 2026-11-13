@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **CI-Beobachtung (13.11.2026):** Mitsubishi Build #63 blieb nach Retry queued, während die BambuLab-Läufe #172/#173 und Mitsubishi #58/#62 alle sechs Matrixjobs erfolgreich in ca. 4–6 Minuten abschlossen. Matrix wurde mit `fail-fast: false` und `timeout-minutes: 30` gehärtet; Concurrency-Namespace folgt nach Ablösung des alten Warteschlangenlaufs.
+> **CI-Beobachtung (13.11.2026):** Build #64 (Run `43466212800`) ist nach gezieltem Retry des abgebrochenen macOS-Node-22-Jobs vollständig erfolgreich (alle sechs Matrixjobs + Lint). Matrix-Härtung mit `fail-fast: false` und `timeout-minutes: 30` ist aktiv. Concurrency-Gruppe verwendet jetzt `${{ github.workflow }}-${{ github.ref }}`.
 
 > **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; letzter Adapter-Code-Head `4017d51`; Build #62 (Run `43417634254`) war vollständig erfolgreich. Regressionstest für State-Publishing-Fehler ergänzt; CI-Prüfung folgt: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. Reine Markdown-/`docs/`-Änderungen werden künftig per `paths-ignore` aus dem CI-Trigger ausgeschlossen; gemischte Commits laufen weiterhin durch die vollständige Matrix.
 

@@ -1,10 +1,10 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
 ## Geprüfter Entwicklungsstand – 13.11.2026 (CI-Workflow-Robustheit)
-- Build #63 (Run `43460496936`) hing nach manuellem Retry weiterhin queued; macOS Node 24 startete nicht, macOS Node 22 war cancelled. Der nächste Push auf denselben bisherigen Concurrency-Group-Wert löst die Ablösung dieses festhängenden Laufs aus.
-- Vergleich mit BambuLab #172/#173 und Mitsubishi #58/#62: dieselben sechs OS-/Node-Kombinationen liefen dort in rund 4–6 Minuten erfolgreich. Ein allgemeines macOS-Runnerproblem ist damit nicht belegt.
-- Matrix-Härtung ergänzt: `fail-fast: false` und `timeout-minutes: 30`; alle sechs Pflichtkombinationen bleiben erhalten.
-- Die Umstellung der Concurrency-Gruppe auf Workflow + Ref erfolgt nach diesem Ablösungslauf separat, damit der bereits queued Lauf zuverlässig durch dieselbe bisherige Gruppe verdrängt werden kann.
+- Build #64 (Run `43466212800`) nach gezieltem Retry des einzigen abgebrochenen Jobs vollständig erfolgreich (Run attempt 2); alle sechs Matrixkombinationen sowie Lint erfolgreich.
+- Der erste Versuch von `adapter-tests (22.x, macos-latest)` wurde nach 15 Minuten abgebrochen, ohne dass ein Testfehler vorlag. Der gezielte Job-Retry lief anschließend erfolgreich durch.
+- Matrix-Härtung aktiv: `fail-fast: false` und `timeout-minutes: 30`; alle sechs Pflichtkombinationen bleiben erhalten.
+- Concurrency-Gruppe ist jetzt auf `${{ github.workflow }}-${{ github.ref }}` umgestellt, damit unterschiedliche Workflows auf demselben Branch sich nicht gegenseitig abbrechen.
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
