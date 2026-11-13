@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – optionale Kontoaktualisierung
+- Fehler bei `update_account_info()` setzen ein bereits erfolgreich erkanntes/registriertes Gerät nicht mehr offline.
+- Die optionale Metadatenaktualisierung protokolliert den Fehler separat; echte Erkennungs- und Kommunikationsfehler behalten ihre bisherige Fehlerbehandlung.
+- Regressionstest deckt ab, dass das Gerät online bleibt und `errorHandler()` nicht aufgerufen wird.
+- CI für diesen Commit steht aus. macOS bleibt wie vereinbart vorübergehend pausiert.
+
+
 ## Geprüfter Entwicklungsstand – CI-Pause macOS
 - Build #71 (Run `43483508724`) nach Retry des einzigen abgebrochenen Jobs vollständig erfolgreich: Lint, Ubuntu/Windows Node 22/24 sowie macOS Intel Node 22/24 grün.
 - BambuLab Build #176 (Run `43484902511`) ebenfalls vollständig erfolgreich; beide macOS-Jobs wurden dort ohne Workflowänderung erfolgreich ausgeführt.

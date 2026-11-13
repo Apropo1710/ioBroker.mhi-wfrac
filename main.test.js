@@ -177,6 +177,25 @@ describe("MHIWFRac state handling", () => {
         expect(adapter.deviceCommandQueues.has(device.airconId)).to.equal(false);
     });
 
+    it("keeps a reachable device online when optional account info update fails", async () => {
+        const device = { name: "room", airconId: "account-info-device", online: true };
+        const loggedErrors = [];
+        const handledErrors = [];
+        adapter._postConnection = async () => {
+            throw new Error("optional command unavailable");
+        };
+        adapter.log.error = message => loggedErrors.push(message);
+        adapter.errorHandler = (currentDevice, error) => handledErrors.push({ device: currentDevice, error });
+
+        await adapter.update_account_info(device);
+
+        expect(device.online).to.equal(true);
+        expect(handledErrors).to.have.lengthOf(0);
+        expect(loggedErrors).to.have.lengthOf(1);
+        expect(loggedErrors[0]).to.contain("Failed to update account info");
+        expect(loggedErrors[0]).to.contain("optional command unavailable");
+    });
+
     it("does not register the same configured IP address more than once", async () => {
         const existing = { name: "living-room", airconId: "id-1", airconAddress: "192.0.2.20" };
         let detectionCalled = false;

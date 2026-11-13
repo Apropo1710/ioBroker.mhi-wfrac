@@ -11,6 +11,8 @@ Stand: 2026-11-13
 
 Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer installierten und erreichbaren Mitsubishi-Heavy-Anlage belastbar möglich sind. Hardwareabhängige Punkte bleiben offen, bis echte Gerätedaten vorliegen. Keine Protokoll- oder Befehlsänderung allein aufgrund statischer Vermutungen.
 
+- [x] Fehler der optionalen `update_account_info()`-Anfrage von der Geräteerkennung trennen; ein erreichbares Gerät bleibt bei diesem Zusatzfehler online.
+
 ## A. Sobald eine echte Anlage installiert und erreichbar ist
 
 ### A1 – Referenzdaten und Geräteerkennung

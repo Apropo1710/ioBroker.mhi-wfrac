@@ -833,7 +833,8 @@ class MHIWFRac extends utils.Adapter {
             const ret = await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents);
             this.assertSuccessfulResponse(ret.response, COMMAND_UPDATE_ACCOUNT_INFO);
         } catch (error) {
-            this.errorHandler(device, `Failed to update account info on device! | ${error}`);
+            // Account metadata is optional; a failure must not mark a reachable device offline.
+            this.log.error(`${device.name}: Failed to update account info on device: ${error}`);
         }
     }
 
