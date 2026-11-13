@@ -11,6 +11,15 @@
 - Keine Releases, Versionsänderungen oder direkten Änderungen am Originalrepository ohne ausdrückliche Freigabe.
 
 
+## Abgleich der offenen Original-Issues und PRs – 13.11.2026
+
+- Original Issue #34 / PR #39: Die fünf relevanten Korrekturen sind im Fork umgesetzt: Retry-Konfiguration, erneute Registrierung nicht erreichbarer Geräte, Schutz vor State-Änderungen für nicht registrierte Geräte, getrennte Behandlung von State-Publishing-Fehlern und serialisierte Gerätezugriffe. Der aktuelle Entwicklungsstand enthält diese Korrekturen; die CI ist bis Build #86 erfolgreich.
+- PR #38: Offline-Erkennung erst nach drei aufeinanderfolgenden fehlgeschlagenen Polls ist im Fork umgesetzt. Fehler unterhalb der Schwelle werden nur auf Debug protokolliert; nach Erholung wird die Wiedererreichbarkeit gemeldet. In der aktuellen Codebasis vorhanden und von den erfolgreichen CI-Läufen abgedeckt.
+- Original Issue #35 / PR #37: Node.js 26 ist in der Ubuntu-/Windows-Matrix enthalten; engines.node steht bereits auf >= 22. Build #85 erfolgreich.
+- Original Issue #40: Node-26-Matrix und Check-Action v2 sind im Fork umgesetzt. Offen bleibt der vom Checker geforderte Wechsel von @iobroker/testing 5.2.2 auf 6.x. Keine Paketänderung vorgenommen, da die package-lock.json nicht reproduzierbar regeneriert werden konnte. Die fehlende Maintainer-E-Mail für W0w3 kann nicht erfunden werden. Das adapter-core-Update ist nur eine Warnung und wegen der zusätzlichen Peer-Abhängigkeit nicht Teil einer ungeprüften Änderung.
+- Original Issue #41 / PR #43: Das Original verwendet noch pull_request_target im Dependabot-Auto-Merge-Workflow. Dieser Workflow ist im Fork-Entwicklungsbranch nicht vorhanden (die Auto-Merge-Automation wurde dort bewusst entfernt). Daher besteht dort kein entsprechender Workflow, der migriert werden müsste; PR #43 wird nicht übernommen.
+- Keine Änderungen am Originalrepository. Adapterversion bleibt 2.3.0.
+
 ## CI-Ergebnis – Build #86 (aktualisiert)
 
 - Build #86 (Run `43518735834`) für Commit `0d4939556c572972d0cef217b1556939192bbc96` vollständig erfolgreich.
