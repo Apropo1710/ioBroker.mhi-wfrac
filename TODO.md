@@ -60,6 +60,7 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [x] Kurzzeitige Polling-Ausfälle tolerieren: erst nach drei aufeinanderfolgenden fehlgeschlagenen Lese-Polls offline setzen; Erholung zurücksetzen und einmalig melden. Schreibfehler bleiben unverändert.
 - [x] State-Publishing- und State-Initialisierungsfehler von Geräte-Kommunikationsfehlern trennen: ioBroker-Schreib-/Initialisierungsfehler protokollieren, aber das erreichbare Gerät nicht offline setzen.
 - [x] Axios-Retry-Override korrigieren: normale Requests überschreiben die globale Retry-Konfiguration nicht mehr; `disableRetry: true` setzt weiterhin explizit `retries: 0`. Regressionstests ergänzt.
+- [x] Decoder-Ausnahmen zählen korrekt als Polling-Fehler; der Fehlerzähler wird erst nach erfolgreichem Dekodieren zurückgesetzt. Regressionstests für Schwelle und Erholung ergänzt.
 - [ ] Weitere Fehlerpfade in Registrierung, Polling, State-Publishing und Shutdown mit gemockten Tests abdecken.
 - [x] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs absichern: doppelte IPs werden nicht erneut registriert und zählen als ein Endpunkt; kollidierende `airconId`-Werte überschreiben kein bereits registriertes Gerät. Regressionstests ergänzt.
 - [ ] Verhalten bei geänderter oder deaktivierter Gerätekonfiguration während der Laufzeit untersuchen (derzeit keine Laufzeit-Konfigurationsereignisbehandlung im Konstruktor registriert; Änderung wirkt nach aktuellem Codebild erst beim Neustart).

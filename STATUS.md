@@ -1,5 +1,13 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – Decoderfehler im Polling
+- Polling-Fehlerzähler wird erst zurückgesetzt, nachdem `acCoder.fromBase64()` erfolgreich abgeschlossen wurde.
+- Zuvor wurde der Zähler bei formal erfolgreicher HTTP-/Geräteantwort vor dem Decoder zurückgesetzt. Decoder-Ausnahmen konnten dadurch die Offline-Schwelle von drei Fehlern nie erreichen.
+- Zwei Regressionstests decken wiederholte Decoderfehler und erfolgreiche Erholung ab.
+- Keine Decoder-/Protokolllogik geändert; nur die Position des Zähler-Resets.
+- CI für Commit steht aus; macOS bleibt vorübergehend pausiert.
+
+
 ## Geprüfter Entwicklungsstand – State-Initialisierung
 - Fehler beim Anlegen/Aktualisieren der ioBroker-States während des Starts oder einer späteren Geräte-Wiederregistrierung markieren das physisch erreichbare Gerät nicht mehr fälschlich offline.
 - Fehler werden separat protokolliert; die Initialisierung weiterer Geräte und das Polling laufen weiter.

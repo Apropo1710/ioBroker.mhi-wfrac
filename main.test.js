@@ -691,6 +691,73 @@ describe("MHIWFRac state handling", () => {
         expect(connectionUpdates).to.equal(1);
     });
 
+    it("counts decoder failures toward the polling offline threshold", async () => {
+        const device = {
+            name: "room",
+            airconId: "id-decoder-failure",
+            online: true,
+            pollFailureCount: 0,
+            acCoder: {
+                fromBase64: () => {
+                    throw new Error("invalid encoded status");
+                },
+            },
+        };
+        const errors = [];
+        adapter._postConnection = async () => ({
+            response: { result: 0, contents: { airconStat: "not-decodable" } },
+        });
+        adapter.errorHandler = (currentDevice, error) => {
+            errors.push(error);
+            currentDevice.online = false;
+        };
+        adapter.log.debug = () => {};
+
+        await adapter.getDataFromDevice(device);
+        expect(device.pollFailureCount).to.equal(1);
+        expect(device.online).to.equal(true);
+        expect(errors).to.have.lengthOf(0);
+
+        await adapter.getDataFromDevice(device);
+        expect(device.pollFailureCount).to.equal(2);
+        expect(device.online).to.equal(true);
+        expect(errors).to.have.lengthOf(0);
+
+        await adapter.getDataFromDevice(device);
+        expect(device.pollFailureCount).to.equal(3);
+        expect(device.online).to.equal(false);
+        expect(errors).to.have.lengthOf(1);
+        expect(errors[0]).to.contain("after 3 failed polls");
+    });
+
+    it("resets decoder failure count only after status decoding succeeds", async () => {
+        let shouldFail = true;
+        const device = {
+            name: "room",
+            airconId: "id-decoder-recovery",
+            online: true,
+            pollFailureCount: 2,
+            acCoder: {
+                fromBase64: () => {
+                    if (shouldFail) throw new Error("invalid encoded status");
+                },
+            },
+        };
+        adapter._postConnection = async () => ({
+            response: { result: 0, contents: { airconStat: "status" } },
+        });
+        adapter.errorHandler = () => {};
+        adapter.log.debug = () => {};
+
+        await adapter.getDataFromDevice(device);
+        expect(device.pollFailureCount).to.equal(3);
+
+        shouldFail = false;
+        await adapter.getDataFromDevice(device);
+        expect(device.pollFailureCount).to.equal(0);
+        expect(device.online).to.equal(true);
+    });
+
     it("keeps a reachable device online when publishing ioBroker states fails", async () => {
         const device = {
             name: "room",

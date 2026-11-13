@@ -955,8 +955,8 @@ class MHIWFRac extends utils.Adapter {
             }
 
             const previousPollFailures = device.pollFailureCount || 0;
-            device.pollFailureCount = 0;
             device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+            device.pollFailureCount = 0;
             this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
             device.firmwareVersion_wireless = stat.wireless?.firmVer ?? "";
             device.firmwareVersion_mcu = stat.mcu?.firmVer ?? "";
