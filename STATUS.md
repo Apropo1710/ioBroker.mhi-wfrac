@@ -2,6 +2,15 @@
 
 ## Aktueller GitHub-Stand – 13.11.2026, geprüft
 
+## Verbindlicher Arbeitsumfang
+
+- Ab jetzt werden ausschließlich konkrete Fehler aus Issues und Pull Requests des Originalprojekts `hacki11/ioBroker.mhi-wfrac` bearbeitet.
+- Keine zusätzlichen Wartungs-, Kompatibilitäts-, Optimierungs- oder Refactoring-Arbeiten ohne direkten Bezug zu einem solchen Issue/PR.
+- Abhängigkeiten, CI-Erweiterungen und sonstige technische Aufräumarbeiten sind zurückgestellt, sofern sie nicht für eine konkrete Fehlerkorrektur erforderlich sind.
+- Jede Änderung muss einem konkreten Issue/PR zugeordnet sein, gezielte Regressionstests erhalten und die CI bestehen.
+- Keine Releases, Versionsänderungen oder direkten Änderungen am Originalrepository ohne ausdrückliche Freigabe.
+
+
 ## CI-Ergebnis – Build #86 (aktualisiert)
 
 - Build #86 (Run `43518735834`) für Commit `0d4939556c572972d0cef217b1556939192bbc96` vollständig erfolgreich.
