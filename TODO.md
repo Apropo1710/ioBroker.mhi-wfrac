@@ -80,3 +80,11 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - Der Decoder arbeitet mit festen Bytepositionen. Ob kurze oder abweichende Antworten tatsächlich fehlerhaft durchlaufen, muss anhand realer Antworten und Tests geklärt werden.
 - Unterschiede zwischen Gerätemodellen und Firmwareständen sind noch nicht ausreichend durch eigene Hardware-Referenzdaten belegt.
 - Die Nebenwirkungsfreiheit wiederholter Schreibbefehle ist nicht belegt; schreibende Requests werden daher nicht automatisch wiederholt.
+
+## D. Kompatibilität und Wartbarkeit – Stand 13.11.2026
+- [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
+- [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Check-/Lint-Job in Build #86 erfolgreich.
+- [ ] Build #86 vollständig abwarten und alle sechs Adapter-Testjobs dokumentieren.
+- [ ] `@iobroker/testing` auf eine aktuelle 6.x-Version (derzeit geprüft: 6.3.2) aktualisieren, sobald `package-lock.json` reproduzierbar mit npm regeneriert und die Tests mit der neuen Testbibliothek ausgeführt werden können. 6.x setzt Node.js >=22.19.0 voraus.
+- [ ] `@iobroker/adapter-core`-Upgrade gesondert bewerten: Version 3.4.3 verlangt peer `@iobroker/js-controller-common-db >=7.2.2`; vorher die bisherige js-controller-Mindestversion 6.0.11 und Installationskompatibilität klären. Nicht nur die Versionsnummer anheben.
+- [ ] Veröffentlichte v2-Versionen der Adapter-Test- und Deploy-Actions beobachten; aktuell bleiben beide auf v1.

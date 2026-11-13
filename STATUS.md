@@ -430,3 +430,13 @@ Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 - Vor einem PR: Branch mit aktuellem Fork-`main` vergleichen, Tests ausführen, `STATUS.md` aktualisieren und Änderungen auf unbeabsichtigte Protokoll-/Funktionsänderungen prüfen.
 - PR-Ziel für Rückgaben an das Upstream-Projekt ist `hacki11/ioBroker.mhi-wfrac:main`; zunächst als Draft/Review anbieten.
 - Keine Versionsnummer erhöhen und keinen Release-Tag setzen, solange kein abgestimmter Release ansteht.
+
+## Kompatibilitätsarbeiten – 13.11.2026
+
+- Build #85 (Run `43517836415`) vollständig erfolgreich: Lint sowie Ubuntu/Windows mit Node 22, 24 und 26. Node 26 ist damit in dieser Matrix praktisch geprüft.
+- CI-Workflow-Commit: `c462c9221ddc6e4ee8fb152b8fded9f1c5d99060`.
+- Check-Action auf `ioBroker/testing-action-check@v2` aktualisiert. Die veröffentlichte v2.0.1 wurde geprüft; deren `action.yml` entspricht der bisherigen v1-Schnittstelle.
+- Action-Commit: `0d4939556c572972d0cef217b1556939192bbc96`. Build #86 (Run `43518735834`) hat den Check-/Lint-Job bereits erfolgreich abgeschlossen; die sechs Adapter-Testjobs laufen beim letzten Abruf noch.
+- `testing-action-adapter` und `testing-action-deploy` bleiben auf `@v1`, da für diese Repositories kein v2-Tag veröffentlicht ist.
+- Die Abhängigkeiten `@iobroker/testing` und `@iobroker/adapter-core` wurden bewusst noch nicht aktualisiert: Die Lockdatei kann in dieser Arbeitsumgebung nicht reproduzierbar mit npm neu erzeugt werden. Zusätzlich bringt adapter-core 3.4.3 eine neue Peer-Abhängigkeit `@iobroker/js-controller-common-db >=7.2.2` mit; die bisherige Mindestanforderung des Adapters an js-controller ist 6.0.11. Das muss vor einem Upgrade auf Kompatibilität geprüft werden.
+- Keine Änderung an Adapterversion, Protokollcode, Fork-`main` oder Originalrepository.
