@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`. Letzter vollständig erfolgreicher Pflichtlauf vor Wiederaufnahme von macOS ist Build #57 (Run `43405765495`) für Commit `bd5b3cc`; Lint sowie Linux und Windows mit Node 22/24 waren erfolgreich. Die nachfolgenden Commits änderten nur die Dokumentation. macOS wird jetzt wieder mit Node 22/24 in die CI-Matrix aufgenommen; das Ergebnis des ersten vollständigen Laufs steht noch aus. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
+> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; aktueller Head `0df31cb`. Build #58 (Run `43411085310`) für diesen Commit ist vollständig erfolgreich: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. macOS ist wieder fester Bestandteil der Pflichtmatrix. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
 
 
 Stand: 2026-11-13
@@ -55,7 +55,7 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [ ] Doppelte konfigurierte IP-Adressen bzw. doppelte Geräte-IDs untersuchen und erwartetes Verhalten festlegen.
 - [ ] Verhalten bei geänderter oder deaktivierter Gerätekonfiguration während der Laufzeit untersuchen.
 - [ ] Prüfen, ob Fehler beim Publizieren von ioBroker-States Geräte-/Verbindungsstatus konsistent aktualisieren.
-- [ ] Testabdeckung und CI aktuell halten; macOS ist wieder in der Pflichtmatrix (Node 22/24) und muss mit dem nächsten Lauf erneut erfolgreich bestätigt werden.
+- [x] Testabdeckung und CI aktuell halten; macOS ist wieder in der Pflichtmatrix (Node 22/24); vollständiger Lauf #58 erfolgreich.
 - [ ] Dependabot-/Workflow-Reste im Fork und Zielbranch getrennt behandeln; Original nicht ohne Abstimmung ändern.
 
 ## C. Vor Release oder Upstream-Pull-Request

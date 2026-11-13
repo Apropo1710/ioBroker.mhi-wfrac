@@ -2,12 +2,12 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head vor dieser CI-Matrix-Änderung: `04f3f52903816a49b8741f630af4a92bfe1198b0`.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head: `0df31cb4509286bdf6c667bc07fa06f17de14b73` (`ci: restore macOS test matrix`).
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
-- Letzter vollständig erfolgreicher Pflichtlauf vor Wiederaufnahme von macOS: „Test and Release“ #57 (Run `43405765495`) für Commit `bd5b3ccdf63b004755ea7905dbb4eee06f3a7b09`; Lint sowie Linux und Windows mit Node 22/24 waren erfolgreich.
+- Letzter vollständig erfolgreicher Pflichtlauf: „Test and Release“ #58 (Run `43411085310`) für Commit `0df31cb4509286bdf6c667bc07fa06f17de14b73`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
 - Die beiden nachfolgenden Commits `128dfad` und `04f3f52` änderten ausschließlich `STATUS.md`/`TODO.md` und nutzten `[skip ci]`; der geprüfte Adaptercode blieb unverändert.
 - macOS wurde während einer GitHub-Actions-Störung vorübergehend aus der Matrix genommen. Da die Plattformrunner inzwischen wieder funktionieren und der Nutzer die Wiederaufnahme ausdrücklich bestätigt hat, wird macOS mit Node 22 und 24 wieder in die Pflichtmatrix aufgenommen.
-- Die nächste CI-Ausführung muss die vollständige Matrix Linux/Windows/macOS mit Node 22/24 erfolgreich abschließen.
+- Die vollständige CI-Matrix Linux/Windows/macOS mit Node 22/24 ist mit Build #58 erfolgreich bestätigt.
 - Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
 - Diese Änderung betrifft den CI-Workflow und die Projektdokumentation, nicht den Adapter-Laufzeitcode.
 
