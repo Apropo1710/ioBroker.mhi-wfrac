@@ -1,10 +1,10 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller Branch-/CI-Stand (13.11.2026):** Adapter-Code-Commit `92bd02eb8b69e09a168b87c69a6dfe2836457e92` (`fix: isolate startup registration failures`) ist mit Build #79 (Run `43499801940`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows Node 22/24. macOS ist auf Nutzerwunsch vorübergehend pausiert und in diesem Lauf nicht enthalten.
+> **Aktueller Branch-/CI-Stand (13.11.2026):** Adapter-Code-/Test-Commit `4dd7575fbda0293fed3913efe98caa016dd60b59` ist mit Build #84 (Run `43505183908`) vollständig erfolgreich geprüft: Lint sowie Ubuntu/Windows Node 22/24. macOS ist auf Nutzerwunsch vorübergehend pausiert.
 
 > **Branchvergleich:** `dev/stability-error-handling` und `main` sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Nicht ungeprüft mergen.
 
-> **CI-Historie:** Build #79 (Run `43499801940`) ist der aktuelle erfolgreiche Nachweis für den Adapter-Code-Commit `92bd02e`. Build #71 (Run `43483508724`) sowie #64, #66 und #68 sind historische Nachweise für frühere Commits.
+> **Aktuelle Protokoll-Testabdeckung:** Build #82 prüft eine aufgezeichnete Statusantwort, Build #83 die Befehlsbytes und Build #84 die CRCs beider Blöcke einer aufgezeichneten echten Schreib-Nutzlast. Das ist Softwaretestabdeckung anhand historischer Daten, kein Hardwaretest und keine vollständige Verifikation aller Betriebsarten.
 
 Stand: 2026-11-13
 
