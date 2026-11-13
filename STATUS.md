@@ -2,23 +2,33 @@
 
 ## Aktueller GitHub-Stand – 13.11.2026, geprüft
 
-## CI-Ergebnis – Build #79 für den Adapterstart-Fix
+## CI-Ergebnis – Build #84
 
-- Build #79 (Run `43499801940`) für Code-Commit `92bd02eb8b69e09a168b87c69a6dfe2836457e92` vollständig erfolgreich.
+- Build #84 (Run `43505183908`) für Commit `4dd7575fbda0293fed3913efe98caa016dd60b59` vollständig erfolgreich.
 - `check-and-lint` erfolgreich.
 - Adaptertests erfolgreich auf Ubuntu und Windows jeweils mit Node 22 und Node 24 (vier Matrixjobs).
 - macOS bleibt wie vereinbart vorübergehend pausiert; dieser Build enthält daher keine macOS-Prüfung.
-- Der reine Dokumentationsabgleich danach löst wegen `paths-ignore` keinen weiteren CI-Lauf aus.
-- Kein Release und keine Versionsänderung.
-
+- Deploy wurde erwartungsgemäß übersprungen; kein Release und keine Versionsänderung.
 - Aktiver Entwicklungsbranch: `dev/stability-error-handling`.
-- Letzter Adapter-Code-Commit: `92bd02eb8b69e09a168b87c69a6dfe2836457e92` – `fix: isolate startup registration failures`. Die nachfolgenden Commits dienen ausschließlich dem Abgleich dieser Dokumentation.
-- Die letzte Codeänderung isoliert Registrierungsfehler einzelner aktivierter Geräte in `onReady()`. Weitere Geräte werden weiter registriert; State-Initialisierung und Polling-Start werden nicht durch einen einzelnen Registrierungsfehler verhindert. Ein Regressionstest deckt diesen Fall ab.
-- Build #79 (Run `43499801940`) ist für diesen Commit vollständig erfolgreich: Lint sowie Ubuntu/Windows mit Node 22/24. macOS ist vereinbarungsgemäß vorübergehend pausiert.
-- Der vorherige Build #77 scheiterte ausschließlich am Prettier-Lint; die Formatierung wurde korrigiert und anschließend mit Build #79 erfolgreich geprüft.
-- Branchvergleich mit `main`: Die Branches sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des veralteten Dependabot-Auto-Merge-Workflows; nicht automatisch mergen, sondern separat prüfen.
-- macOS-CI bleibt wie vom Nutzer gewünscht vorübergehend pausiert. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
-- Adapterversion bleibt 2.3.0. Kein Release, keine Versionsanhebung und keine Mitsubishi-Hardwaretests bestätigt.
+- Adapterversion bleibt 2.3.0.
+- Fork `main` und Originalrepository wurden nicht verändert.
+
+## Neu geprüfte Protokolltests
+
+- Build #82 (Run `43503426293`) erfolgreich: Test einer aufgezeichneten echten WF-RAC-Statusantwort.
+- Build #83 (Run `43504291364`) erfolgreich: Tests für die erzeugten Befehlsbytes einschließlich des festgelegten 25-Grad-Werts im Lüftungsmodus.
+- Build #84 (Run `43505183908`) erfolgreich: Regressionstest der CRC-16/CCITT-FALSE-Prüfsummen beider 25-Byte-Blöcke einer historischen `setAirconStat`-Nutzlast.
+- In der historischen Mitsu-Aufzeichnung ist ein echter App-Schreibbefehl mit erfolgreicher Antwort (`result: 0`) vorhanden. Nachfolgende Statusabfragen zeigen geänderte Bytes. Das ist ein einzelner Referenzfall, keine vollständige Abdeckung aller Betriebsarten.
+- Die CRC-Prüfung bestätigt die Prüfsummen der aufgezeichneten Nutzlast. Sie beweist nicht, dass der vollständige Adapter-Encoder für alle Einstellkombinationen exakt dieselben Nutzdaten wie die App erzeugt.
+- Keine Laufzeit-Protokoll-, CRC-, Encoding- oder Steuerlogik wurde im Rahmen dieser drei Tests geändert.
+
+## Zuletzt geprüfte Commits
+
+- `4dd7575fbda0293fed3913efe98caa016dd60b59` – `test: validate CRCs in recorded WF-RAC write payload` (Build #84 erfolgreich).
+- `bbdb1a8ec62ea646a8052441cc76cded1f9675d6` – `test: cover WF-RAC command byte encoding` (Build #83 erfolgreich).
+- `7045041ff2a6b290a8bd11d6f2a845d293a67c59` – `test: cover recorded WF-RAC status response` (Build #82 erfolgreich).
+- `0353e84a2b4b6a6c095c65272fda281e50a45533` – Decoder-Längenvalidierung samt Tests (Build #81 erfolgreich).
+- macOS-CI bleibt wie vom Nutzer gewünscht vorübergehend pausiert; nach der Beobachtungsphase wieder aktivieren.
 
 ---
 
