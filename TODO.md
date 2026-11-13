@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; aktueller Head `0df31cb`. Build #58 (Run `43411085310`) für diesen Commit ist vollständig erfolgreich: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. macOS ist wieder fester Bestandteil der Pflichtmatrix. Hardwareabhängige Punkte bleiben offen, bis die Anlage installiert und erreichbar ist.
+> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; vor der aktuellen Workflowänderung stand der Branch auf `ca957bb`. Build #59 (Run `43412100181`) ist vollständig erfolgreich: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. Reine Markdown-/`docs/`-Änderungen werden künftig per `paths-ignore` aus dem CI-Trigger ausgeschlossen; gemischte Commits laufen weiterhin durch die vollständige Matrix.
 
 
 Stand: 2026-11-13

@@ -2,12 +2,12 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head: `0df31cb4509286bdf6c667bc07fa06f17de14b73` (`ci: restore macOS test matrix`).
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-Head vor dieser Workflowänderung: `ca957bb2609582958661b0e279003c29d4be9174`.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
-- Letzter vollständig erfolgreicher Pflichtlauf: „Test and Release“ #58 (Run `43411085310`) für Commit `0df31cb4509286bdf6c667bc07fa06f17de14b73`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
-- Die beiden nachfolgenden Commits `128dfad` und `04f3f52` änderten ausschließlich `STATUS.md`/`TODO.md` und nutzten `[skip ci]`; der geprüfte Adaptercode blieb unverändert.
+- Letzter vollständig erfolgreicher Pflichtlauf vor dieser Workflowänderung: „Test and Release“ #59 (Run `43412100181`) für Commit `ca957bb2609582958661b0e279003c29d4be9174`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
+- Reine Markdown- und `docs/`-Änderungen werden künftig bereits am Push-Trigger ignoriert; gemischte Commits mit Codeänderungen lösen weiterhin die CI aus. `[skip ci]` wird nicht mehr benötigt.
 - macOS wurde während einer GitHub-Actions-Störung vorübergehend aus der Matrix genommen. Da die Plattformrunner inzwischen wieder funktionieren und der Nutzer die Wiederaufnahme ausdrücklich bestätigt hat, wird macOS mit Node 22 und 24 wieder in die Pflichtmatrix aufgenommen.
-- Die vollständige CI-Matrix Linux/Windows/macOS mit Node 22/24 ist mit Build #58 erfolgreich bestätigt.
+- Die vollständige CI-Matrix Linux/Windows/macOS mit Node 22/24 ist mit Build #59 erfolgreich bestätigt.
 - Keine Mitsubishi-Hardwaretests möglich/bestätigt: Klimaanlage noch nicht installiert, Adapter noch nicht produktiv eingerichtet.
 - Diese Änderung betrifft den CI-Workflow und die Projektdokumentation, nicht den Adapter-Laufzeitcode.
 
@@ -102,6 +102,14 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-13 – Reine Dokumentationsänderungen aus CI ausschließen
+
+- `paths-ignore` filtert reine Markdown- und `docs/`-Änderungen bereits beim Push-Trigger.
+- Gemischte Commits mit Code-/Konfigurationsänderungen starten weiterhin die vollständige CI-Matrix.
+- Die `[skip ci]`-Bedingungen aus den Jobs entfernt; keine speziellen Commit-Nachrichten mehr nötig.
+- Die Workflowänderung selbst wird mit der vollständigen Pflichtmatrix geprüft.
+
 
 ### 2026-11-11 – Hardwareabhängige TODO-Liste angelegt
 
