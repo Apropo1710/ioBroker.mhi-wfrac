@@ -7,7 +7,7 @@
 - Die letzte Codeänderung isoliert Registrierungsfehler einzelner aktivierter Geräte in `onReady()`. Weitere Geräte werden weiter registriert; State-Initialisierung und Polling-Start werden nicht durch einen einzelnen Registrierungsfehler verhindert. Ein Regressionstest deckt diesen Fall ab.
 - Für diesen Commit ist über den verfügbaren GitHub-Status-/Workflow-Zugriff aktuell kein CI-Lauf und kein erfolgreicher Status nachweisbar. **CI bleibt offen; der Commit ist nicht als CI-bestätigt zu behandeln.**
 - Der vorherige Build #77 scheiterte laut Dokumentation ausschließlich am Prettier-Lint; die Formatierung wurde anschließend korrigiert. Der aktuelle Commit enthält diese Korrektur und die Startfehler-Isolierung. Ein neuer erfolgreicher Lauf ist noch nicht belegt.
-- Branchvergleich mit `main`: Entwicklungsbranch 75 Commits voraus und 1 Commit zurück; Branches sind divergent. Der zusätzliche Commit auf `main` entfernt den veralteten Dependabot-Auto-Merge-Workflow. Nicht automatisch mergen; separat prüfen.
+- Branchvergleich mit `main`: Die Branches sind divergent. `main` enthält zusätzlich einen Commit zur Entfernung des veralteten Dependabot-Auto-Merge-Workflows; nicht automatisch mergen, sondern separat prüfen.
 - macOS-CI bleibt wie vom Nutzer gewünscht vorübergehend pausiert. Ubuntu/Windows Node 22/24 und Lint bleiben aktiv.
 - Adapterversion bleibt 2.3.0. Kein Release, keine Versionsanhebung und keine Mitsubishi-Hardwaretests bestätigt.
 
