@@ -645,26 +645,31 @@ describe("MHIWFRac state handling", () => {
         expect(connectionUpdates).to.equal(1);
     });
 
-    it("marks a device offline when publishing an ioBroker state fails", async () => {
+    it("keeps a reachable device online when publishing ioBroker states fails", async () => {
         const device = {
             name: "room",
             airconId: "id-state-publish",
+            online: true,
             airconStat: { operation: false },
         };
         const publishedStates = [];
         const handledErrors = [];
+        const loggedErrors = [];
         adapter.setState = async id => {
             publishedStates.push(id);
             throw new Error("database unavailable");
         };
         adapter.errorHandler = (currentDevice, error) => handledErrors.push({ device: currentDevice, error });
+        adapter.log.error = message => loggedErrors.push(message);
 
         await adapter.setIOBStates(device);
 
         expect(publishedStates).to.deep.equal(["id-state-publish.power"]);
-        expect(handledErrors).to.have.lengthOf(1);
-        expect(handledErrors[0].device).to.equal(device);
-        expect(handledErrors[0].error).to.contain("database unavailable");
+        expect(device.online).to.equal(true);
+        expect(handledErrors).to.have.lengthOf(0);
+        expect(loggedErrors).to.have.lengthOf(1);
+        expect(loggedErrors[0]).to.contain("database unavailable");
+        expect(loggedErrors[0]).to.contain("AirconStat");
     });
 
     it("continues polling other devices after one device update throws", async () => {

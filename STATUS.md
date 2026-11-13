@@ -1,5 +1,12 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – State-Publishing-Fehler
+- Fehler beim Schreiben von ioBroker-States führen nicht mehr dazu, dass ein erreichbares Klimagerät als offline markiert wird.
+- `setIOBStates()` protokolliert den tatsächlichen Publishing-Fehler inklusive Aircon-Status und lässt den Gerätestatus unverändert. Echte Kommunikationsfehler laufen weiterhin über `errorHandler()`.
+- Regressionstest aktualisiert: Gerät bleibt online, `errorHandler()` wird nicht aufgerufen und der Fehler wird protokolliert.
+- CI für Commit steht aus; keine lokale Testausführung.
+
+
 ## Geprüfter Entwicklungsstand – 13.11.2026 (macOS-Queue-Workaround)
 - Build #69 (Run `43477654128`) abgeschlossen mit failure: Lint sowie Ubuntu/Windows Node 22/24 erfolgreich; beide `macos-15-intel`-Jobs wurden nach 15:01 Minuten queued ohne gestartete Steps cancelled. Keine Testfehler.
 - Vergleichbare öffentliche Meldungen dokumentieren denselben Runner-Akquisitionsfehler sowohl auf ARM als auch Intel. GitHub Status dokumentiert Actions-Störungen am 9. und 11. November 2026; insbesondere Queue-/Scheduler-Probleme sind als plausible Ursache belegt, aber die individuelle Ursache dieses Runs bleibt unbestätigt.

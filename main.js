@@ -244,7 +244,9 @@ class MHIWFRac extends utils.Adapter {
             await this.setState(`${airconChannel}.autoHeating`, device.autoHeating, true);
             await this.setState(`${airconChannel}.online`, device.online, true);
         } catch (e) {
-            this.errorHandler(device, `Error setting ioBroker state! | ${JSON.stringify(device.airconStat)}`);
+            this.log.error(
+                `${device.name}: Failed to publish ioBroker states: ${e} | AirconStat: ${JSON.stringify(device.airconStat)}`,
+            );
         }
     }
 
