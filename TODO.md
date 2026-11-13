@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; aktueller Adapter-Head `4017d51`. Build #62 (Run `43417634254`) ist vollständig erfolgreich: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. Reine Markdown-/`docs/`-Änderungen werden künftig per `paths-ignore` aus dem CI-Trigger ausgeschlossen; gemischte Commits laufen weiterhin durch die vollständige Matrix.
+> **Aktueller CI-/Branchhinweis (13.11.2026):** Aktiver Branch `dev/stability-error-handling`; letzter Adapter-Code-Head `4017d51`; Build #62 (Run `43417634254`) war vollständig erfolgreich. Regressionstest für State-Publishing-Fehler ergänzt; CI-Prüfung folgt: Lint sowie Ubuntu, Windows und macOS jeweils mit Node 22/24. Reine Markdown-/`docs/`-Änderungen werden künftig per `paths-ignore` aus dem CI-Trigger ausgeschlossen; gemischte Commits laufen weiterhin durch die vollständige Matrix.
 
 
 Stand: 2026-11-13

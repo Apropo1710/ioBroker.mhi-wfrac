@@ -2,7 +2,7 @@
 
 ## Geprüfter Entwicklungsstand – 13.11.2026
 - Fork: `Apropo1710/ioBroker.mhi-wfrac`; Original `hacki11/ioBroker.mhi-wfrac` bleibt unangetastet.
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller geprüfter Adapterstand: `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; letzter erfolgreich CI-geprüfter Adapterstand: `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`; nachfolgende Dokumentations- und Teständerungen werden mit Build #63 geprüft.
 - Adapterversion laut `package.json`: **2.3.0**; kein Release erstellt.
 - Letzter vollständig erfolgreicher Pflichtlauf: „Test and Release“ #62 (Run `43417634254`) für Commit `4017d519b47eff0d9227f28cb4fe1c0845e8fa0f`; Lint sowie alle sechs Kombinationen aus Ubuntu, Windows und macOS mit Node 22/24 waren erfolgreich.
 - Reine Markdown- und `docs/`-Änderungen werden künftig bereits am Push-Trigger ignoriert; gemischte Commits mit Codeänderungen lösen weiterhin die CI aus. `[skip ci]` wird nicht mehr benötigt.
@@ -103,6 +103,13 @@ Noch zu untersuchen und mit Tests abzusichern:
 Diese Punkte sind Prüfhypothesen, keine bestätigten Fehler.
 
 ## Änderungsprotokoll
+
+### 2026-11-13 – State-Publishing-Fehler mit Regressionstest abgesichert
+
+- Neuer Test prüft, dass ein Fehler beim Schreiben eines ioBroker-States über `setIOBStates()` abgefangen und an den Geräte-Errorhandler weitergegeben wird.
+- Bereits vorhandener Test bestätigt, dass ein Fehler bei einem Gerät die Polling-Verarbeitung weiterer Geräte nicht stoppt.
+- Keine Änderung am Adapter-Laufzeitcode; Verhalten wird gezielt abgesichert.
+
 
 ### 2026-11-13 – Laufzeit-Konfigurationsänderungen geprüft
 
