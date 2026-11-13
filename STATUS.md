@@ -1,5 +1,11 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Geprüfter Entwicklungsstand – 13.11.2026 (macOS-Runner-Wechsel)
+- Build #65 (Run `43470020808`) nach erfolgreichem Lint und vier erfolgreichen Linux-/Windows-Jobs fehlgeschlagen: Beide macOS-Jobs (`macos-latest`, Node 22 und 24) blieben queued und wurden ohne gestartete Steps cancelled.
+- Ursache ist die wiederholt ausbleibende Zuteilung der `macos-latest`-Runner; keine Testfehler. Die GitHub-Runner-Dokumentation ordnet `macos-latest` aktuell macOS 26 ARM64 zu und führt `macos-15-intel` als verfügbaren Intel/x64-Runner.
+- Pflichtmatrix bleibt bei sechs Kombinationen und Node 22/24; macOS wird vorerst explizit über `macos-15-intel` statt `macos-latest` ausgeführt. Damit testen wir macOS weiterhin, zunächst aber auf Intel statt Apple Silicon.
+- Änderung wird mit neuem Build geprüft; später erneut bewerten, ob ARM64/macOS-latest wieder zuverlässig verfügbar ist.
+
 ## Geprüfter Entwicklungsstand – 13.11.2026 (CI-Workflow-Robustheit)
 - Build #64 (Run `43466212800`) nach gezieltem Retry des einzigen abgebrochenen Jobs vollständig erfolgreich (Run attempt 2); alle sechs Matrixkombinationen sowie Lint erfolgreich.
 - Der erste Versuch von `adapter-tests (22.x, macos-latest)` wurde nach 15 Minuten abgebrochen, ohne dass ein Testfehler vorlag. Der gezielte Job-Retry lief anschließend erfolgreich durch.
