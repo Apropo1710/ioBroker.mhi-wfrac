@@ -961,9 +961,7 @@ class MHIWFRac extends utils.Adapter {
     updateConnectionInfo() {
         // Multiple configuration rows for the same IP represent one physical endpoint.
         const configuredDevices = /** @type {Array<{ enabled: boolean, ip: string }>} */ (this.config.devices);
-        const enabledDevices = new Set(
-            configuredDevices.filter(device => device.enabled).map(device => device.ip),
-        ).size;
+        const enabledDevices = new Set(configuredDevices.filter(device => device.enabled).map(device => device.ip)).size;
         const onlineDevices = Object.values(this.devices).filter(d => d.online).length;
 
         // No configured devices must not be reported as a successful connection.
