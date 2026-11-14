@@ -1,21 +1,18 @@
 # TODO – ioBroker.mhi-wfrac
 
-## Adapter-Core / js-controller-Basis – 14.11.2026
-- [x] Mindestanforderung auf js-controller >=7.2.0 festgelegt; ältere 6.x- sowie 7.0/7.1-Versionen sind nicht mehr Zielplattform.
-- [x] @iobroker/adapter-core auf ^3.4.3 angehoben; dessen Peer-Anforderung @iobroker/js-controller-common-db >=7.2.2 ist mit der 7.2er Controller-Linie abgestimmt.
-- [ ] Installation und vollständige CI für den resultierenden Commit abwarten; erst danach Kompatibilität als bestätigt markieren.
-- Adapterversion bleibt 2.3.0. Keine Änderung am Originalrepository oder Fork-main.
+## Aktueller Stand – 14.11.2026, nach CI-Run 43566084967
 
-## Aktueller Stand – 14.11.2026
-
-- Zuletzt vor dieser TODO-Aktualisierung geprüfter Entwicklungs-Head: `41e14e1ad7f26dd14506b88499cd11ddc30b464b` (Dokumentationscommit).
-- Fork-`main` steht separat auf `2a7620eba6ec6b9b551446258b3198d183902a6a`; Run #61 erfolgreich. Fork-PR #1 bleibt offen/Draft.
-- Upstream Issues #34/#35/#40/#41 und PRs #37/#38/#39/#43 sind weiterhin offen; die Fork-Korrekturen sind nicht upstream gemergt.
-- Issue #40: E0036 für `@iobroker/testing` ist durch Update auf 6.3.2 behoben; npm ci, Integrationstest und Lint sind für Paketcommit `f709e8d` erfolgreich. E4048 bleibt offen, da keine verifizierte Maintainer-E-Mail für `W0w3` vorliegt.
-- Node.js 26 und `ioBroker/testing-action-check@v2` sind umgesetzt. PR #43 wird im Fork nicht benötigt, weil kein Auto-Merge-Workflow vorhanden ist.
-- Vollständige offizielle Ubuntu-/Windows-CI mit Node 22/24/26 ist für den Vorgängercommit `6be8872` grün. Der Paketcommit `f709e8d` hat keine erneute vollständige Matrix erhalten; das ist in `STATUS.md` dokumentiert.
-- `@iobroker/adapter-core` ist auf `^3.4.3` angehoben; Mindestanforderung ist js-controller `>=7.2.0`. Die CI-Verifikation des resultierenden Commits steht aus. Adapterversion bleibt 2.3.0.
-- Keine Änderung am Originalrepository oder Fork-`main`.
+- [x] js-controller-Mindestversion auf `>=7.2.0` festgelegt.
+- [x] `@iobroker/adapter-core` auf `^3.4.3` aktualisiert.
+- [x] Lockdatei einschließlich der Peer-Abhängigkeiten durch erfolgreichen `npm ci`-Lauf validiert.
+- [x] Vollständige aktuelle CI erfolgreich: Check/Lint sowie Ubuntu und Windows mit Node.js 22, 24 und 26 (Run [43566084967](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43566084967)).
+- [ ] `npm run check` separat untersuchen; ein früherer Lauf meldete Typfehler in `main.js` und `main.test.js`. Der grüne ioBroker-Check-/Lint-Job ersetzt diesen TypeScript-Check nicht.
+- [ ] Verbleibende Softwarefehlerpfade in Registrierung, Polling und State-Verarbeitung gezielt prüfen. Änderungen nur bei konkret reproduzierbarem Fehler und mit Regressionstest.
+- [ ] E4048 aus Original-Issue #40 offen halten, bis eine gültige Maintainer-E-Mail für `W0w3` verifiziert ist.
+- [x] Branchvergleich durchgeführt: `main` ist geschützt; Entwicklungsarbeit erfolgt ausschließlich auf `dev/stability-error-handling`. Keine Zusammenführung. Der zusätzliche Commit auf `main` entfernt den alten Dependabot-Auto-Merge-Workflow; die Datei ist im aktuellen Entwicklungszweig ebenfalls nicht vorhanden.
+- Adapterversion bleibt **2.3.0**. Kein Release, keine Änderung am Originalrepository oder Fork-`main`.
+- Fork-PR #1 bleibt als Draft offen und dient nur als CI-Prüfkanal innerhalb des Forks.
+- Der zusätzliche Testbranch `dev/test-adapter-core-compat` wurde entfernt; übrig bleiben `main` und `dev/stability-error-handling`.
 
 ---
 
