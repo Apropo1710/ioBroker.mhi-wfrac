@@ -3,9 +3,8 @@
 ## Aktueller GitHub-Stand – 14.11.2026, nach erfolgreicher CI
 
 - Aktiver und einziger Entwicklungsbranch: `dev/stability-error-handling`.
-- Aktueller Branch-HEAD nach zwei reinen Dokumentationscommits: `1e73f3c225dc6063d4b74c04509589e588c710d5`.
-- Letzter inhaltlicher Code-/Abhängigkeitscommit und CI-geprüfter Stand: `2de6b0e083a9fee0917d8969b80ef4c09006a961` (`fix: lock nested peer dependency packages`). Die beiden nachfolgenden Commits ändern ausschließlich `STATUS.md` und `TODO.md`.
-- Letzter vollständiger CI-Lauf: [Run 43566084967](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43566084967), vollständig erfolgreich.
+- Aktueller Code-HEAD: `1135fed2cfba27bed1050f7481182a87123cbfa9` (`style: simplify enabled device count`). Die anschließenden Dokumentationsaktualisierungen ändern ausschließlich `STATUS.md` und `TODO.md`.
+- Letzter vollständiger CI-Lauf: [Run 43570458104 / Build #101](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104), vollständig erfolgreich.
 - Erfolgreich: Check-/Lint-Job sowie alle sechs Adapter-Testjobs auf Ubuntu und Windows mit Node.js 22, 24 und 26. Deploy wurde erwartungsgemäß übersprungen; kein Release.
 - Die Lockdatei einschließlich der Peer- und verschachtelten Abhängigkeiten wurde durch `npm ci` in der CI erfolgreich validiert.
 - `@iobroker/adapter-core` steht auf `^3.4.3`; Mindestanforderung in `io-package.json` ist js-controller `>=7.2.0`. Diese Kombination hat den genannten vollständigen CI-Lauf bestanden. Eine Installation auf einem realen ioBroker-System wurde noch nicht durchgeführt.
@@ -15,7 +14,9 @@
 - Der alte zusätzliche Testbranch `dev/test-adapter-core-compat` wurde entfernt. Es verbleiben `main` und `dev/stability-error-handling`.
 - Die Korrekturen aus Original-Issues/PRs #34/#35/#40 sowie #37/#38/#39 sind im Fork umgesetzt und durch CI abgedeckt, soweit softwareseitig prüfbar. Upstream ist nichts gemergt.
 - Offen bleibt E4048 aus Original-Issue #40: eine gültige Maintainer-E-Mail für `W0w3` liegt nicht verifiziert vor und wird nicht erfunden.
-- `npm run check` ist separat noch offen: Ein früherer Lauf meldete Typfehler in `main.js`/`main.test.js`. Der erfolgreiche `testing-action-check@v2`-Job ist nicht mit einem erfolgreichen `npm run check` gleichzusetzen.
+- `npm run check` ist jetzt als eigener Schritt in der CI eingebunden und in Build #101 erfolgreich. Die Testdateien `*.test.js` sind bewusst vom Produktions-Typcheck ausgeschlossen; die Adapterdateien bleiben geprüft.
+- Die fehlgeschlagenen Builds #94/#95 betrafen eine zunächst unvollständige Lockdatei nach dem adapter-core-Update (fehlende Peer-/transitive Abhängigkeiten). Build #96 bestand nach Ergänzung der Pakete vollständig.
+- Builds #97–#100 scheiterten ausschließlich an Prettier-/Lint-Formatierungsfehlern in den neu ergänzten JSDoc-Typannotationen bzw. der Zähl-Expression in `main.js`; die Adapter-Testmatrix wurde dadurch übersprungen. Diese Formatierungsfehler wurden behoben; Build #101 ist vollständig grün.
 - Keine Hardwaretests möglich: Die Klimaanlage ist noch nicht angekommen. Protokoll-/Decoder-/Schreibverhalten ist daher nicht vollständig praktisch bestätigt.
 
 ---
