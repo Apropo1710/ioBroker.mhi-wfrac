@@ -1,18 +1,18 @@
 # TODO – ioBroker.mhi-wfrac
 
-## Aktueller Stand – 14.11.2026, nach CI-Run 43566084967
+## Aktueller Stand – 14.11.2026, nach erfolgreichem CI-Run 43570458104 (Build #101)
 
 - [x] js-controller-Mindestversion auf `>=7.2.0` festgelegt.
 - [x] `@iobroker/adapter-core` auf `^3.4.3` aktualisiert.
-- [x] Lockdatei einschließlich der Peer-Abhängigkeiten durch erfolgreichen `npm ci`-Lauf validiert.
-- [x] Vollständige aktuelle CI erfolgreich: Check/Lint sowie Ubuntu und Windows mit Node.js 22, 24 und 26 (Run [43566084967](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43566084967)).
-- [ ] `npm run check` separat untersuchen; ein früherer Lauf meldete Typfehler in `main.js` und `main.test.js`. Der grüne ioBroker-Check-/Lint-Job ersetzt diesen TypeScript-Check nicht.
-- [ ] Verbleibende Softwarefehlerpfade in Registrierung, Polling und State-Verarbeitung gezielt prüfen. Änderungen nur bei konkret reproduzierbarem Fehler und mit Regressionstest.
+- [x] Lockdatei einschließlich Peer- und verschachtelter Abhängigkeiten durch `npm ci` validiert (Build #96 und #101).
+- [x] Vollständige CI erfolgreich: Check/Lint, eigener `npm run check`-Schritt sowie Ubuntu und Windows mit Node.js 22, 24 und 26 (Build #101).
+- [x] Fehlerhafte Typcheck-Einbeziehung von Testdateien korrigiert: `*.test.js` vom Produktions-Typcheck ausgeschlossen; Produktionsdateien bleiben geprüft.
 - [ ] E4048 aus Original-Issue #40 offen halten, bis eine gültige Maintainer-E-Mail für `W0w3` verifiziert ist.
-- [x] Branchvergleich durchgeführt: `main` ist geschützt; Entwicklungsarbeit erfolgt ausschließlich auf `dev/stability-error-handling`. Keine Zusammenführung. Der zusätzliche Commit auf `main` entfernt den alten Dependabot-Auto-Merge-Workflow; die Datei ist im aktuellen Entwicklungszweig ebenfalls nicht vorhanden.
-- Adapterversion bleibt **2.3.0**. Kein Release, keine Änderung am Originalrepository oder Fork-`main`.
+- [x] Frühere fehlgeschlagene Builds zugeordnet: #94/#95 unvollständige Lockdatei; #97–#100 ausschließlich Lint-/Prettier-Formatierung in `main.js`. Behoben; #101 vollständig grün.
+- [x] Branchvergleich durchgeführt: `main` bleibt geschützt; Entwicklung ausschließlich auf `dev/stability-error-handling`, keine Zusammenführung.
+- Adapterversion bleibt **2.3.0**. Kein Release und keine Änderung am Originalrepository oder Fork-`main`.
 - Fork-PR #1 bleibt als Draft offen und dient nur als CI-Prüfkanal innerhalb des Forks.
-- Der zusätzliche Testbranch `dev/test-adapter-core-compat` wurde entfernt; übrig bleiben `main` und `dev/stability-error-handling`.
+- Die Hardwareprüfung bleibt offen, bis die Mitsubishi-Heavy-Anlage installiert und erreichbar ist.
 
 ---
 
