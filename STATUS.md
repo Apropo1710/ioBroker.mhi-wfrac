@@ -3,7 +3,8 @@
 ## Aktueller GitHub-Stand – 14.11.2026, nach erfolgreicher CI
 
 - Aktiver und einziger Entwicklungsbranch: `dev/stability-error-handling`.
-- Entwicklungs-HEAD: `2de6b0e083a9fee0917d8969b80ef4c09006a961` (`fix: lock nested peer dependency packages`).
+- Aktueller Branch-HEAD nach zwei reinen Dokumentationscommits: `1e73f3c225dc6063d4b74c04509589e588c710d5`.
+- Letzter inhaltlicher Code-/Abhängigkeitscommit und CI-geprüfter Stand: `2de6b0e083a9fee0917d8969b80ef4c09006a961` (`fix: lock nested peer dependency packages`). Die beiden nachfolgenden Commits ändern ausschließlich `STATUS.md` und `TODO.md`.
 - Letzter vollständiger CI-Lauf: [Run 43566084967](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43566084967), vollständig erfolgreich.
 - Erfolgreich: Check-/Lint-Job sowie alle sechs Adapter-Testjobs auf Ubuntu und Windows mit Node.js 22, 24 und 26. Deploy wurde erwartungsgemäß übersprungen; kein Release.
 - Die Lockdatei einschließlich der Peer- und verschachtelten Abhängigkeiten wurde durch `npm ci` in der CI erfolgreich validiert.
