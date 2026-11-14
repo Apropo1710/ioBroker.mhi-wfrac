@@ -37,6 +37,9 @@ jobs:
           # install-command: 'npm install'
           lint: true
 
+      - name: Run TypeScript checks
+        run: npm run check
+
   # Runs Linux and Windows adapter tests in parallel
   adapter-tests:
     needs: [check-and-lint]
