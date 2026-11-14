@@ -905,8 +905,9 @@ class MHIWFRac extends utils.Adapter {
 
     async retryMissingDevices() {
         const now = Date.now();
-        const configuredDevices =
-            /** @type {Array<{ enabled: boolean, ip: string, name: string }>} */ (this.config.devices);
+        const configuredDevices = /** @type {Array<{ enabled: boolean, ip: string, name: string }>} */ (
+            this.config.devices
+        );
         for (const configuredDevice of configuredDevices.filter(device => device.enabled)) {
             const address = configuredDevice.ip;
             const alreadyRegistered = Object.values(this.devices).some(device => device.airconAddress === address);
@@ -960,7 +961,9 @@ class MHIWFRac extends utils.Adapter {
     updateConnectionInfo() {
         // Multiple configuration rows for the same IP represent one physical endpoint.
         const configuredDevices = /** @type {Array<{ enabled: boolean, ip: string }>} */ (this.config.devices);
-        const enabledDevices = new Set(configuredDevices.filter(device => device.enabled).map(device => device.ip)).size;
+        const enabledDevices = new Set(
+            configuredDevices.filter(device => device.enabled).map(device => device.ip),
+        ).size;
         const onlineDevices = Object.values(this.devices).filter(d => d.online).length;
 
         // No configured devices must not be reported as a successful connection.
