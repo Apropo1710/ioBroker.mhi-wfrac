@@ -1,20 +1,21 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
-## Aktueller GitHub-Stand – 14.11.2026
+## Aktueller GitHub-Stand – 14.11.2026, nach erfolgreicher CI
 
-- Aktiver Arbeitsbranch: `dev/stability-error-handling`.
-- Zuletzt vor dieser Statuspflege geprüfter Entwicklungs-Head: `41e14e1ad7f26dd14506b88499cd11ddc30b464b` (Dokumentationscommit; keine erneute Laufzeitänderung).
-- Fork-`main`: Head `2a7620eba6ec6b9b551446258b3198d183902a6a`, Paketversion 2.3.0; „Test and Release“ Run `43414384777` (#61) erfolgreich. `main` und der Entwicklungsbranch sind divergent.
-- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) ist weiterhin offen und als Draft markiert; nicht gemergt.
-- Im Originalrepository sind die relevanten Issues #34, #35, #40, #41 und PRs #37, #38, #39, #43 weiterhin offen. Die Korrekturen im Fork sind nicht ins Original übernommen worden.
-- Letzter Paketcommit: [`f709e8d`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/commit/f709e8dcc2ae457775d7bf5de923ad6fc91953e7) – `chore: upgrade ioBroker testing to 6.3.2`.
-- `@iobroker/testing` ist in `package.json` auf `^6.3.2` und in `package-lock.json` auf exakt `6.3.2` aktualisiert. Beide Dateien wurden gemeinsam committed; die Lockdatei wurde auf einem GitHub-Runner mit npm generiert.
-- Der temporäre Workflow `.github/workflows/prepare-dependency-lockfile.yml` ist entfernt.
-- Validierung des Paketcommits: `npm ci`, `npm run test:integration` (1 Test bestanden) und `npm run lint` erfolgreich im Dependency-Workflow [Run 43523169063](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43523169063).
-- Die vollständige offizielle CI-Matrix mit `check-and-lint` sowie Ubuntu/Windows und Node 22/24/26 war für den unmittelbar vorausgehenden Commit `6be8872` erfolgreich ([Run 43523169051](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43523169051)). Der Paketcommit `f709e8d` wurde nicht erneut durch diese vollständige Matrix ausgeführt, weil der Push aus dem GitHub-Actions-Workflow erfolgte und keinen weiteren Workflow-Run ausgelöst hat. Deshalb wird die Matrix nicht fälschlich als auf `f709e8d` gelaufen dokumentiert.
-- Issue #40: Die Paketversion-Anforderung `@iobroker/testing >=6.2.2`, die Node-26-Matrix und die Check-Action v2 sind im Fork umgesetzt. Offen bleibt E4048 (gültige Maintainer-E-Mail für `W0w3`); dafür liegt keine verifizierte Adresse vor. Die Adapter-Core-Warnung und optionale Vorschläge werden nicht ungeprüft mitgezogen.
-- PR #43 (Dependabot-Auto-Merge) wird nicht übernommen: Im Entwicklungsbranch existiert kein Auto-Merge-Workflow, den dieser PR aktualisieren müsste. Das Originalrepository bleibt unangetastet.
-- Adapterversion bleibt **2.3.0**. Kein Release, keine Änderung an Fork-`main` oder Originalrepository. Mitsubishi-Hardwaretests sind weiterhin nicht möglich, da die Anlage noch nicht verfügbar ist.
+- Aktiver und einziger Entwicklungsbranch: `dev/stability-error-handling`.
+- Entwicklungs-HEAD: `2de6b0e083a9fee0917d8969b80ef4c09006a961` (`fix: lock nested peer dependency packages`).
+- Letzter vollständiger CI-Lauf: [Run 43566084967](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43566084967), vollständig erfolgreich.
+- Erfolgreich: Check-/Lint-Job sowie alle sechs Adapter-Testjobs auf Ubuntu und Windows mit Node.js 22, 24 und 26. Deploy wurde erwartungsgemäß übersprungen; kein Release.
+- Die Lockdatei einschließlich der Peer- und verschachtelten Abhängigkeiten wurde durch `npm ci` in der CI erfolgreich validiert.
+- `@iobroker/adapter-core` steht auf `^3.4.3`; Mindestanforderung in `io-package.json` ist js-controller `>=7.2.0`. Diese Kombination hat den genannten vollständigen CI-Lauf bestanden. Eine Installation auf einem realen ioBroker-System wurde noch nicht durchgeführt.
+- Adapterversion bleibt **2.3.0**. Kein Release und keine Änderung am Originalrepository.
+- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; er dient als CI-Prüfkanal innerhalb des Forks und ist kein PR an das Originalprojekt.
+- Fork-`main` ist geschützt und bleibt unangetastet. Die Branches sind nicht zusammengeführt. Der Vergleich zeigt 114 Commits nur im Entwicklungszweig und einen zusätzlichen Commit auf `main` zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Dieser Workflow ist im aktuellen Entwicklungszweig nicht vorhanden; daher ist keine Übernahme dieses Commits erforderlich.
+- Der alte zusätzliche Testbranch `dev/test-adapter-core-compat` wurde entfernt. Es verbleiben `main` und `dev/stability-error-handling`.
+- Die Korrekturen aus Original-Issues/PRs #34/#35/#40 sowie #37/#38/#39 sind im Fork umgesetzt und durch CI abgedeckt, soweit softwareseitig prüfbar. Upstream ist nichts gemergt.
+- Offen bleibt E4048 aus Original-Issue #40: eine gültige Maintainer-E-Mail für `W0w3` liegt nicht verifiziert vor und wird nicht erfunden.
+- `npm run check` ist separat noch offen: Ein früherer Lauf meldete Typfehler in `main.js`/`main.test.js`. Der erfolgreiche `testing-action-check@v2`-Job ist nicht mit einem erfolgreichen `npm run check` gleichzusetzen.
+- Keine Hardwaretests möglich: Die Klimaanlage ist noch nicht angekommen. Protokoll-/Decoder-/Schreibverhalten ist daher nicht vollständig praktisch bestätigt.
 
 ---
 
