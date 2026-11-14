@@ -6,43 +6,53 @@ on:
   push:
     branches:
       - "main"
+      - "dev/**"
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
     tags:
       # normal versions
       - "v[0-9]+.[0-9]+.[0-9]+"
       # pre-releases
       - "v[0-9]+.[0-9]+.[0-9]+-**"
-  pull_request: {}
+  # Pushes to main and dev/** already run the full matrix. Avoid a duplicate
+  # run for the same commit when an internal development PR is open.
 
 # Cancel previous PR/branch runs when a new commit is pushed
 concurrency:
-  group: ${{ github.ref }}
+  # Keep concurrency isolated per workflow and branch/tag ref.
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   # Performs quick checks before the expensive test runs
   check-and-lint:
-    if: contains(github.event.head_commit.message, '[skip ci]') == false
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: ioBroker/testing-action-check@v1
+      - uses: ioBroker/testing-action-check@v2
         with:
           node-version: '24.x'
           # Uncomment the following line if your adapter cannot be installed using 'npm ci'
           # install-command: 'npm install'
           lint: true
 
-  # Runs adapter tests on all supported node versions and OSes
+      - name: Run TypeScript checks
+        run: npm run check
+
+  # Runs Linux and Windows adapter tests in parallel
   adapter-tests:
     needs: [check-and-lint]
     if: contains(github.event.head_commit.message, '[skip ci]') == false
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [22.x, 24.x]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Node.js 26 is now LTS and is required by the ioBroker repository checker.
+        node-version: [22.x, 24.x, 26.x]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: ioBroker/testing-action-adapter@v1
@@ -52,13 +62,15 @@ jobs:
           # Uncomment the following line if your adapter cannot be installed using 'npm ci'
           # install-command: 'npm install'
 
+  # macOS checks are temporarily paused due to intermittent GitHub-hosted runner queue failures.
+  # Re-enable the macos-tests job and add it back to deploy.needs after the observation period.
+
   # Deploys the final package to NPM
   deploy:
     needs: [check-and-lint, adapter-tests]
 
     # Trigger this step only when a commit on any branch is tagged with a version number
     if: |
-      contains(github.event.head_commit.message, '[skip ci]') == false &&
       github.event_name == 'push' &&
       startsWith(github.ref, 'refs/tags/v')
 
