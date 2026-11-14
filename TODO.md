@@ -2,7 +2,7 @@
 
 ## Aktueller Stand – 14.11.2026
 
-- Aktueller Entwicklungsbranch-Head: `41e14e1ad7f26dd14506b88499cd11ddc30b464b` (Dokumentationscommit).
+- Zuletzt vor dieser TODO-Aktualisierung geprüfter Entwicklungs-Head: `41e14e1ad7f26dd14506b88499cd11ddc30b464b` (Dokumentationscommit).
 - Fork-`main` steht separat auf `2a7620eba6ec6b9b551446258b3198d183902a6a`; Run #61 erfolgreich. Fork-PR #1 bleibt offen/Draft.
 - Upstream Issues #34/#35/#40/#41 und PRs #37/#38/#39/#43 sind weiterhin offen; die Fork-Korrekturen sind nicht upstream gemergt.
 - Issue #40: E0036 für `@iobroker/testing` ist durch Update auf 6.3.2 behoben; npm ci, Integrationstest und Lint sind für Paketcommit `f709e8d` erfolgreich. E4048 bleibt offen, da keine verifizierte Maintainer-E-Mail für `W0w3` vorliegt.
