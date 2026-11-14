@@ -1,0 +1,35 @@
+name: Adapter Core Compatibility Experiment
+
+on:
+  push:
+    branches:
+      - "dev/test-adapter-core-compat"
+
+jobs:
+  compatibility:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node-version: [22.x, 24.x, 26.x]
+        adapter-core: ["3.1.6", "3.3.2", "3.4.3"]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Select adapter-core version for this controller compatibility case
+        run: npm install --no-save --package-lock=false @iobroker/adapter-core@${{ matrix.adapter-core }}
+      - name: Verify selected adapter-core version
+        run: node -e "console.log(require('fs').readFileSync('node_modules/@iobroker/adapter-core/package.json','utf8').match(/\\"version\\"\\s*:\\s*\\"([^\\"]+)/)[1])"
+      - name: Run adapter tests
+        run: npm test
+      - name: Run integration tests
+        run: npm run test:integration
+      - name: Run lint
+        run: npm run lint
