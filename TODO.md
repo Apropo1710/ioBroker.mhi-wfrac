@@ -1,5 +1,11 @@
 # TODO – ioBroker.mhi-wfrac
 
+## Adapter-Core / js-controller-Basis – 14.11.2026
+- [x] Mindestanforderung auf js-controller >=7.2.0 festgelegt; ältere 6.x- sowie 7.0/7.1-Versionen sind nicht mehr Zielplattform.
+- [x] @iobroker/adapter-core auf ^3.4.3 angehoben; dessen Peer-Anforderung @iobroker/js-controller-common-db >=7.2.2 ist mit der 7.2er Controller-Linie abgestimmt.
+- [ ] Installation und vollständige CI für den resultierenden Commit abwarten; erst danach Kompatibilität als bestätigt markieren.
+- Adapterversion bleibt 2.3.0. Keine Änderung am Originalrepository oder Fork-main.
+
 ## Aktueller Stand – 14.11.2026
 
 - Zuletzt vor dieser TODO-Aktualisierung geprüfter Entwicklungs-Head: `41e14e1ad7f26dd14506b88499cd11ddc30b464b` (Dokumentationscommit).
@@ -8,7 +14,7 @@
 - Issue #40: E0036 für `@iobroker/testing` ist durch Update auf 6.3.2 behoben; npm ci, Integrationstest und Lint sind für Paketcommit `f709e8d` erfolgreich. E4048 bleibt offen, da keine verifizierte Maintainer-E-Mail für `W0w3` vorliegt.
 - Node.js 26 und `ioBroker/testing-action-check@v2` sind umgesetzt. PR #43 wird im Fork nicht benötigt, weil kein Auto-Merge-Workflow vorhanden ist.
 - Vollständige offizielle Ubuntu-/Windows-CI mit Node 22/24/26 ist für den Vorgängercommit `6be8872` grün. Der Paketcommit `f709e8d` hat keine erneute vollständige Matrix erhalten; das ist in `STATUS.md` dokumentiert.
-- `@iobroker/adapter-core` bleibt bei `^3.4.1`; Upgrade wegen zusätzlicher Peer-Abhängigkeit separat zurückgestellt. Adapterversion bleibt 2.3.0.
+- `@iobroker/adapter-core` ist auf `^3.4.3` angehoben; Mindestanforderung ist js-controller `>=7.2.0`. Die CI-Verifikation des resultierenden Commits steht aus. Adapterversion bleibt 2.3.0.
 - Keine Änderung am Originalrepository oder Fork-`main`.
 
 ---
@@ -114,5 +120,5 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
 - [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Build #86 vollständig erfolgreich, einschließlich Check-/Lint-Job und aller sechs Adapter-Testjobs.
 - [x] `@iobroker/testing` auf `^6.3.2` aktualisieren und Lockdatei reproduzierbar regenerieren. Paketcommit `f709e8d`; npm ci, Integrationstest und Lint erfolgreich. Die Bibliothek 6.3.2 verlangt Node.js >=22.19.0; die CI-Matrix verwendet Node 22/24/26. Die vollständige Matrix wurde für den direkten Vorgängercommit erfolgreich ausgeführt, nicht erneut für den Paketcommit.
-- [ ] `@iobroker/adapter-core`-Upgrade gesondert bewerten: Version 3.4.3 verlangt peer `@iobroker/js-controller-common-db >=7.2.2`; vorher die bisherige js-controller-Mindestversion 6.0.11 und Installationskompatibilität klären. Nicht nur die Versionsnummer anheben.
+- [x] `@iobroker/adapter-core` auf 3.4.3 aktualisiert und js-controller-Mindestversion auf >=7.2.0 angehoben. Die Peer-Abhängigkeit `@iobroker/js-controller-common-db >=7.2.2` ist dokumentiert; Installations-/CI-Verifikation des neuen Commits steht noch aus.
 - [ ] Veröffentlichte v2-Versionen der Adapter-Test- und Deploy-Actions beobachten; aktuell bleiben beide auf v1.
