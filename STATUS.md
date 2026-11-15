@@ -1,9 +1,9 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
-## Aktueller GitHub-Stand – 14.11.2026, nach erfolgreicher CI
+## Aktueller GitHub-Stand – 15.11.2026, 03:05 MEZ
 
 - Aktiver und einziger Entwicklungsbranch: `dev/stability-error-handling`.
-- Aktueller Code-HEAD: `1135fed2cfba27bed1050f7481182a87123cbfa9` (`style: simplify enabled device count`). Die anschließenden Dokumentationsaktualisierungen ändern ausschließlich `STATUS.md` und `TODO.md`.
+- Branch-Head vor dieser Dokumentationspflege: `2b4ee4af76d4a73598bfca50b6a48efd72c8c992` (reiner TODO-Dokumentationscommit); aktueller Laufzeitcode-HEAD: `1135fed2cfba27bed1050f7481182a87123cbfa9` (`style: simplify enabled device count`). Die anschließenden Dokumentationsaktualisierungen ändern ausschließlich `STATUS.md` und `TODO.md`.
 - Letzter vollständiger CI-Lauf: [Run 43570458104 / Build #101](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104), vollständig erfolgreich.
 - Erfolgreich: Check-/Lint-Job sowie alle sechs Adapter-Testjobs auf Ubuntu und Windows mit Node.js 22, 24 und 26. Deploy wurde erwartungsgemäß übersprungen; kein Release.
 - Die Lockdatei einschließlich der Peer- und verschachtelten Abhängigkeiten wurde durch `npm ci` in der CI erfolgreich validiert.
