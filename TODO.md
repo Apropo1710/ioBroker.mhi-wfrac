@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-## Aktueller Stand – 14.11.2026, nach erfolgreichem CI-Run 43570458104 (Build #101)
+## Aktueller Stand – 15.11.2026, geprüft nach erfolgreichem CI-Run 43570458104 (Build #101)
 
 - [x] js-controller-Mindestversion auf `>=7.2.0` festgelegt.
 - [x] `@iobroker/adapter-core` auf `^3.4.3` aktualisiert.
@@ -117,5 +117,5 @@ Diese Liste trennt Arbeiten ohne Hardware von Prüfungen, die erst mit einer ins
 - [x] Node.js 26 in die Ubuntu-/Windows-Testmatrix aufnehmen; Build #85 vollständig erfolgreich.
 - [x] `ioBroker/testing-action-check` auf die veröffentlichte v2.0.1 aktualisieren; Build #86 vollständig erfolgreich, einschließlich Check-/Lint-Job und aller sechs Adapter-Testjobs.
 - [x] `@iobroker/testing` auf `^6.3.2` aktualisieren und Lockdatei reproduzierbar regenerieren. Paketcommit `f709e8d`; npm ci, Integrationstest und Lint erfolgreich. Die Bibliothek 6.3.2 verlangt Node.js >=22.19.0; die CI-Matrix verwendet Node 22/24/26. Die vollständige Matrix wurde für den direkten Vorgängercommit erfolgreich ausgeführt, nicht erneut für den Paketcommit.
-- [x] `@iobroker/adapter-core` auf 3.4.3 aktualisiert und js-controller-Mindestversion auf >=7.2.0 angehoben. Die Peer-Abhängigkeit `@iobroker/js-controller-common-db >=7.2.2` ist dokumentiert; Installations-/CI-Verifikation des neuen Commits steht noch aus.
+- [x] `@iobroker/adapter-core` auf 3.4.3 aktualisiert und js-controller-Mindestversion auf >=7.2.0 angehoben. Die Peer-Abhängigkeit `@iobroker/js-controller-common-db >=7.2.2` ist dokumentiert; die CI-Verifikation einschließlich `npm ci`, Check/Lint und vollständiger Ubuntu-/Windows-Matrix mit Node 22/24/26 war in Build #101 erfolgreich. Eine Installation auf einem realen ioBroker-System bleibt noch offen.
 - [ ] Veröffentlichte v2-Versionen der Adapter-Test- und Deploy-Actions beobachten; aktuell bleiben beide auf v1.
