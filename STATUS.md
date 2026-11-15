@@ -10,7 +10,7 @@
 - `@iobroker/adapter-core` steht auf `^3.4.3`; Mindestanforderung in `io-package.json` ist js-controller `>=7.2.0`. Diese Kombination hat den genannten vollständigen CI-Lauf bestanden. Eine Installation auf einem realen ioBroker-System wurde noch nicht durchgeführt.
 - Adapterversion bleibt **2.3.0**. Kein Release und keine Änderung am Originalrepository.
 - Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; er dient als CI-Prüfkanal innerhalb des Forks und ist kein PR an das Originalprojekt.
-- Fork-`main` ist geschützt und bleibt unangetastet. Die Branches sind nicht zusammengeführt. Der Vergleich zeigt 114 Commits nur im Entwicklungszweig und einen zusätzlichen Commit auf `main` zur Entfernung des alten Dependabot-Auto-Merge-Workflows. Dieser Workflow ist im aktuellen Entwicklungszweig nicht vorhanden; daher ist keine Übernahme dieses Commits erforderlich.
+- Fork-`main` ist geschützt und bleibt unangetastet. Die Branches sind nicht zusammengeführt. Der aktuelle Vergleich zeigt 124 Commits voraus im Entwicklungszweig und einen Commit voraus auf `main` (Entfernung des alten Dependabot-Auto-Merge-Workflows). Dieser Workflow ist im aktuellen Entwicklungszweig nicht vorhanden; daher ist keine Übernahme dieses Commits erforderlich.
 - Der alte zusätzliche Testbranch `dev/test-adapter-core-compat` wurde entfernt. Es verbleiben `main` und `dev/stability-error-handling`.
 - Die Korrekturen aus Original-Issues/PRs #34/#35/#40 sowie #37/#38/#39 sind im Fork umgesetzt und durch CI abgedeckt, soweit softwareseitig prüfbar. Upstream ist nichts gemergt.
 - Offen bleibt E4048 aus Original-Issue #40: eine gültige Maintainer-E-Mail für `W0w3` liegt nicht verifiziert vor und wird nicht erfunden.
