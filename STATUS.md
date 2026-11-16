@@ -1,5 +1,14 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
+## Aktueller Abgleich – 16.11.2026, 03:02 MEZ
+
+- Entwicklungsbranch-Head: `57bdf1c8842d20271f4272c04a6ca0e05dc7ba4d` (Dokumentationscommit); letzter Laufzeitcode-Head laut Statushistorie: `1135fed2cfba27bed1050f7481182a87123cbfa9`. Adapterversion **2.3.0**.
+- Build #101 / Run `43570458104`: Check/Lint und alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 **completed / success**; Deploy erwartungsgemäß übersprungen. Kein Release.
+- Aktueller Branchvergleich: `dev/stability-error-handling` liegt **127 Commits vor und 1 hinter `main`**. Der eine zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den nicht mehr benötigten Dependabot-Auto-Merge-Workflow. Keine Zusammenführung ohne bewusste Prüfung.
+- Fork-PR #1 bleibt offen und Draft; PR #2 ist geschlossen und nicht gemergt. E4048 (verifizierte Maintainer-E-Mail) bleibt offen.
+- Keine Hardwareprüfung möglich, solange die Klimaanlage nicht installiert ist. Keine Änderung am Originalrepository und kein Release.
+
+
 ## Aktueller GitHub-Stand – 15.11.2026, 03:05 MEZ
 
 - Aktiver und einziger Entwicklungsbranch: `dev/stability-error-handling`.
