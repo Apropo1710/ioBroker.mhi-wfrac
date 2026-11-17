@@ -5,7 +5,7 @@
 - Aktiver Entwicklungsbranch: `dev/stability-error-handling`; Head vor diesem Statusupdate `3a494c8896217b363a5f4385c1d065f8fe60e353` (Dokumentation). Letzter Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`; Paketversion laut `package.json`: **2.3.0**.
 - Build #101 / Run [`43570458104`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104): Check/Lint und alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 **completed / success**; Deploy erwartungsgemäß übersprungen. Kein Release.
 - Branchvergleich: `dev/stability-error-handling` liegt **128 Commits vor und 1 hinter `main`**. Der zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den nicht mehr benötigten Dependabot-Auto-Merge-Workflow. Keine automatische Zusammenführung.
-- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; GitHub meldet **mergeable: true** vor diesem Statusupdate. Er ist ein CI-Prüfkanal innerhalb des Forks, kein PR an das Originalprojekt.
+- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; nach dem Dokumentationsupdate erneut geprüft: **mergeable: true / clean**. Er ist ein CI-Prüfkanal innerhalb des Forks, kein PR an das Originalprojekt.
 - E4048 (verifizierte Maintainer-E-Mail für W0w3) bleibt ungeklärt. Keine Änderung am Originalrepository.
 - Keine Hardwareprüfung möglich, solange die Mitsubishi-Klimaanlage nicht installiert ist. Kein Release und keine Gerätevalidierung.
 
