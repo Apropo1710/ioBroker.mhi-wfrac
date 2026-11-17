@@ -1,13 +1,13 @@
 # Projektstatus – ioBroker.mhi-wfrac
 
-## Aktueller Abgleich – 16.11.2026, 03:02 MEZ
+## Aktueller Abgleich – 17.11.2026, 02:56 MEZ
 
-- Entwicklungsbranch-Head: `57bdf1c8842d20271f4272c04a6ca0e05dc7ba4d` (Dokumentationscommit); letzter Laufzeitcode-Head laut Statushistorie: `1135fed2cfba27bed1050f7481182a87123cbfa9`. Adapterversion **2.3.0**.
-- Build #101 / Run `43570458104`: Check/Lint und alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 **completed / success**; Deploy erwartungsgemäß übersprungen. Kein Release.
-- Aktueller Branchvergleich: `dev/stability-error-handling` liegt **127 Commits vor und 1 hinter `main`**. Der eine zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den nicht mehr benötigten Dependabot-Auto-Merge-Workflow. Keine Zusammenführung ohne bewusste Prüfung.
-- Fork-PR #1 bleibt offen und Draft; PR #2 ist geschlossen und nicht gemergt. E4048 (verifizierte Maintainer-E-Mail) bleibt offen.
-- Keine Hardwareprüfung möglich, solange die Klimaanlage nicht installiert ist. Keine Änderung am Originalrepository und kein Release.
-
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; Head vor diesem Statusupdate `3a494c8896217b363a5f4385c1d065f8fe60e353` (Dokumentation). Letzter Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`; Paketversion laut `package.json`: **2.3.0**.
+- Build #101 / Run [`43570458104`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104): Check/Lint und alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 **completed / success**; Deploy erwartungsgemäß übersprungen. Kein Release.
+- Branchvergleich: `dev/stability-error-handling` liegt **128 Commits vor und 1 hinter `main`**. Der zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den nicht mehr benötigten Dependabot-Auto-Merge-Workflow. Keine automatische Zusammenführung.
+- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; GitHub meldet **mergeable: true** vor diesem Statusupdate. Er ist ein CI-Prüfkanal innerhalb des Forks, kein PR an das Originalprojekt.
+- E4048 (verifizierte Maintainer-E-Mail für W0w3) bleibt ungeklärt. Keine Änderung am Originalrepository.
+- Keine Hardwareprüfung möglich, solange die Mitsubishi-Klimaanlage nicht installiert ist. Kein Release und keine Gerätevalidierung.
 
 ## Aktueller GitHub-Stand – 15.11.2026, 03:05 MEZ
 
