@@ -1,13 +1,11 @@
-# Projektstatus – ioBroker.mhi-wfrac
+## Aktueller Abgleich – 18.11.2026, 03:18 MEZ
 
-## Aktueller Abgleich – 17.11.2026, 02:56 MEZ
-
-- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; Head vor diesem Statusupdate `3a494c8896217b363a5f4385c1d065f8fe60e353` (Dokumentation). Letzter Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`; Paketversion laut `package.json`: **2.3.0**.
-- Build #101 / Run [`43570458104`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104): Check/Lint und alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 **completed / success**; Deploy erwartungsgemäß übersprungen. Kein Release.
-- Branchvergleich: `dev/stability-error-handling` liegt **128 Commits vor und 1 hinter `main`**. Der zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den nicht mehr benötigten Dependabot-Auto-Merge-Workflow. Keine automatische Zusammenführung.
-- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; nach dem Dokumentationsupdate erneut geprüft: **mergeable: true / clean**. Er ist ein CI-Prüfkanal innerhalb des Forks, kein PR an das Originalprojekt.
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller Branch-HEAD `91818bf56daf00adcb21ef9bdb18325c1136c5b2` (reiner Dokumentationscommit, nur `STATUS.md`). Letzter Laufzeitcode-Commit: `1135fed2cfba27bed1050f7481182a87123cbfa9` vom 14.11.2026, 07:18 UTC; Paketversion laut `package.json`: **2.3.0**.
+- Build #101 / Run [`43570458104`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104) für den Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`: **completed / success**. Check/Lint sowie alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 erfolgreich; Deploy erwartungsgemäß übersprungen. Kein Release.
+- Aktueller Branchvergleich `main` → `dev/stability-error-handling`: **130 Commits voraus / 1 zurück** (Merge-Base `4480e4e42b73b134eaa9ce552501c7cdeffcfe1e`). Der zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den veralteten Dependabot-Auto-Merge-Workflow. Keine automatische Zusammenführung.
+- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; zuletzt **mergeable: true / clean**. Er dient nur als CI-Prüfkanal innerhalb des Forks, nicht als PR an das Originalprojekt.
 - E4048 (verifizierte Maintainer-E-Mail für W0w3) bleibt ungeklärt. Keine Änderung am Originalrepository.
-- Keine Hardwareprüfung möglich, solange die Mitsubishi-Klimaanlage nicht installiert ist. Kein Release und keine Gerätevalidierung.
+- Keine Hardwareprüfung möglich, solange die Mitsubishi-Anlage nicht installiert und erreichbar ist. Kein Release und keine Gerätevalidierung.
 
 ## Aktueller GitHub-Stand – 15.11.2026, 03:05 MEZ
 
