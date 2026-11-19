@@ -1,4 +1,13 @@
-## Aktueller Abgleich – 18.11.2026, 03:18 MEZ
+## Aktueller Abgleich – 19.11.2026, 03:12 MEZ
+
+- Aktiver Entwicklungsbranch: `dev/stability-error-handling`; aktueller HEAD vor dieser Statuspflege: `d998b82feeaf3006896c77118a3fd4d424d2e24c` (reiner Dokumentationscommit). Letzter Laufzeitcode-Commit: `1135fed2cfba27bed1050f7481182a87123cbfa9`; Paketversion **2.3.0**.
+- Build #101 / Run [43570458104](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104) für den Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`: **completed / success**. Check/Lint sowie alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 erfolgreich; Deploy erwartungsgemäß übersprungen. Kein Release.
+- Aktueller Vergleich `main` → `dev/stability-error-handling`: **132 Commits voraus / 1 zurück**, Merge-Base `4480e4e42b73b134eaa9ce552501c7cdeffcfe1e`. Der einzige zusätzliche Main-Commit `2a7620eba6ec6b9b551446258b3198d183902a6a` entfernt den alten Dependabot-Auto-Merge-Workflow. Keine automatische Zusammenführung.
+- Fork-PR [#1](https://github.com/Apropo1710/ioBroker.mhi-wfrac/pull/1) bleibt offen und Draft; zuletzt **mergeable: true / clean**. Er dient nur als CI-Prüfkanal im Fork, nicht als PR an das Originalprojekt.
+- E4048 (verifizierte Maintainer-E-Mail für W0w3) bleibt ungeklärt. Die Mitsubishi-Anlage ist noch nicht installiert/erreichbar; deshalb kein Hardwaretest, kein Release und keine Gerätevalidierung.
+- Kein Workflow läuft aktuell. Fork-`main` und das Originalrepository wurden nicht verändert.
+
+## Historischer Abgleich – 18.11.2026, 03:18 MEZ
 
 - Aktiver Entwicklungsbranch: `dev/stability-error-handling`; Branch-HEAD vor der heutigen Statuspflege: `91818bf56daf00adcb21ef9bdb18325c1136c5b2` (reiner Dokumentationscommit, nur `STATUS.md`). Die heutige Aktualisierung änderte ebenfalls ausschließlich `STATUS.md` (Dokumentationscommit `ca42b1b4b5f94e9f7e426fb9556b1dc80c313ef8`). Letzter Laufzeitcode-Commit: `1135fed2cfba27bed1050f7481182a87123cbfa9` vom 14.11.2026, 07:18 UTC; Paketversion laut `package.json`: **2.3.0**.
 - Build #101 / Run [`43570458104`](https://github.com/Apropo1710/ioBroker.mhi-wfrac/actions/runs/43570458104) für den Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`: **completed / success**. Check/Lint sowie alle sechs Ubuntu-/Windows-Testjobs mit Node 22/24/26 erfolgreich; Deploy erwartungsgemäß übersprungen. Kein Release.
