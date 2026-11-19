@@ -1,6 +1,6 @@
 # TODO – ioBroker.mhi-wfrac
 
-## Aktueller Stand – 15.11.2026, geprüft nach erfolgreichem CI-Run 43570458104 (Build #101)
+## Aktueller Stand – 19.11.2026, geprüft nach erfolgreichem CI-Run 43570458104 (Build #101)
 
 - [x] js-controller-Mindestversion auf `>=7.2.0` festgelegt.
 - [x] `@iobroker/adapter-core` auf `^3.4.3` aktualisiert.
@@ -9,7 +9,7 @@
 - [x] Fehlerhafte Typcheck-Einbeziehung von Testdateien korrigiert: `*.test.js` vom Produktions-Typcheck ausgeschlossen; Produktionsdateien bleiben geprüft.
 - [ ] E4048 aus Original-Issue #40 offen halten, bis eine gültige Maintainer-E-Mail für `W0w3` verifiziert ist.
 - [x] Frühere fehlgeschlagene Builds zugeordnet: #94/#95 unvollständige Lockdatei; #97–#100 ausschließlich Lint-/Prettier-Formatierung in `main.js`. Behoben; #101 vollständig grün.
-- [x] Branchvergleich durchgeführt: `main` bleibt geschützt; Entwicklung ausschließlich auf `dev/stability-error-handling`, keine Zusammenführung.
+- [x] Branchvergleich am 19.11.2026: `dev/stability-error-handling` HEAD `d998b82feeaf3006896c77118a3fd4d424d2e24c` vor der Statuspflege, 132 Commits voraus / 1 zurück gegenüber `main` (Merge-Base `4480e4e42b73b134eaa9ce552501c7cdeffcfe1e`); letzter Laufzeitcode-Commit `1135fed2cfba27bed1050f7481182a87123cbfa9`. Keine Zusammenführung; `main` bleibt unangetastet.
 - Adapterversion bleibt **2.3.0**. Kein Release und keine Änderung am Originalrepository oder Fork-`main`.
 - Fork-PR #1 bleibt als Draft offen und dient nur als CI-Prüfkanal innerhalb des Forks.
 - Die Hardwareprüfung bleibt offen, bis die Mitsubishi-Heavy-Anlage installiert und erreichbar ist.
