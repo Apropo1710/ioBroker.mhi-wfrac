@@ -9,13 +9,43 @@ const Device = require("./lib/Device.js");
 const axios = require("axios");
 const https = require("node:https");
 const axiosRetry = require("axios-retry").default;
+
+const RETRYABLE_READ_COMMANDS = new Set(["getDeviceInfo", "getAirconStat"]);
+const RETRYABLE_HTTP_STATUS_CODES = new Set([408, 425, 429, 500, 502, 503, 504]);
+const POLL_FAILURE_THRESHOLD = 3;
+
+function shouldRetryRequest(error) {
+    if (!error?.config) {
+        return false;
+    }
+
+    let requestData = error.config.data;
+    if (typeof requestData === "string") {
+        try {
+            requestData = JSON.parse(requestData);
+        } catch {
+            return false;
+        }
+    }
+
+    if (!RETRYABLE_READ_COMMANDS.has(requestData?.command)) {
+        return false;
+    }
+
+    // No HTTP response usually means a transient network error or timeout.
+    if (!error.response) {
+        return true;
+    }
+
+    // Do not retry permanent client errors (including HTTP 501).
+    return RETRYABLE_HTTP_STATUS_CODES.has(error.response.status);
+}
+
 axiosRetry(axios, {
     retries: 4,
-    retryDelay: retryCount => {
-        return retryCount * 2000;
-    },
+    retryDelay: retryCount => retryCount * 2000,
     shouldResetTimeout: true,
-    retryCondition: _error => true, // retry no matter what (also on POST)
+    retryCondition: shouldRetryRequest,
 });
 
 const KEY_AIRCON_ID = "airconId";
@@ -46,6 +76,9 @@ class MHIWFRac extends utils.Adapter {
         this.on("stateChange", this.onStateChange.bind(this));
         this.on("unload", this.onUnload.bind(this));
         this.devices = {};
+        this.unloading = false;
+        this.registrationRetryAt = new Map();
+        this.deviceCommandQueues = new Map();
     }
 
     /**
@@ -71,13 +104,23 @@ class MHIWFRac extends utils.Adapter {
         for (const device of this.config.devices) {
             if (device["enabled"]) {
                 this.log.debug(`onReady::register(${device["ip"]}/${device["name"]})`);
-                await this.register(device["ip"], device["name"]);
+                try {
+                    await this.register(device["ip"], device["name"]);
+                } catch (error) {
+                    this.log.error(
+                        `Failed to register configured device ${device["name"]} (${device["ip"]}): ${error}`,
+                    );
+                }
             }
         }
 
         for (const device of Object.values(this.devices)) {
             this.log.debug("onReady::initIOBStates");
-            await this.initIOBStates(device);
+            try {
+                await this.initIOBStates(device);
+            } catch (error) {
+                this.log.error(`${device.name}: Failed to initialize ioBroker states: ${error}`);
+            }
         }
 
         this.update();
@@ -96,48 +139,84 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async setStateVal(id, state) {
-        const airconId = await this.getObjectAsync(id).then(obj => obj?.native.airconId);
-        const val = state.val;
+        const object = await this.getObjectAsync(id);
+        const airconId = object?.native?.airconId;
         const device = this.devices[airconId];
-        let valchange = 0;
-        let idS = "";
-        const h = id.split(".");
-        if (h.length == 4) {
-            idS = h[3];
+        if (!device) {
+            this.log.warn(`Ignoring state change for ${id}: device ${airconId || "unknown"} is not registered`);
+            return;
         }
-        switch (idS) {
-            case "power":
-                device.airconStat.operation = val;
-                valchange++;
-                break;
-            case "mode":
-                device.airconStat.operationMode = val;
-                valchange++;
-                break;
-            case "fanSpeed":
-                device.airconStat.airFlow = val;
-                valchange++;
-                break;
-            case "targetTemperature":
-                device.airconStat.presetTemp = val;
-                valchange++;
-                break;
-            case "swingLeftRight":
-                device.airconStat.windDirectionLR = val;
-                valchange++;
-                break;
-            case "swingUpDown":
-                device.airconStat.windDirectionUD = val;
-                valchange++;
-                break;
-            case "3dAuto":
-                device.airconStat.entrust = val;
-                valchange++;
-                break;
-        }
-        if (valchange > 0) {
-            await this.sendDataToDevice(device);
-            await this.setIOBStates(device);
+
+        // Serialize writes per device so overlapping state changes cannot race
+        // while encoding, sending, or applying the returned device status.
+        const previous = this.deviceCommandQueues.get(airconId) || Promise.resolve();
+        const operation = previous
+            .catch(() => {})
+            .then(async () => {
+                const val = state.val;
+                let valchange = 0;
+                let idS = "";
+                const h = id.split(".");
+                if (h.length == 4) {
+                    idS = h[3];
+                }
+                const changedProperty = {
+                    power: "operation",
+                    mode: "operationMode",
+                    fanSpeed: "airFlow",
+                    targetTemperature: "presetTemp",
+                    swingLeftRight: "windDirectionLR",
+                    swingUpDown: "windDirectionUD",
+                    "3dAuto": "entrust",
+                }[idS];
+                const previousValue = changedProperty ? device.airconStat[changedProperty] : undefined;
+                switch (idS) {
+                    case "power":
+                        device.airconStat.operation = val;
+                        valchange++;
+                        break;
+                    case "mode":
+                        device.airconStat.operationMode = val;
+                        valchange++;
+                        break;
+                    case "fanSpeed":
+                        device.airconStat.airFlow = val;
+                        valchange++;
+                        break;
+                    case "targetTemperature":
+                        device.airconStat.presetTemp = val;
+                        valchange++;
+                        break;
+                    case "swingLeftRight":
+                        device.airconStat.windDirectionLR = val;
+                        valchange++;
+                        break;
+                    case "swingUpDown":
+                        device.airconStat.windDirectionUD = val;
+                        valchange++;
+                        break;
+                    case "3dAuto":
+                        device.airconStat.entrust = val;
+                        valchange++;
+                        break;
+                }
+                if (valchange > 0) {
+                    const sent = await this.sendDataToDevice(device);
+                    if (sent) {
+                        await this.setIOBStates(device);
+                    } else {
+                        // Keep the in-memory model aligned with the last confirmed device state.
+                        device.airconStat[changedProperty] = previousValue;
+                    }
+                }
+            });
+        this.deviceCommandQueues.set(airconId, operation);
+        try {
+            await operation;
+        } finally {
+            if (this.deviceCommandQueues.get(airconId) === operation) {
+                this.deviceCommandQueues.delete(airconId);
+            }
         }
     }
 
@@ -171,7 +250,9 @@ class MHIWFRac extends utils.Adapter {
             await this.setState(`${airconChannel}.autoHeating`, device.autoHeating, true);
             await this.setState(`${airconChannel}.online`, device.online, true);
         } catch (e) {
-            this.errorHandler(device, `Error setting ioBroker state! | ${JSON.stringify(device.airconStat)}`);
+            this.log.error(
+                `${device.name}: Failed to publish ioBroker states: ${e} | AirconStat: ${JSON.stringify(device.airconStat)}`,
+            );
         }
     }
 
@@ -556,12 +637,53 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async update() {
-        for (const device of Object.values(this.devices)) {
-            await this.getDataFromDevice(device);
-            await this.setIOBStates(device);
+        try {
+            try {
+                await this.retryMissingDevices();
+            } catch (error) {
+                this.log.error(`Failed to retry unavailable device registration: ${error}`);
+            }
+
+            for (const device of Object.values(this.devices)) {
+                const airconId = device.airconId;
+                // Polling and user-initiated writes must share the same per-device queue.
+                const previous = this.deviceCommandQueues.get(airconId) || Promise.resolve();
+                const operation = previous
+                    .catch(() => {})
+                    .then(async () => {
+                        try {
+                            await this.getDataFromDevice(device);
+                            await this.setIOBStates(device);
+                        } catch (error) {
+                            try {
+                                this.errorHandler(device, `Unexpected update error: ${error}`);
+                            } catch (handlerError) {
+                                this.log.error(
+                                    `Failed to handle update error for ${device.name || device.airconId}: ${handlerError}`,
+                                );
+                            }
+                        }
+                    });
+                this.deviceCommandQueues.set(airconId, operation);
+                try {
+                    await operation;
+                } finally {
+                    if (this.deviceCommandQueues.get(airconId) === operation) {
+                        this.deviceCommandQueues.delete(airconId);
+                    }
+                }
+            }
+
+            try {
+                this.updateConnectionInfo();
+            } catch (error) {
+                this.log.error(`Failed to update adapter connection state: ${error}`);
+            }
+        } finally {
+            if (!this.unloading) {
+                this.timeout = this.setTimeout(() => this.update(), this.config.interval * 1000);
+            }
         }
-        this.updateConnectionInfo();
-        this.timeout = this.setTimeout(() => this.update(), this.config.interval * 1000);
     }
 
     /**
@@ -570,21 +692,33 @@ class MHIWFRac extends utils.Adapter {
      * @param {() => void} callback
      */
     onUnload(callback) {
-        try {
-            // Here you must clear all timeouts or intervals that may still be active
-            if (this.timeout) {
-                this.clearTimeout(this.timeout);
-            }
-            // set online state to false for all devices
-            Object.values(this.devices).forEach(device => {
-                this.setOnlineState(device, false);
-            });
-            this.setState("info.connection", false, true);
+        this.unloading = true;
 
-            callback();
-        } catch (e) {
-            callback();
+        // A failure for one device must not prevent cleanup of the remaining devices.
+        if (this.timeout) {
+            try {
+                this.clearTimeout(this.timeout);
+            } catch (error) {
+                this.log.error(`Failed to clear polling timeout during shutdown: ${error}`);
+            }
         }
+
+        Object.values(this.devices).forEach(device => {
+            try {
+                this.setOnlineState(device, false);
+            } catch (error) {
+                this.log.error(`Failed to set ${device.name || device.airconId} offline during shutdown: ${error}`);
+            }
+        });
+
+        try {
+            this.setState("info.connection", false, true);
+        } catch (error) {
+            this.log.error(`Failed to reset adapter connection state during shutdown: ${error}`);
+        }
+
+        // Invoke the controller callback exactly once, outside cleanup error handling.
+        callback();
     }
 
     /**
@@ -598,7 +732,9 @@ class MHIWFRac extends utils.Adapter {
             // The state was changed
             if (state.ack === false) {
                 this.log.debug(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-                this.setStateVal(id, state);
+                return this.setStateVal(id, state).catch(error => {
+                    this.log.error(`Failed to process state change for ${id}: ${error}`);
+                });
             }
         } else {
             // The state was deleted
@@ -624,6 +760,20 @@ class MHIWFRac extends utils.Adapter {
         return `${baseUrl}${BEAVER_COMMAND_PATH}/${cmd}`;
     }
 
+    shouldRetryRequest(error) {
+        return shouldRetryRequest(error);
+    }
+
+    assertSuccessfulResponse(response, command) {
+        if (!response || typeof response !== "object") {
+            throw new Error(`${command} returned an invalid response`);
+        }
+        if (response.result !== 0) {
+            throw new Error(`${command} was rejected by the device (result: ${String(response.result)})`);
+        }
+        return response;
+    }
+
     async _postConnection(connection, cmd, contents, options = {}) {
         const url = this.buildDeviceUrl(connection, cmd);
 
@@ -645,9 +795,7 @@ class MHIWFRac extends utils.Adapter {
             .post(url, data, {
                 timeout: 5000, // Set a timeout of 5 seconds
                 httpsAgent: connection.useHttps ? HTTPS_AGENT : undefined,
-                "axios-retry": {
-                    retries: options.disableRetry ? 0 : undefined,
-                },
+                ...(options.disableRetry ? { "axios-retry": { retries: 0 } } : {}),
                 headers: {
                     Connection: "close",
                     "Content-Type": "application/json;charset=UTF-8",
@@ -691,19 +839,32 @@ class MHIWFRac extends utils.Adapter {
     }
 
     async update_account_info(device) {
-        //Update the account info on the airco (sets to operator id of the device)
+        // Update the account info on the airco (sets to operator id of the device)
         const contents = {
             accountId: OPERATORID,
             [KEY_AIRCON_ID]: device.airconId,
             remote: 0,
             timezone: TIMEZONE,
         };
-        await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents).catch(error =>
-            this.errorHandler(device, `Failed to update account info on device! | ${error}`),
-        );
+        try {
+            const ret = await this._postConnection(device, COMMAND_UPDATE_ACCOUNT_INFO, contents);
+            this.assertSuccessfulResponse(ret.response, COMMAND_UPDATE_ACCOUNT_INFO);
+        } catch (error) {
+            // Account metadata is optional; a failure must not mark a reachable device offline.
+            this.log.error(`${device.name}: Failed to update account info on device: ${error}`);
+        }
     }
 
     async register(address, name) {
+        const registeredAtAddress = Object.values(this.devices).find(device => device.airconAddress === address);
+        if (registeredAtAddress) {
+            this.log.warn(
+                `Skipping duplicate registration for ${name} (${address}); already registered as ${registeredAtAddress.airconId}`,
+            );
+            this.registrationRetryAt.delete(address);
+            return;
+        }
+
         const device = new Device(this.log);
         device.name = name;
         device.airconAddress = address;
@@ -711,24 +872,73 @@ class MHIWFRac extends utils.Adapter {
         try {
             Object.assign(device, await this.detectDeviceConnection(address));
 
-            await this._postConnection(device, COMMAND_GET_DEVICE_INFO)
-                .then(async ret => {
-                    if (ret.error === "") {
-                        this.log.debug(`Register(${address}) | return: ${JSON.stringify(ret)}`);
-                        device.airconId = ret.response.contents.airconId;
-                        device.airconApMode = ret.response.contents.apMode;
-                        device.airconMac = ret.response.contents.macAddress;
-                        device.online = true;
-                        this.devices[device.airconId] = device;
+            const ret = await this._postConnection(device, COMMAND_GET_DEVICE_INFO);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_GET_DEVICE_INFO);
+            const deviceInfo = response.contents;
+            if (!deviceInfo?.airconId) {
+                throw new Error("getDeviceInfo returned no airconId");
+            }
 
-                        await this.update_account_info(device);
-                    } else {
-                        this.errorHandler(device, `Failed to register device! | ${JSON.stringify(ret)}`);
-                    }
-                })
-                .catch(error => this.errorHandler(device, `Failed to register device! | ${error}`));
+            this.log.debug(`Register(${address}) | return: ${JSON.stringify(ret)}`);
+            device.airconId = deviceInfo.airconId;
+
+            const existingDevice = this.devices[device.airconId];
+            if (existingDevice) {
+                this.registrationRetryAt.set(address, Date.now() + 5 * 60 * 1000);
+                this.log.error(
+                    `Cannot register ${name} (${address}): airconId ${device.airconId} is already registered at ${existingDevice.airconAddress}`,
+                );
+                return;
+            }
+
+            device.airconApMode = deviceInfo.apMode ?? 0;
+            device.airconMac = deviceInfo.macAddress ?? "";
+            device.online = true;
+            this.devices[device.airconId] = device;
+
+            await this.update_account_info(device);
         } catch (error) {
-            this.errorHandler(device, `Failed to detect local API mode during registration! | ${error}`);
+            this.registrationRetryAt.set(address, Date.now() + 5 * 60 * 1000);
+            this.errorHandler(device, `Failed to register device! | ${error}`);
+        }
+    }
+
+    async retryMissingDevices() {
+        const now = Date.now();
+        const configuredDevices = /** @type {Array<{ enabled: boolean, ip: string, name: string }>} */ (
+            this.config.devices
+        );
+        for (const configuredDevice of configuredDevices.filter(device => device.enabled)) {
+            const address = configuredDevice.ip;
+            const alreadyRegistered = Object.values(this.devices).some(device => device.airconAddress === address);
+            if (alreadyRegistered) {
+                this.registrationRetryAt.delete(address);
+                continue;
+            }
+
+            const nextAttempt = this.registrationRetryAt.get(address) ?? 0;
+            if (now < nextAttempt) {
+                continue;
+            }
+
+            try {
+                this.log.info(`Retrying registration for unavailable device ${configuredDevice.name} (${address})`);
+                await this.register(address, configuredDevice.name);
+
+                const registeredDevice = Object.values(this.devices).find(device => device.airconAddress === address);
+                if (registeredDevice) {
+                    try {
+                        await this.initIOBStates(registeredDevice);
+                    } catch (error) {
+                        this.log.error(
+                            `${registeredDevice.name}: Failed to initialize states after registration: ${error}`,
+                        );
+                    }
+                }
+            } catch (error) {
+                // A failure for one configured endpoint must not block retries for later devices.
+                this.log.error(`Failed to retry registration for ${configuredDevice.name} (${address}): ${error}`);
+            }
         }
     }
 
@@ -749,31 +959,55 @@ class MHIWFRac extends utils.Adapter {
     }
 
     updateConnectionInfo() {
-        const enabledDevices = this.config.devices.filter(d => d["enabled"]).length;
+        // Multiple configuration rows for the same IP represent one physical endpoint.
+        const configuredDevices = /** @type {Array<{ enabled: boolean, ip: string }>} */ (this.config.devices);
+        const enabledIps = configuredDevices.filter(device => device.enabled).map(device => device.ip);
+        const enabledDevices = new Set(enabledIps).size;
         const onlineDevices = Object.values(this.devices).filter(d => d.online).length;
 
-        this.setState("info.connection", enabledDevices == onlineDevices, true);
+        // No configured devices must not be reported as a successful connection.
+        this.setState("info.connection", enabledDevices > 0 && enabledDevices === onlineDevices, true);
     }
 
     async getDataFromDevice(device) {
         const contents = {
             [KEY_AIRCON_ID]: device.airconId,
         };
-        await this._postConnection(device, COMMAND_GET_AIRCON_STAT, contents)
-            .then(ret => {
-                if (ret.error === "") {
-                    device.acCoder.fromBase64(device.airconStat, ret.response.contents.airconStat);
-                    this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
-                    device.firmwareVersion_wireless = ret.response.contents.wireless.firmVer;
-                    device.firmwareVersion_mcu = ret.response.contents.mcu.firmVer;
-                    device.firmwareType = ret.response.contents.firmType;
-                    device.connected_accounts = ret.response.contents.numOfAccount;
-                    device.ledStat = ret.response.contents.ledStat;
-                    device.autoHeating = ret.response.contents.autoHeating;
-                    device.online = true;
-                }
-            })
-            .catch(error => this.errorHandler(device, `Could not get Data: ${error}`));
+        try {
+            const ret = await this._postConnection(device, COMMAND_GET_AIRCON_STAT, contents);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_GET_AIRCON_STAT);
+            const stat = response.contents;
+            if (!stat || typeof stat.airconStat !== "string" || stat.airconStat.length === 0) {
+                throw new Error("getAirconStat returned no airconStat");
+            }
+
+            const previousPollFailures = device.pollFailureCount || 0;
+            device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+            device.pollFailureCount = 0;
+            this.log.debug(`getDataFromDevice | AirconStat::${JSON.stringify(device.airconStat)}`);
+            device.firmwareVersion_wireless = stat.wireless?.firmVer ?? "";
+            device.firmwareVersion_mcu = stat.mcu?.firmVer ?? "";
+            device.firmwareType = stat.firmType ?? "";
+            device.connected_accounts = stat.numOfAccount ?? 0;
+            device.ledStat = stat.ledStat ?? 0;
+            device.autoHeating = stat.autoHeating ?? 0;
+            device.online = true;
+            if (previousPollFailures >= POLL_FAILURE_THRESHOLD) {
+                this.log.info(`${device.name}: Device is reachable again after ${previousPollFailures} failed polls`);
+                this.updateConnectionInfo();
+            }
+        } catch (error) {
+            device.pollFailureCount = (device.pollFailureCount || 0) + 1;
+            if (device.pollFailureCount < POLL_FAILURE_THRESHOLD) {
+                this.log.debug(
+                    `${device.name}: Poll failed (${device.pollFailureCount}/${POLL_FAILURE_THRESHOLD}); keeping device online: ${error}`,
+                );
+            } else if (device.pollFailureCount === POLL_FAILURE_THRESHOLD) {
+                this.errorHandler(device, `Could not get Data after ${POLL_FAILURE_THRESHOLD} failed polls: ${error}`);
+            } else {
+                this.log.debug(`${device.name}: Poll still failing (${device.pollFailureCount} consecutive failures)`);
+            }
+        }
     }
 
     async sendDataToDevice(device) {
@@ -782,13 +1016,19 @@ class MHIWFRac extends utils.Adapter {
             [KEY_AIRCON_STAT]: device.acCoder.toBase64(device.airconStat),
         };
 
-        await this._postConnection(device, COMMAND_SET_AIRCON_STAT, contents)
-            .then(ret => {
-                if (ret.error === "") {
-                    device.acCoder.fromBase64(device.airconStat, ret.response.contents.airconStat);
-                }
-            })
-            .catch(error => this.errorHandler(device, `Could not send Data: ${error}`));
+        try {
+            const ret = await this._postConnection(device, COMMAND_SET_AIRCON_STAT, contents);
+            const response = this.assertSuccessfulResponse(ret.response, COMMAND_SET_AIRCON_STAT);
+            const stat = response.contents;
+            if (!stat || typeof stat.airconStat !== "string" || stat.airconStat.length === 0) {
+                throw new Error("setAirconStat returned no airconStat");
+            }
+            device.acCoder.fromBase64(device.airconStat, stat.airconStat);
+            return true;
+        } catch (error) {
+            this.errorHandler(device, `Could not send Data: ${error}`);
+            return false;
+        }
     }
 
     name2id(pName) {
